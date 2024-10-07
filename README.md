@@ -1,38 +1,63 @@
-# create-svelte
+# Unify Ventures
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Website source code for [unifyventures.vc](https://unifyventures.vc)
 
-## Creating a project
+## Getting Started
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+First clone the repo and install dependencies:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+git clone https://github.com/Unify-Ventures/website.git
+cd website
 ```
+
+Install the dependencies:
+
+```
+pnpm install
+```
+
+## Development
+
+To run the project locally, run:
+
+```bash
+pnpm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173), and the website should be running.
 
 ## Building
 
-To create a production version of your app:
+To build the project for production, run:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
-You can preview the production build with `npm run preview`.
+The built files will be in the `build` directory.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Type Generation
+
+To generate the types for the PocketBase API, run:
+
+```bash
+pnpm run typegen
+```
+
+This will generate the types in the `src/lib/pb-types.ts` file.
+
+## Ready to Deploy?
+
+You can deploy the project by tagging the commit with the current datetime:
+
+```bash
+git tag $(date +%Y-%m-%d-%H-%M-%S)
+git push origin --tags
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+When creating contributions please do so in a separate branch and open a pull request against the `main` branch.
