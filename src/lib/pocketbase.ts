@@ -5,7 +5,7 @@ import {
     type TypedPocketBase,
 } from "./pb-types";
 
-const pb: TypedPocketBase = new PocketBase("http://content.unifyventures.vc");
+const pb: TypedPocketBase = new PocketBase("https://content.unifyventures.vc");
 
 export const getFeaturedPortfolios = async (
     stage: string = "scaling",
