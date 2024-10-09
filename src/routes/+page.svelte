@@ -215,7 +215,7 @@
             scrollingTl.to(portfolios, {
                 x: `-=${(portfolios[0] as HTMLElement).offsetWidth + 20}`,
                 ease: "linear",
-                duration: portfolios.length * (100 / 500),
+                duration: portfolios.length * 0.25,
             });
 
             scrollingTl.play();
@@ -240,7 +240,7 @@
             </span>
         </h2>
         <div
-            class="w-full flex-1 flex-wrap h-[calc(100vh-24rem)] 2xl:flex hidden max-w-[80rem]"
+            class="w-full flex-1 flex-wrap h-[calc(100vh-22rem)] 2xl:flex hidden max-w-[80rem]"
         >
             {#each [1, 2, 3, 4] as i}
                 <div
