@@ -311,6 +311,7 @@
                 >
                     <Select.Trigger
                         class="border-2 p-4 border-zinc-900 hover:bg-zinc-100  transition-all duration-200 cursor-pointer inline-flex gap-2"
+                        aria-label="Select a category"
                     >
                         <Select.Value
                             placeholder="Select a category"
