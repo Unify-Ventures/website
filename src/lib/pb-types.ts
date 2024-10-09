@@ -37,6 +37,8 @@ export type AuthSystemFields<T = never> = {
 
 export type FundsRecord = {
 	accent: string
+	additional_padding?: number
+	homepage: string
 	logo: string
 	name: string
 }
