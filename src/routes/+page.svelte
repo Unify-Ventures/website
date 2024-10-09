@@ -39,8 +39,6 @@
     $effect(() => {
         portfolios = portfolios;
 
-        console.log(portfolios);
-
         setupScrolling();
     });
 
