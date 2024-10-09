@@ -1,6 +1,8 @@
 import PocketBase from "pocketbase";
 import {
     Collections,
+    type FundsResponse,
+    type PortfolioCompaniesResponse,
     type TeamResponse,
     type TypedPocketBase,
 } from "./pb-types";
@@ -11,11 +13,18 @@ export const getFeaturedPortfolios = async (
     stage: string = "scaling",
     featured: boolean = true
 ) => {
-    const portfolios = await pb.collection("portfolio_companies").getFullList({
-        filter: `${featured ? "featured=true && " : ""}stage='${stage}'`,
-    });
+    const portfolios = await pb
+        .collection("portfolio_companies")
+        .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
+            filter: `${featured ? "featured=true && " : ""}stage='${stage}'`,
+            expand: "funds",
+        });
 
     return portfolios;
+};
+
+export type PortfolioExpand = {
+    funds: FundsResponse[];
 };
 
 export const getFileUrl = (
