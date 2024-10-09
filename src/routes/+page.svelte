@@ -11,6 +11,7 @@
         getFeaturedPortfolios,
         getFileUrl,
         getTeam,
+        type PortfolioExpand,
     } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import {
@@ -30,13 +31,15 @@
         { value: "liquidity_event", label: "Liquidity Event" },
     ];
 
-    let portfolios = $state<PortfolioCompaniesResponse[]>([]);
+    let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
     let portfolioIter = $state(1);
 
     let team = $state<TeamResponse[]>([]);
 
     $effect(() => {
         portfolios = portfolios;
+
+        console.log(portfolios);
 
         setupScrolling();
     });
@@ -49,7 +52,7 @@
 
         portfolioIter = 1;
 
-        if (portfolios.length > 5) {
+        if (portfolios.length > 4) {
             while (portfolios.length < 20) {
                 portfolios.push(...portfolios);
                 portfolioIter++;
@@ -214,7 +217,7 @@
             scrollingTl.to(portfolios, {
                 x: `-=${(portfolios[0] as HTMLElement).offsetWidth + 20}`,
                 ease: "linear",
-                duration: portfolios.length * (100 / 300),
+                duration: portfolios.length * (100 / 500),
             });
 
             scrollingTl.play();
@@ -342,7 +345,7 @@
             <div class="w-max flex flex-row gap-6" id="portfolio-container">
                 {#each portfolios as portfolio}
                     <div
-                        class="w-64 aspect-square bg-zinc-100 portfolio"
+                        class={`w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:text-zinc-100" : ""}`}
                         style:--accent={portfolio.accent}
                         onmouseenter={() => {
                             scrollingTl?.pause();
@@ -356,7 +359,7 @@
                     >
                         <div
                             role="img"
-                            class={`w-64 h-64 flex justify-center items-center p-12 text-zinc-800 ${portfolio.invert_foreground ? "hover:text-zinc-100" : ""} transition-colors duration-150`}
+                            class="w-64 h-64 flex justify-center items-center p-12 transition-colors duration-150"
                             id={`portfolio-${portfolio.id}-${portfolioIter}`}
                         >
                             <svg
@@ -367,6 +370,20 @@
                                 width="100%"
                             />
                         </div>
+                        {#if portfolio.expand?.funds[0]?.logo}
+                            <svg
+                                use:inlineSvg={getFileUrl(
+                                    portfolio.expand.funds[0],
+                                    portfolio.expand.funds[0].logo
+                                )}
+                                class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transitition-all duration-150"
+                            >
+                            </svg>
+                        {/if}
+                        <button
+                            class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transitition-all duration-150"
+                            >Learn More <ArrowRight /></button
+                        >
                     </div>
                 {:else}
                     <p
@@ -414,7 +431,7 @@
         --cursor-width: 0.2rem;
     }
 
-    .portfolio > div:hover {
+    .portfolio:hover > div {
         background-color: var(--accent);
         transition: all;
         transition-duration: 150ms;
