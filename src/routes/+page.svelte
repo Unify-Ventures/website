@@ -1,16 +1,10 @@
 <script lang="ts">
-    import Header from "$lib/components/header.svelte";
     import gsap from "gsap";
     import ScrollTrigger from "gsap/dist/ScrollTrigger";
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
-    import {
-        ChevronsUpDown,
-        ArrowRight,
-        LoaderCircle,
-        Linkedin,
-    } from "lucide-svelte";
+    import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
     import {
         getFeaturedPortfolios,
         getFileUrl,
@@ -22,6 +16,8 @@
         type PortfolioCompaniesResponse,
         type TeamResponse,
     } from "$lib/pb-types";
+    import Fa from "svelte-fa";
+    import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
     let activeTimeline: GSAPTimeline | null = null;
     let scrollingTl: GSAPTimeline | null = null;
@@ -431,7 +427,7 @@
                         >
                             <a
                                 href={member.linkedin}
-                                class="relative flex-none"
+                                class="relative flex-none pointer-events-none 2xl:pointer-events-auto"
                             >
                                 <img
                                     src={getFileUrl(member, member.picture)}
@@ -461,7 +457,7 @@
                                 <div
                                     class="absolute bottom-0 right-0 p-1 rounded-full bg-zinc-200 scale-0 group-hover:scale-100 transition-all duration-300"
                                 >
-                                    <Linkedin />
+                                    <Fa size="lg" icon={faLinkedin} />
                                 </div>
                             </a>
                             <div
@@ -484,10 +480,9 @@
 
                         <a
                             href={member.linkedin}
-                            class="flex flex-row 2xl:hidden items-center"
+                            class="flex flex-row 2xl:hidden items-center gap-2"
                         >
-                            <Linkedin />
-                            <div class="w-0.5 mx-2 h-8 bg-zinc-400"></div>
+                            <Fa size="lg" icon={faLinkedin} />
                             <span>{getLinkedInUsername(member.linkedin)}</span>
                         </a>
                     </div>

@@ -28,10 +28,12 @@
     },
     "type": "module",
     "dependencies": {
+        "@fortawesome/free-brands-svg-icons": "^6.6.0",
         "bits-ui": "^0.21.15",
         "gsap": "^3.12.5",
         "lucide-svelte": "^0.446.0",
         "pocketbase": "^0.21.5",
+        "svelte-fa": "^4.0.3",
         "svelte-typewriter": "^3.2.3"
     }
 }
