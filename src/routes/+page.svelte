@@ -28,6 +28,9 @@
 
     let teamTl: GSAPTimeline | null = null;
 
+    const getLinkedInUsername = (url) =>
+        new URL(url).pathname.split("/").filter(Boolean).pop();
+
     const portfolioCategories = [
         { value: "product_launch", label: "Product Launch" },
         { value: "market_validation", label: "Market Validation" },
@@ -424,33 +427,43 @@
                         id={"member-" + member.id}
                     >
                         <div
-                            class="flex 2xl:flex-row gap-2 w-64 group-hover:w-max transition-all duration-300 flex-col 2xl:mr-auto"
+                            class="flex 2xl:flex-row items-center gap-4 w-64 group-hover:w-max transition-all duration-300 flex-col 2xl:mr-auto"
                         >
-                            <img
-                                src={getFileUrl(member, member.picture)}
-                                alt={`${member.name}'s avatar`}
-                                style="clip-path: url(#alex-path1)"
-                                class="w-64 h-64 m-auto aspect-square group-hover:w-24 group-hover:h-24 rounded-none group-hover:rounded-[50%] object-cover transition-all duration-300"
-                                onload={() => {
-                                    if (i == 0) {
-                                        teamTl = gsap.timeline({
-                                            scrollTrigger: {
-                                                trigger: "#member-" + member.id,
-                                            },
-                                        });
-                                    }
+                            <a
+                                href={member.linkedin}
+                                class="relative flex-none"
+                            >
+                                <img
+                                    src={getFileUrl(member, member.picture)}
+                                    alt={`${member.name}'s avatar`}
+                                    class="w-64 h-64 m-auto aspect-square group-hover:w-24 group-hover:h-24 rounded-none group-hover:rounded-[50%] object-cover transition-all duration-300"
+                                    onload={() => {
+                                        if (i == 0) {
+                                            teamTl = gsap.timeline({
+                                                scrollTrigger: {
+                                                    trigger:
+                                                        "#member-" + member.id,
+                                                },
+                                            });
+                                        }
 
-                                    teamTl.from(
-                                        "#member-" + member.id,
-                                        {
-                                            opacity: 0,
-                                            y: 100,
-                                            duration: 1,
-                                        },
-                                        0.25 * i
-                                    );
-                                }}
-                            />
+                                        teamTl.from(
+                                            "#member-" + member.id,
+                                            {
+                                                opacity: 0,
+                                                y: 100,
+                                                duration: 1,
+                                            },
+                                            0.25 * i
+                                        );
+                                    }}
+                                />
+                                <div
+                                    class="absolute bottom-0 right-0 p-1 rounded-full bg-zinc-200 scale-0 group-hover:scale-100 transition-all duration-300"
+                                >
+                                    <Linkedin />
+                                </div>
+                            </a>
                             <div
                                 class="flex 2xl:scale-50 2xl:-translate-x-32 flex-col gap-1 2xl:opacity-0 2xl:translate-y-10 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0 transition-all duration-300"
                             >
@@ -460,9 +473,6 @@
                                 <h4 class="text-xl text-zinc-700">
                                     {member.title}
                                 </h4>
-                                <a href={member.linkedin} target="_blank">
-                                    <Linkedin class="text-blue-800" />
-                                </a>
                             </div>
                         </div>
 
@@ -471,6 +481,15 @@
                         >
                             {member.blurb}
                         </p>
+
+                        <a
+                            href={member.linkedin}
+                            class="flex flex-row 2xl:hidden items-center"
+                        >
+                            <Linkedin />
+                            <div class="w-0.5 mx-2 h-8 bg-zinc-400"></div>
+                            <span>{getLinkedInUsername(member.linkedin)}</span>
+                        </a>
                     </div>
                 {/each}
             </div>
