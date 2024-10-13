@@ -334,18 +334,23 @@
                         {/each}
                     </Select.Content>
                 </Select.Root>
+                <button
+                    class="flex justify-center items-center bg-zinc-900 text-white p-4"
+                >
+                    See All <ArrowRight />
+                </button>
             </div>
         </div>
         <div class="flex flex-row gap-2">
             <div
-                class="overflow-hidden hidden 2xl:block"
-                class:max-w-6xl={portfolios.length > 5}
+                class="overflow-hidden max-w-[100vw] 2xl:max-w-fit"
+                class:2xl:max-w-6xl={portfolios.length > 5}
                 id="scroll-container"
             >
                 <div class="w-max flex flex-row gap-6" id="portfolio-container">
                     {#each portfolios as portfolio, i}
                         <div
-                            class={`w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:[&:not(.no-hover)]:text-zinc-100" : ""}`}
+                            class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:[&:not(.no-hover)]:text-zinc-100" : ""}`}
                             style:--accent={portfolio.accent}
                             onmouseenter={(e) => {
                                 scrollingTl?.pause();
@@ -359,7 +364,7 @@
                         >
                             <div
                                 role="img"
-                                class="w-64 h-64 flex justify-center items-center p-12 transition-colors duration-150"
+                                class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
                                 id={`portfolio-${portfolio.id}-${portfolioIter}`}
                             >
                                 <svg
@@ -395,7 +400,7 @@
                     {/each}
                 </div>
             </div>
-            <div class="relative">
+            <div class="hidden lg:relative">
                 <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div>
