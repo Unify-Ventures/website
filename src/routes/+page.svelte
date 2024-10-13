@@ -336,67 +336,73 @@
                 </Select.Root>
             </div>
         </div>
-        <div
-            class="overflow-hidden hidden 2xl:block"
-            class:max-w-7xl={portfolios.length > 5}
-            id="scroll-container"
-        >
-            <div class="w-max flex flex-row gap-6" id="portfolio-container">
-                {#each portfolios as portfolio}
-                    <div
-                        class={`w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:text-zinc-100" : ""}`}
-                        style:--accent={portfolio.accent}
-                        onmouseenter={() => {
-                            scrollingTl?.pause();
-                        }}
-                        onmouseleave={() => {
-                            if (portfolios.length > 5) {
-                                scrollingTl?.play();
-                            }
-                        }}
-                        role="img"
-                    >
+        <div class="flex flex-row gap-2">
+            <div
+                class="overflow-hidden hidden 2xl:block"
+                class:max-w-6xl={portfolios.length > 5}
+                id="scroll-container"
+            >
+                <div class="w-max flex flex-row gap-6" id="portfolio-container">
+                    {#each portfolios as portfolio, i}
                         <div
+                            class={`w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:[&:not(.no-hover)]:text-zinc-100" : ""}`}
+                            style:--accent={portfolio.accent}
+                            onmouseenter={(e) => {
+                                scrollingTl?.pause();
+                            }}
+                            onmouseleave={(e) => {
+                                if (portfolios.length > 5) {
+                                    scrollingTl?.play();
+                                }
+                            }}
                             role="img"
-                            class="w-64 h-64 flex justify-center items-center p-12 transition-colors duration-150"
-                            id={`portfolio-${portfolio.id}-${portfolioIter}`}
                         >
-                            <svg
-                                use:inlineSvg={getFileUrl(
-                                    portfolio,
-                                    portfolio.logo
-                                )}
-                                width="100%"
-                            />
-                        </div>
-                        {#if portfolio.expand?.funds[0]?.logo}
-                            <svg
-                                use:inlineSvg={getFileUrl(
-                                    portfolio.expand.funds[0],
-                                    portfolio.expand.funds[0].logo
-                                )}
-                                class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transitition-all duration-150"
+                            <div
+                                role="img"
+                                class="w-64 h-64 flex justify-center items-center p-12 transition-colors duration-150"
+                                id={`portfolio-${portfolio.id}-${portfolioIter}`}
                             >
-                            </svg>
-                        {/if}
-                        <button
-                            class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transitition-all duration-150"
-                            >Learn More <ArrowRight /></button
+                                <svg
+                                    use:inlineSvg={getFileUrl(
+                                        portfolio,
+                                        portfolio.logo
+                                    )}
+                                    width="100%"
+                                />
+                            </div>
+                            {#if portfolio.expand?.funds[0]?.logo}
+                                <svg
+                                    use:inlineSvg={getFileUrl(
+                                        portfolio.expand.funds[0],
+                                        portfolio.expand.funds[0].logo
+                                    )}
+                                    class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transitition-all duration-150"
+                                >
+                                </svg>
+                            {/if}
+                            <button
+                                class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transitition-all duration-150"
+                                >Learn More <ArrowRight /></button
+                            >
+                        </div>
+                    {:else}
+                        <p
+                            class="text-6xl h-64 flex gap-6 items-center justify-center"
                         >
-                    </div>
-                {:else}
-                    <p
-                        class="text-6xl h-64 flex gap-6 items-center justify-center"
-                    >
-                        <LoaderCircle class="animate-spin" size="64" /> Loading portfolios...
-                    </p>
-                {/each}
-                {#if portfolios.length <= 5}
-                    <button
-                        class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
-                        >See All <ArrowRight />
-                    </button>
-                {/if}
+                            <LoaderCircle class="animate-spin" size="64" /> Loading
+                            portfolios...
+                        </p>
+                    {/each}
+                </div>
+            </div>
+            <div class="relative">
+                <div
+                    class="absolute top-0 left-0 bottom-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
+                ></div>
+                <button
+                    class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
+                    >See All <ArrowRight />
+                </button>
             </div>
         </div>
     </section>
@@ -430,7 +436,7 @@
         --cursor-width: 0.2rem;
     }
 
-    .portfolio:hover > div {
+    .portfolio:hover:not(.no-hover) > div {
         background-color: var(--accent);
         transition: all;
         transition-duration: 150ms;
