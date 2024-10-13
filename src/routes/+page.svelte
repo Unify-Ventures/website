@@ -335,8 +335,7 @@
         </div>
         <div class="flex flex-row gap-2">
             <div
-                class="overflow-hidden max-w-[100vw] 2xl:max-w-fit"
-                class:2xl:max-w-6xl={portfolios.length > 5}
+                class={`overflow-hidden max-w-[100vw] 2xl:max-w-fit ${}`}
                 id="scroll-container"
             >
                 <div class="w-max flex flex-row gap-6" id="portfolio-container">
@@ -425,7 +424,7 @@
                         />
                         <h3 class="text-4xl font-medium">{member.name}</h3>
                         <h4 class="text-2xl text-zinc-700">{member.title}</h4>
-                        <p class="max-w-sm">{member.blurb}</p>
+                        <p class="max-w-sm text-justify">{member.blurb}</p>
                     </div>
                 {/each}
             </div>
