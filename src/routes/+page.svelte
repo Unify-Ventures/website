@@ -433,7 +433,7 @@
                                 <img
                                     src={getFileUrl(member, member.picture)}
                                     alt={`${member.name}'s avatar`}
-                                    class="w-64 h-64 m-auto aspect-square 2xl:group-hover:w-24 2x:group-hover:h-24 rounded-none group-hover:rounded-[50%] object-cover transition-all duration-300"
+                                    class="w-64 h-64 m-auto aspect-square 2xl:group-hover:w-24 2x:group-hover:h-24 rounded-none 2xl:group-hover:rounded-[50%] object-cover transition-all duration-300"
                                     onload={() => {
                                         if (i == 0) {
                                             teamTl = gsap.timeline({
