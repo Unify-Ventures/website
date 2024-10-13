@@ -5,7 +5,6 @@
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
-
     import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
     import {
         getFeaturedPortfolios,
@@ -20,7 +19,6 @@
     } from "$lib/pb-types";
 
     let activeTimeline: GSAPTimeline | null = null;
-
     let scrollingTl: GSAPTimeline | null = null;
 
     const portfolioCategories = [
@@ -33,12 +31,10 @@
 
     let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
     let portfolioIter = $state(1);
-
     let team = $state<TeamResponse[]>([]);
 
     $effect(() => {
         portfolios = portfolios;
-
         setupScrolling();
     });
 
@@ -47,7 +43,6 @@
         featured: boolean = true
     ) {
         portfolios = await getFeaturedPortfolios(status, featured);
-
         portfolioIter = 1;
 
         if (portfolios.length > 4) {
@@ -260,12 +255,10 @@
         </div>
     </section>
 
-    <section class="bg-zinc-100 flex justify-center items-center">
-        <div
-            class="flex max-w-7xl m-16 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row"
-        >
-            <h2 class="text-7xl font-medium">Unify Fund <br /> of Funds</h2>
-            <p class="max-w-lg text-2xl">
+    <section class="section">
+        <div>
+            <h2>Unify Fund <br /> of Funds</h2>
+            <p>
                 Unify Ventures has established a multi-thematic fund of funds
                 that invests in managers covering B2B SaaS, Advanced
                 Manufacturing, and Fin Tech, with more thematics to come.
@@ -294,30 +287,28 @@
 
     <section class="flex flex-col justify-center items-center mb-16">
         <div
-            class="flex max-w-7xl m-16 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row items-center justify-center flex-none"
+            class="flex max-w-7xl xl:m-16 m-8 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row items-center justify-center flex-none"
         >
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
-            <div class="flex gap-2 flex-row justify-end">
+            <div class="flex gap-2 flex-col w-full justify-end">
                 <Select.Root
                     selected={portfolioCategories[3]}
                     onSelectedChange={async (obj) => {
                         if (!obj) return;
-
                         scrollingTl?.kill();
                         portfolios = [];
-
                         portfolios = await loadPortfolios(obj.value, false);
                     }}
                 >
                     <Select.Trigger
-                        class="border-2 p-4 border-zinc-900 hover:bg-zinc-100  transition-all duration-200 cursor-pointer inline-flex gap-2"
+                        class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
                         aria-label="Select a category"
                     >
                         <Select.Value
                             placeholder="Select a category"
                             class=""
                         />
-                        <ChevronsUpDown />
+                        <ChevronsUpDown class="ml-auto" />
                     </Select.Trigger>
                     <Select.Content
                         sameWidth
@@ -329,8 +320,9 @@
                             <Select.Item
                                 value={category.value}
                                 class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
-                                >{category.label}</Select.Item
                             >
+                                {category.label}
+                            </Select.Item>
                         {/each}
                     </Select.Content>
                 </Select.Root>
@@ -350,7 +342,11 @@
                 <div class="w-max flex flex-row gap-6" id="portfolio-container">
                     {#each portfolios as portfolio, i}
                         <div
-                            class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${portfolio.invert_foreground ? "hover:[&:not(.no-hover)]:text-zinc-100" : ""}`}
+                            class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
+                                portfolio.invert_foreground
+                                    ? "hover:[&:not(.no-hover)]:text-zinc-100"
+                                    : ""
+                            }`}
                             style:--accent={portfolio.accent}
                             onmouseenter={(e) => {
                                 scrollingTl?.pause();
@@ -381,14 +377,14 @@
                                         portfolio.expand.funds[0],
                                         portfolio.expand.funds[0].logo
                                     )}
-                                    class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transitition-all duration-150"
-                                >
-                                </svg>
+                                    class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
+                                ></svg>
                             {/if}
                             <button
-                                class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transitition-all duration-150"
-                                >Learn More <ArrowRight /></button
+                                class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transition-all duration-150"
                             >
+                                Learn More <ArrowRight />
+                            </button>
                         </div>
                     {:else}
                         <p
@@ -406,15 +402,16 @@
                 ></div>
                 <button
                     class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
-                    >See All <ArrowRight />
+                >
+                    See All <ArrowRight />
                 </button>
             </div>
         </div>
     </section>
 
-    <section class="bg-zinc-100 flex justify-center items-center">
-        <div class="flex max-w-7xl m-16 gap-12 flex-col">
-            <h2 class="text-7xl font-medium text-center">Our Team</h2>
+    <section class="section">
+        <div>
+            <h2>Our Team</h2>
             <div
                 class="flex flex-col lg:flex-row lg:space-between gap-16 flex-wrap justify-center"
             >
@@ -443,7 +440,10 @@
 
     .portfolio:hover:not(.no-hover) > div {
         background-color: var(--accent);
-        transition: all;
-        transition-duration: 150ms;
+        transition: all 150ms ease;
+    }
+
+    .section-wrapper {
+        padding: 4rem; /* Adjust as necessary */
     }
 </style>
