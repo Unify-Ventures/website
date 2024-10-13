@@ -218,8 +218,6 @@
     }
 </script>
 
-<Header />
-
 <main>
     <section class="flex flex-1 justify-between">
         <h2
