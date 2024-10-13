@@ -52,8 +52,7 @@ This will generate the types in the `src/lib/pb-types.ts` file.
 You can deploy the project by tagging the commit with the current datetime:
 
 ```bash
-git tag $(date +%Y-%m-%d-%H-%M-%S)
-git push origin --tags
+pnpm run deploy
 ```
 
 ## Contributing
