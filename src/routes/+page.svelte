@@ -5,7 +5,12 @@
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
-    import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
+    import {
+        ChevronsUpDown,
+        ArrowRight,
+        LoaderCircle,
+        Linkedin,
+    } from "lucide-svelte";
     import {
         getFeaturedPortfolios,
         getFileUrl,
@@ -20,6 +25,8 @@
 
     let activeTimeline: GSAPTimeline | null = null;
     let scrollingTl: GSAPTimeline | null = null;
+
+    let teamTl: GSAPTimeline | null = null;
 
     const portfolioCategories = [
         { value: "product_launch", label: "Product Launch" },
@@ -58,7 +65,6 @@
     onMount(async () => {
         portfolios = await loadPortfolios();
         team = await getTeam();
-        console.log(team);
     });
 
     onMount(() => {
@@ -412,17 +418,59 @@
             <div
                 class="flex flex-col lg:flex-row lg:space-between gap-16 flex-wrap justify-center"
             >
-                {#each team as member}
-                    <div class="flex flex-col items-center gap-2">
-                        <img
-                            src={getFileUrl(member, member.picture)}
-                            alt={`${member.name}'s avatar`}
-                            style="clip-path: url(#alex-path1)"
-                            class="w-64 h-64 rounded-full object-cover"
-                        />
-                        <h3 class="text-4xl font-medium">{member.name}</h3>
-                        <h4 class="text-2xl text-zinc-700">{member.title}</h4>
-                        <p class="max-w-sm text-justify">{member.blurb}</p>
+                {#each team as member, i}
+                    <div
+                        class="flex flex-col items-center gap-2 group 2xl:w-96 2xl:h-96"
+                        id={"member-" + member.id}
+                    >
+                        <div
+                            class="flex 2xl:flex-row gap-2 w-64 group-hover:w-max transition-all duration-300 flex-col 2xl:mr-auto"
+                        >
+                            <img
+                                src={getFileUrl(member, member.picture)}
+                                alt={`${member.name}'s avatar`}
+                                style="clip-path: url(#alex-path1)"
+                                class="w-64 h-64 m-auto aspect-square group-hover:w-24 group-hover:h-24 rounded-none group-hover:rounded-[50%] object-cover transition-all duration-300"
+                                onload={() => {
+                                    if (i == 0) {
+                                        teamTl = gsap.timeline({
+                                            scrollTrigger: {
+                                                trigger: "#member-" + member.id,
+                                            },
+                                        });
+                                    }
+
+                                    teamTl.from(
+                                        "#member-" + member.id,
+                                        {
+                                            opacity: 0,
+                                            y: 100,
+                                            duration: 1,
+                                        },
+                                        0.25 * i
+                                    );
+                                }}
+                            />
+                            <div
+                                class="flex 2xl:scale-50 2xl:-translate-x-32 flex-col gap-1 2xl:opacity-0 2xl:translate-y-10 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0 transition-all duration-300"
+                            >
+                                <h3 class="text-3xl font-medium">
+                                    {member.name}
+                                </h3>
+                                <h4 class="text-xl text-zinc-700">
+                                    {member.title}
+                                </h4>
+                                <a href={member.linkedin} target="_blank">
+                                    <Linkedin class="text-blue-800" />
+                                </a>
+                            </div>
+                        </div>
+
+                        <p
+                            class="2xl:max-w-sm max-w-64 p-2 text-justify 2xl:scale-75 2xl:-translate-y-8 2xl:opacity-0 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-300"
+                        >
+                            {member.blurb}
+                        </p>
                     </div>
                 {/each}
             </div>
