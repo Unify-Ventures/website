@@ -8,7 +8,8 @@
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "typegen": "pocketbase-typegen --env --out src/lib/pb-types.ts"
+        "typegen": "pocketbase-typegen --env --out src/lib/pb-types.ts",
+        "deploy": "git tag $(date +%Y-%m-%d-%H-%M-%S) && git push --tags"
     },
     "devDependencies": {
         "@svelte-put/inline-svg": "^3.0.1",
