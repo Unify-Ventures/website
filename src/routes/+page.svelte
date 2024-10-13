@@ -427,6 +427,7 @@
                         >
                             <a
                                 href={member.linkedin}
+                                target="_blank"
                                 class="relative flex-none pointer-events-none 2xl:pointer-events-auto"
                             >
                                 <img
@@ -480,6 +481,7 @@
 
                         <a
                             href={member.linkedin}
+                            target="_blank"
                             class="flex flex-row 2xl:hidden items-center gap-2"
                         >
                             <Fa size="lg" icon={faLinkedin} />
