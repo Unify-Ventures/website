@@ -456,7 +456,7 @@
                                     }}
                                 />
                                 <div
-                                    class="absolute bottom-0 right-0 p-1 rounded-full bg-zinc-200 scale-0 group-hover:scale-100 transition-all duration-300"
+                                    class="hidden 2xl:block absolute bottom-0 right-0 p-1 rounded-full bg-zinc-200 scale-0 group-hover:scale-100 transition-all duration-300"
                                 >
                                     <Fa size="lg" icon={faLinkedin} />
                                 </div>
