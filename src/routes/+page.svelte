@@ -208,7 +208,7 @@
 
         if (portfolioContainer && portfolios.length > 5) {
             scrollingTl.to(portfolios, {
-                x: `-=${(portfolios[0] as HTMLElement).offsetWidth + 20}`,
+                x: `-=${(portfolios[0] as HTMLElement).offsetWidth + 24}`,
                 ease: "linear",
                 duration: portfolios.length * 0.25,
             });
@@ -327,7 +327,7 @@
                     </Select.Content>
                 </Select.Root>
                 <button
-                    class="flex justify-center items-center bg-zinc-900 text-white p-4"
+                    class="2xl:hidden flex justify-center items-center bg-zinc-900 text-white p-4"
                 >
                     See All <ArrowRight />
                 </button>
@@ -335,7 +335,7 @@
         </div>
         <div class="flex flex-row gap-2">
             <div
-                class={`overflow-hidden max-w-[100vw] 2xl:max-w-fit ${}`}
+                class={`overflow-hidden max-w-[100vw] 2xl:max-w-6xl`}
                 id="scroll-container"
             >
                 <div class="w-max flex flex-row gap-6" id="portfolio-container">
@@ -395,7 +395,7 @@
                     {/each}
                 </div>
             </div>
-            <div class="hidden lg:relative">
+            <div class="hidden 2xl:block relative">
                 <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div>
