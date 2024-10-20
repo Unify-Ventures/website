@@ -24,7 +24,7 @@
 
     let teamTl: GSAPTimeline | null = null;
 
-    const getLinkedInUsername = (url) =>
+    const getLinkedInUsername = (url: string) =>
         new URL(url).pathname.split("/").filter(Boolean).pop();
 
     const portfolioCategories = [
@@ -109,64 +109,7 @@
         gsap.registerPlugin(ScrollTrigger);
     });
 
-    const timelineValues = [
-        [
-            { width: "75%", height: "75%" },
-            { width: "25%", height: "75%" },
-            { width: "75%", height: "25%" },
-            { width: "25%", height: "25%" },
-        ],
-        [
-            { width: "25%", height: "75%" },
-            { width: "75%", height: "75%" },
-            { width: "25%", height: "25%" },
-            { width: "75%", height: "25%" },
-        ],
-        [
-            { width: "75%", height: "25%" },
-            { width: "25%", height: "25%" },
-            { width: "75%", height: "75%" },
-            { width: "25%", height: "75%" },
-        ],
-        [
-            { width: "25%", height: "25%" },
-            { width: "75%", height: "25%" },
-            { width: "25%", height: "75%" },
-            { width: "75%", height: "75%" },
-        ],
-    ];
-
-    const setupTimeline = (elmId: string, idx: number): void => {
-        const elmElement = document.getElementById(elmId);
-        if (!elmElement) return;
-
-        const tl = gsap.timeline({ paused: true });
-        tl.to(`#anim${idx + 1}`, { duration: 0.6, opacity: 1 }, 0);
-
-        timelineValues[idx].forEach((val, i) => {
-            tl.to(`#elm${i + 1}`, { duration: 0.6, ...val }, 0);
-        });
-
-        elmElement.addEventListener("mouseenter", () => {
-            if (activeTimeline && activeTimeline !== tl) {
-                activeTimeline.reverse();
-            }
-            tl.play();
-            activeTimeline = tl;
-        });
-
-        elmElement.addEventListener("mouseleave", () => {
-            if (activeTimeline === tl) {
-                tl.reverse();
-            }
-        });
-    };
-
     onMount(() => {
-        ["elm1", "elm2", "elm3", "elm4"].forEach((elm, idx) =>
-            setupTimeline(elm, idx)
-        );
-
         const statTl = gsap
             .timeline({
                 scrollTrigger: {
@@ -237,25 +180,6 @@
                 </Typewriter>
             </span>
         </h2>
-        <div
-            class="w-full flex-1 flex-wrap h-[calc(100vh-22rem)] 2xl:flex hidden max-w-[80rem]"
-        >
-            {#each [1, 2, 3, 4] as i}
-                <div
-                    class="w-1/2 text-9xl font-bold text-white flex flex-col flex-wrap items-center justify-center"
-                    class:bg-red-500={i == 1}
-                    class:bg-blue-500={i == 2}
-                    class:bg-green-500={i == 3}
-                    class:bg-yellow-500={i == 4}
-                    id={`elm${i}`}
-                >
-                    Hi
-                    <span id={`anim${i}`} class="text-3xl opacity-0">
-                        Some animation
-                    </span>
-                </div>
-            {/each}
-        </div>
     </section>
 
     <section class="section">
@@ -433,7 +357,7 @@
                                 <img
                                     src={getFileUrl(member, member.picture)}
                                     alt={`${member.name}'s avatar`}
-                                    class="w-64 h-64 m-auto aspect-square 2xl:group-hover:w-24 2x:group-hover:h-24 rounded-none 2xl:group-hover:rounded-[50%] object-cover transition-all duration-300"
+                                    class="w-64 h-64 m-auto aspect-square 2xl:group-hover:w-24 2xl:group-hover:h-24 rounded-none 2xl:group-hover:rounded-[50%] object-cover transition-all duration-300"
                                     onload={() => {
                                         if (i == 0) {
                                             teamTl = gsap.timeline({
@@ -444,6 +368,7 @@
                                             });
                                         }
 
+                                        if (!teamTl) return;
                                         teamTl.from(
                                             "#member-" + member.id,
                                             {
