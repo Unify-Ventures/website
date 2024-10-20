@@ -17,3 +17,12 @@
 .section > div > p {
     @apply text-2xl;
 }
+
+* {
+    font-family: "SofiaSansCondensed", ui-sans-serif, system-ui, -apple-system;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("/fonts/Montserrat-VariableFont_wght.ttf");
+}
