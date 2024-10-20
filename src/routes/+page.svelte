@@ -138,7 +138,7 @@
 </script>
 
 <main>
-    <h2 class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-102">
+    <h2 class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-10">
         <span>
             We invest in thematic funds across,
             <Typewriter mode="loop">
