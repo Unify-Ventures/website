@@ -138,20 +138,16 @@
 </script>
 
 <main>
-    <section class="flex flex-1 justify-between">
-        <h2
-            class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 2xl:my-auto 2xl:w-1/3 min-w-96"
-        >
-            <span>
-                We invest in thematic funds across,
-                <Typewriter mode="loop">
-                    <span>B2B SaaS.</span>
-                    <span>Advanced Manufacturing.</span>
-                    <span>Fin Tech.</span>
-                </Typewriter>
-            </span>
-        </h2>
-    </section>
+    <h2 class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-102">
+        <span>
+            We invest in thematic funds across,
+            <Typewriter mode="loop">
+                <span>B2B SaaS.</span>
+                <span>Advanced Manufacturing.</span>
+                <span>Fin Tech.</span>
+            </Typewriter>
+        </span>
+    </h2>
 
     <section class="section">
         <div>
