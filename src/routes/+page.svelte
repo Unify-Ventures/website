@@ -5,64 +5,35 @@
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
     import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
-    import {
-        getFeaturedPortfolios,
-        getFileUrl,
-        getTeam,
-        type PortfolioExpand,
-    } from "$lib/pocketbase";
+    import { getFileUrl, getTeam } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
-    import {
-        type PortfolioCompaniesResponse,
-        type TeamResponse,
-    } from "$lib/pb-types";
+    import { type TeamResponse } from "$lib/pb-types";
     import Fa from "svelte-fa";
     import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
+    import {
+        getLinkedInUsername,
+        createPortfolios,
+        getPortfolioCategories,
+    } from "$lib/page.svelte";
+
+    const portfolioStore = createPortfolios();
 
     let activeTimeline: GSAPTimeline | null = null;
     let scrollingTl: GSAPTimeline | null = null;
 
     let teamTl: GSAPTimeline | null = null;
 
-    const getLinkedInUsername = (url: string) =>
-        new URL(url).pathname.split("/").filter(Boolean).pop();
+    const portfolioCategories = getPortfolioCategories();
 
-    const portfolioCategories = [
-        { value: "product_launch", label: "Product Launch" },
-        { value: "market_validation", label: "Market Validation" },
-        { value: "revenue_momentum", label: "Revenue Momentum" },
-        { value: "scaling", label: "Scaling" },
-        { value: "liquidity_event", label: "Liquidity Event" },
-    ];
-
-    let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
-    let portfolioIter = $state(1);
     let team = $state<TeamResponse[]>([]);
 
     $effect(() => {
-        portfolios = portfolios;
+        portfolioStore.portfolios; // hack to force svelte to update scrolling carousel
         setupScrolling();
     });
 
-    async function loadPortfolios(
-        status: string = "scaling",
-        featured: boolean = true
-    ) {
-        portfolios = await getFeaturedPortfolios(status, featured);
-        portfolioIter = 1;
-
-        if (portfolios.length > 4) {
-            while (portfolios.length < 20) {
-                portfolios.push(...portfolios);
-                portfolioIter++;
-            }
-        }
-
-        return portfolios;
-    }
-
     onMount(async () => {
-        portfolios = await loadPortfolios();
+        await portfolioStore.loadPortfolios();
         team = await getTeam();
     });
 
@@ -223,8 +194,8 @@
                     onSelectedChange={async (obj) => {
                         if (!obj) return;
                         scrollingTl?.kill();
-                        portfolios = [];
-                        portfolios = await loadPortfolios(obj.value, false);
+                        portfolioStore.portfolios.length = 0; // reset portfolios. this is allowed by ECMAScript
+                        await portfolioStore.loadPortfolios(obj.value, false);
                     }}
                 >
                     <Select.Trigger
@@ -266,7 +237,7 @@
                 id="scroll-container"
             >
                 <div class="w-max flex flex-row gap-6" id="portfolio-container">
-                    {#each portfolios as portfolio, i}
+                    {#each portfolioStore.portfolios as portfolio, i}
                         <div
                             class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
                                 portfolio.invert_foreground
@@ -278,7 +249,7 @@
                                 scrollingTl?.pause();
                             }}
                             onmouseleave={(e) => {
-                                if (portfolios.length > 5) {
+                                if (portfolioStore.portfolios.length > 5) {
                                     scrollingTl?.play();
                                 }
                             }}
@@ -287,7 +258,7 @@
                             <div
                                 role="img"
                                 class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
-                                id={`portfolio-${portfolio.id}-${portfolioIter}`}
+                                id={`portfolio-${portfolio.id}-${portfolioStore.portfolioIter}`}
                             >
                                 <svg
                                     use:inlineSvg={getFileUrl(
