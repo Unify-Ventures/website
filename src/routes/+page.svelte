@@ -18,7 +18,6 @@
 
     const portfolioStore = createPortfolios();
 
-    let activeTimeline: GSAPTimeline | null = null;
     let scrollingTl: GSAPTimeline | null = null;
 
     let teamTl: GSAPTimeline | null = null;
@@ -186,7 +185,7 @@
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
             <div class="flex gap-2 flex-col w-full justify-end">
                 <Select.Root
-                    selected={portfolioCategories[3]}
+                    selected={portfolioCategories[2]}
                     onSelectedChange={async (obj) => {
                         if (!obj) return;
                         scrollingTl?.kill();
