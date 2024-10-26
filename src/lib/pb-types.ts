@@ -37,7 +37,6 @@ export type AuthSystemFields<T = never> = {
 
 export type FundsRecord = {
 	accent: string
-	featured?: boolean
 	homepage: string
 	logo: string
 	name: string
@@ -52,6 +51,7 @@ export enum PortfolioCompaniesStageOptions {
 }
 export type PortfolioCompaniesRecord = {
 	accent: string
+	blurb?: HTMLString
 	featured?: boolean
 	funds: RecordIdString[]
 	homepage: string
