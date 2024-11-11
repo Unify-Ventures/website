@@ -46,8 +46,8 @@ export enum PortfolioCompaniesStageOptions {
 	"product_launch" = "product_launch",
 	"market_validation" = "market_validation",
 	"scaling" = "scaling",
-	"liquidity_event" = "liquidity_event",
 	"revenue_momentum" = "revenue_momentum",
+	"liquidity_event" = "liquidity_event",
 }
 export type PortfolioCompaniesRecord = {
 	accent: string

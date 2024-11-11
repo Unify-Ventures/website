@@ -5,9 +5,9 @@
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
     import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
-    import { getFileUrl, getTeam } from "$lib/pocketbase";
+    import { getFileUrl, getFunds, getTeam } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
-    import { type TeamResponse } from "$lib/pb-types";
+    import { type FundsResponse, type TeamResponse } from "$lib/pb-types";
     import Fa from "svelte-fa";
     import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
     import {
@@ -15,6 +15,13 @@
         createPortfolios,
         getPortfolioCategories,
     } from "$lib/page.svelte";
+    import type { PageServerData } from "./$types";
+
+    let {
+        data,
+    }: {
+        data: PageServerData;
+    } = $props();
 
     const portfolioStore = createPortfolios();
 
@@ -25,6 +32,8 @@
     const portfolioCategories = getPortfolioCategories();
 
     let team = $state<TeamResponse[]>([]);
+
+    let funds = $state<FundsResponse[]>(data.funds);
 
     $effect(() => {
         portfolioStore.portfolios; // hack to force svelte to update scrolling carousel
@@ -150,12 +159,23 @@
 
     <section class="section">
         <div>
-            <h2>Unify Fund <br /> of Funds</h2>
+            <h2>Unify Fund of Funds</h2>
             <p>
                 Unify Ventures has established a multi-thematic fund of funds
                 that invests in managers covering B2B SaaS, Advanced
                 Manufacturing, and Fin Tech, with more thematics to come.
             </p>
+            <div class="flex w-full flex-col lg:flex-row gap-12 lg:gap-0">
+                {#each funds as fund}
+                    <div class="w-full">
+                        <svg
+                            width="16rem"
+                            class="mx-auto"
+                            use:inlineSvg={getFileUrl(fund, fund.logo)}
+                        />
+                    </div>
+                {/each}
+            </div>
         </div>
     </section>
 
@@ -197,10 +217,7 @@
                         class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
                         aria-label="Select a category"
                     >
-                        <Select.Value
-                            placeholder="Select a category"
-                            class=""
-                        />
+                        <Select.Value placeholder="Select a category" />
                         <ChevronsUpDown class="ml-auto" />
                     </Select.Trigger>
                     <Select.Content
@@ -219,11 +236,12 @@
                         {/each}
                     </Select.Content>
                 </Select.Root>
-                <button
+                <a
+                    href="/portfolio"
                     class="2xl:hidden flex justify-center items-center bg-zinc-900 text-white p-4"
                 >
                     See All <ArrowRight />
-                </button>
+                </a>
             </div>
         </div>
         <div class="flex flex-row gap-2">
@@ -231,8 +249,11 @@
                 class={`overflow-hidden max-w-[100vw] 2xl:max-w-6xl`}
                 id="scroll-container"
             >
-                <div class="w-max flex flex-row gap-6" id="portfolio-container">
-                    {#each portfolioStore.portfolios as portfolio, i}
+                <div
+                    class="w-full flex flex-row gap-6"
+                    id="portfolio-container"
+                >
+                    {#each portfolioStore.portfolios as portfolio}
                         <div
                             class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
                                 portfolio.invert_foreground
@@ -280,7 +301,7 @@
                         </div>
                     {:else}
                         <p
-                            class="text-6xl h-64 flex gap-6 items-center justify-center"
+                            class="text-6xl h-64 flex gap-6 items-center justify-center w-full"
                         >
                             <LoaderCircle class="animate-spin" size="64" /> Loading
                             portfolios...
@@ -292,11 +313,12 @@
                 <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div>
-                <button
+                <a
+                    href="/portfolio/"
                     class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
                 >
                     See All <ArrowRight />
-                </button>
+                </a>
             </div>
         </div>
     </section>

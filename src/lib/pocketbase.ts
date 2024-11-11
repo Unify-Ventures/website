@@ -7,20 +7,34 @@ import {
     type TypedPocketBase,
 } from "./pb-types";
 
-const pb: TypedPocketBase = new PocketBase("https://content.unifyventures.vc");
+export const pb: TypedPocketBase = new PocketBase(
+    "https://content.unifyventures.vc"
+);
 
 export const getFeaturedPortfolios = async (
     stage: string = "scaling",
     featured: boolean = true
 ) => {
-    const portfolios = await pb
-        .collection("portfolio_companies")
-        .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
-            filter: `${featured ? "featured=true && " : ""}stage='${stage}'`,
-            expand: "funds",
-        });
+    if (process.env.NODE_ENV === "development") {
+        const portfolios = await pb
+            .collection("portfolio_companies")
+            .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
+                filter: `stage='${stage}'`,
+                expand: "funds",
+            });
 
-    return portfolios;
+        return portfolios;
+    } else {
+        let portfolios = (await (
+            await fetch("/portfolios.json")
+        ).json()) as any[];
+
+        if (featured) {
+            portfolios = portfolios.filter((p) => p.featured);
+        }
+
+        return portfolios.filter((p) => p.stage === stage);
+    }
 };
 
 export type PortfolioExpand = {
@@ -28,6 +42,19 @@ export type PortfolioExpand = {
 };
 
 export const getFileUrl = (
+    record: { collectionId: string; id: string },
+    name: string
+) => {
+    if (process.env.NODE_ENV === "development") {
+        return `${pb.buildUrl(
+            `/api/files/${record.collectionId}/${record.id}/${name}`
+        )}`;
+    } else {
+        return `/pb/${record.collectionId}/${name}`;
+    }
+};
+
+export const getSourceFileUrl = (
     record: { collectionId: string; id: string },
     name: string
 ) => {
@@ -41,5 +68,15 @@ export const getTeam = async () => {
         .collection(Collections.Team)
         .getFullList<TeamResponse>();
 
+    console.log(team);
+
     return team;
+};
+
+export const getFunds = async () => {
+    const funds = await pb.collection(Collections.Funds).getFullList({
+        filter: "featured=true",
+    });
+
+    return funds;
 };
