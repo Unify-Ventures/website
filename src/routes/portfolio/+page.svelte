@@ -103,40 +103,6 @@
         </div>
 
         <main class="lg:ml-64">
-            {#each Object.entries(groupedPortfolios) as [stage, portfolios]}
-                <div>
-                    {#if filter.stage === "any"}
-                        <h3 class="text-3xl font-bold mb-4 text-center">
-                            {stages.find((s) => s.value === stage)?.label}
-                        </h3>
-                    {/if}
-                    <div
-                        class="grid xl:grid-cols-3 sm:grid-cols-2 gap-12 max-w-6xl"
-                    >
-                        {#each portfolios as portfolio}
-                            <div class="flex flex-col mx-auto max-w-64 gap-2">
-                                <div
-                                    class="portfolio grid place-content-center border-2 border-zinc-900 aspect-square w-64 h-64"
-                                    style:--accent={portfolio.accent}
-                                >
-                                    <svg
-                                        width="12rem"
-                                        height="12rem"
-                                        use:inlineSvg={getFileUrl(
-                                            portfolio,
-                                            portfolio.logo
-                                        )}
-                                    />
-                                </div>
-
-                                <div class="prose-sm">
-                                    {@html portfolio.blurb}
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            {/each}
         </main>
     </div>
 </div>
