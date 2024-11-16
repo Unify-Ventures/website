@@ -205,7 +205,7 @@
             class="flex max-w-7xl xl:m-16 m-8 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row items-center justify-center flex-none"
         >
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
-            <div class="flex gap-2 flex-col w-full justify-end">
+            <div class="flex gap-2 flex-col w-64 justify-end">
                 <Select.Root
                     selected={portfolioCategories[2]}
                     onSelectedChange={async (obj) => {
