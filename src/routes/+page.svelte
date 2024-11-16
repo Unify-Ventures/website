@@ -146,7 +146,9 @@
 </script>
 
 <main>
-    <h2 class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-10">
+    <h2
+        class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-10 lg:text-center"
+    >
         <span>
             We invest in thematic funds across,
             <Typewriter mode="loop">
