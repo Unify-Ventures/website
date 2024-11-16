@@ -37,6 +37,26 @@ export const getFeaturedPortfolios = async (
     }
 };
 
+export async function getPortfolios(): Promise<
+    PortfolioCompaniesResponse<PortfolioExpand>[]
+> {
+    if (process.env.NODE_ENV === "development") {
+        const portfolios = await pb
+            .collection("portfolio_companies")
+            .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
+                expand: "funds",
+            });
+
+        return portfolios;
+    } else {
+        let portfolios = (await (
+            await fetch("/portfolios.json")
+        ).json()) as any[];
+
+        return portfolios;
+    }
+}
+
 export type PortfolioExpand = {
     funds: FundsResponse[];
 };

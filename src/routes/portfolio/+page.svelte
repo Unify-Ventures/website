@@ -4,11 +4,10 @@
         PortfolioCompaniesStageOptions,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import { getFileUrl, pb } from "$lib/pocketbase";
+    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import {
         createFilterStore,
-        type FilterConfig,
         type FilterDimension,
         type FilterStore,
     } from "@zshzebra/svelte-multi-filter";
@@ -79,9 +78,7 @@
     let availableFundOptions = $state<String[]>([]);
 
     onMount(async () => {
-        portfolios = await pb
-            .collection(Collections.PortfolioCompanies)
-            .getFullList();
+        portfolios = await getPortfolios();
 
         filterablePortfolios = portfolios.map((p) => ({
             id: p.id,
