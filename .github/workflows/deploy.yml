@@ -53,8 +53,7 @@ jobs:
     release:
         runs-on: ubuntu-latest
 
-        permissions:
-            contents: read
+        permissions: write-all
 
         steps:
             - name: Checkout Code
