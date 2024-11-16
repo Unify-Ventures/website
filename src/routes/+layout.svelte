@@ -18,8 +18,4 @@
         min-height: 100%;
         height: 100vh;
     }
-
-    :global body > div {
-        min-height: 100%;
-    }
 </style>
