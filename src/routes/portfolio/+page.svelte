@@ -188,6 +188,10 @@
                             </label>
                         </div>
                     {/each}
+                    <button
+                        class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
+                        onclick={filterStore.reset}>Reset Filters</button
+                    >
                 </div>
             </div>
         </div>
