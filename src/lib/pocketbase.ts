@@ -29,10 +29,6 @@ export const getFeaturedPortfolios = async (
             await fetch("/portfolios.json")
         ).json()) as any[];
 
-        if (featured) {
-            portfolios = portfolios.filter((p) => p.featured);
-        }
-
         return portfolios.filter((p) => p.stage === stage);
     }
 };
