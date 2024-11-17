@@ -97,6 +97,7 @@ async function exportFunds() {
     }
 }
 
+fs.mkdirSync(path.join(__dirname, "..", "static", "pb"), { recursive: true });
 exportPortfolios();
 exportTeam();
 exportFunds();
