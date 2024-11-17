@@ -23,7 +23,7 @@ export const getFeaturedPortfolios = async (stage: string = "scaling") => {
         return portfolios;
     } else {
         let portfolios = (await (
-            await fetch("/portfolios.json")
+            await fetch("/pb/portfolios.json")
         ).json()) as any[];
 
         return portfolios.filter((p) => p.stage === stage);
@@ -43,7 +43,7 @@ export async function getPortfolios(): Promise<
         return portfolios;
     } else {
         let portfolios = (await (
-            await fetch("/portfolios.json")
+            await fetch("/pb/portfolios.json")
         ).json()) as any[];
 
         return portfolios;

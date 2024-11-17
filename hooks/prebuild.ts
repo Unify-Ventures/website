@@ -26,7 +26,13 @@ async function exportPortfolios() {
             fs.writeFileSync(outPath, await f.buffer());
         });
 
-        const outPath = path.join(__dirname, "..", "static", "portfolios.json");
+        const outPath = path.join(
+            __dirname,
+            "..",
+            "static",
+            "pb",
+            "portfolios.json"
+        );
         fs.writeFileSync(outPath, JSON.stringify(portfolios, null, 4));
     } catch (e) {
         console.error(e);
@@ -36,6 +42,11 @@ async function exportPortfolios() {
 async function exportTeam() {
     try {
         const team = await pb.collection(Collections.Team).getFullList();
+
+        fs.writeFileSync(
+            path.join(__dirname, "..", "static", "pb", "team.json"),
+            JSON.stringify(team, null, 4)
+        );
 
         team.forEach(async (t) => {
             const f = await fetch(getSourceFileUrl(t, t.picture));
@@ -78,7 +89,7 @@ async function exportFunds() {
         });
 
         fs.writeFileSync(
-            path.join(__dirname, "..", "static", "funds.json"),
+            path.join(__dirname, "..", "static", "pb", "funds.json"),
             JSON.stringify(funds, null, 4)
         );
     } catch (e) {
