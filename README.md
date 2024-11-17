@@ -1,6 +1,6 @@
 # Unify Ventures
 
-Website source code for [unifyventures.vc](https://unifyventures.vc)
+Website source code for [unifyventures.vc](https://dev.unifyventures.vc) (Currently under dev environment)
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ cd website
 Install the dependencies:
 
 ```
-pnpm install
+bun install
 ```
 
 ## Development
@@ -22,7 +22,7 @@ pnpm install
 To run the project locally, run:
 
 ```bash
-pnpm run dev
+bun run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173), and the website should be running.
@@ -32,7 +32,7 @@ Open [http://localhost:5173](http://localhost:5173), and the website should be r
 To build the project for production, run:
 
 ```bash
-pnpm run build
+bun run build
 ```
 
 The built files will be in the `build` directory.
@@ -42,7 +42,7 @@ The built files will be in the `build` directory.
 To generate the types for the PocketBase API, run:
 
 ```bash
-pnpm run typegen
+bun run typegen
 ```
 
 This will generate the types in the `src/lib/pb-types.ts` file.
@@ -52,7 +52,7 @@ This will generate the types in the `src/lib/pb-types.ts` file.
 You can deploy the project by tagging the commit with the current datetime:
 
 ```bash
-pnpm run deploy
+bun run deploy
 ```
 
 ## Contributing
