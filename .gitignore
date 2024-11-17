@@ -25,6 +25,4 @@ vite.config.ts.timestamp-*
 !.env.project
 !.env.vault
 
-static/*.json
 static/pb/*
-static/posrtfolios/*
