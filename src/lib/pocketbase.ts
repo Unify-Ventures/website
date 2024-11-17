@@ -77,13 +77,13 @@ export const getSourceFileUrl = (
 };
 
 export const getTeam = async () => {
-    const team = await pb
-        .collection(Collections.Team)
-        .getFullList<TeamResponse>();
-
-    console.log(team);
-
-    return team;
+    if (process.env.NODE_ENV === "development") {
+        return await pb
+            .collection(Collections.Team)
+            .getFullList<TeamResponse>();
+    } else {
+        return (await (await fetch("/pb/team.json")).json()) as any[];
+    }
 };
 
 export const getFunds = async () => {

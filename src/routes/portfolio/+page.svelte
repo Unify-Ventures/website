@@ -4,7 +4,7 @@
         PortfolioCompaniesStageOptions,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
+    import { getFileUrl, getFunds, getPortfolios, pb } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import {
         createFilterStore,
@@ -95,7 +95,14 @@
             portfolioMap[p.id] = p;
         });
 
-        let fundsResp = await pb.collection(Collections.Funds).getFullList();
+        let fundsResp;
+
+        // * Doesn't work when in pocketbase.ts
+        if (process.env.NODE_ENV === "development") {
+            fundsResp = await pb.collection(Collections.Funds).getFullList();
+        } else {
+            fundsResp = (await (await fetch("/pb/funds.json")).json()) as any[];
+        }
 
         funds = [
             { value: "Any", label: "Any" },
