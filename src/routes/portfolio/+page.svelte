@@ -11,7 +11,7 @@
         type FilterDimension,
         type FilterStore,
     } from "@zshzebra/svelte-multi-filter";
-    import { ChevronDown, ChevronRight } from "lucide-svelte";
+    import { ChevronDown } from "lucide-svelte";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
