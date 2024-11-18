@@ -130,6 +130,14 @@
             availableFundOptions = options;
         });
     });
+
+    function fundToLabel(fund: string) {
+        return funds.find((f) => f.value === fund)?.label ?? "";
+    }
+
+    function stageToLabel(stage: string) {
+        return stages.find((s) => s.value === stage)?.label ?? "";
+    }
 </script>
 
 <div class="grid place-content-center">
@@ -222,7 +230,7 @@
                     >
                         <span class="w-14">Stage</span>
                         <span class="font-normal text-sm text-zinc-700"
-                            >{toTitleCase(
+                            >{stageToLabel(
                                 dimensions?.stage.selected ?? ""
                             )}</span
                         >
@@ -280,8 +288,9 @@
                         }}
                         ><span class="w-14">Fund</span><span
                             class="font-normal text-sm text-zinc-700"
-                            >{toTitleCase(dimensions?.fund.selected ?? "")} (It's
-                            a feature!)</span
+                            >{fundToLabel(
+                                dimensions?.fund.selected ?? ""
+                            )}</span
                         ><ChevronDown
                             class="ml-auto transition-all duration-200 {expandFund
                                 ? 'rotate-180'
