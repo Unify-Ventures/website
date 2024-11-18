@@ -1,5 +1,6 @@
 <script>
-    import { Mail, Phone } from "lucide-svelte";
+    import Mail from "lucide-svelte/icons/mail";
+    import Phone from "lucide-svelte/icons/phone";
 </script>
 
 <div

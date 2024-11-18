@@ -4,14 +4,14 @@
         PortfolioCompaniesStageOptions,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import { getFileUrl, getFunds, getPortfolios, pb } from "$lib/pocketbase";
+    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import {
         createFilterStore,
         type FilterDimension,
         type FilterStore,
     } from "@zshzebra/svelte-multi-filter";
-    import { ChevronDown } from "lucide-svelte";
+    import ChevronDown from "lucide-svelte/icons/chevron-down";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 

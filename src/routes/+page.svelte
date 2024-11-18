@@ -4,8 +4,10 @@
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
-    import { ChevronsUpDown, ArrowRight, LoaderCircle } from "lucide-svelte";
-    import { getFileUrl, getFunds, getTeam } from "$lib/pocketbase";
+    import ArrowRight from "lucide-svelte/icons/arrow-right";
+    import LoaderCircle from "lucide-svelte/icons/loader-circle";
+    import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
+    import { getFileUrl, getTeam } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import { type FundsResponse, type TeamResponse } from "$lib/pb-types";
     import Fa from "svelte-fa";
