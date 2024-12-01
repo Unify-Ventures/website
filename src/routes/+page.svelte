@@ -315,7 +315,7 @@
             </div>
             <div class="hidden 2xl:block relative">
                 <div
-                    class="absolute top-0 left-0 bottom-0 -translate-x-full bg-gradient-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
+                    class="absolute top-0 left-0 bottom-0 -translate-x-full bg-linear-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div>
                 <a
                     href="/portfolio/"

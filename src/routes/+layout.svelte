@@ -2,12 +2,14 @@
     import Footer from "$lib/components/footer.svelte";
     import Header from "$lib/components/header.svelte";
     import "../app.css";
+
+    const { children } = $props();
 </script>
 
 <div class="flex min-h-full flex-col">
     <Header />
     <div class="flex-1">
-        <slot></slot>
+      {@render children()}
     </div>
     <Footer />
 </div>
