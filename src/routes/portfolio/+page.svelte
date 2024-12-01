@@ -143,10 +143,10 @@
 <div class="grid place-content-center">
     <h2 class="text-7xl font-medium">Portfolio</h2>
     <div
-        class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col xl:flex-row gap-4"
+        class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col xl:flex-row gap-4 min-h-full"
     >
         <!-- Selection filters -->
-        <div class="w-0 h-0 sticky left-0 top-10 hidden lg:block">
+        <div class="sticky left-0 top-10 hidden lg:block">
             <div class="border-2 p-4 border-zinc-700 bg-white w-64">
                 <div class="flex flex-col">
                     <h3 class="font-bold text-xl">Stage</h3>
@@ -348,8 +348,9 @@
         </div>
 
         <!-- Portfolio results -->
+        <!-- HACK: Following mb-8 is a hack to fix overlap with footer -->
         <main
-            class="lg:ml-64 grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4"
+            class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8"
         >
             {#each portfolios as result}
                 {#if portfolios.find((p) => p.id === result.id)}
