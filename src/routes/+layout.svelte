@@ -14,7 +14,7 @@
 
 <style>
     :global body {
-        /* * The web is broken... Why does this work? Might break someday */
+        /* HACK: The web is broken... Why does this work? Might break someday */
         min-height: 100%;
         height: 100vh;
     }
