@@ -16,10 +16,11 @@ jobs:
             contents: write
 
         steps:
-            - name: Bump Version
+            - name: Checkout
               uses: actions/checkout@v4
               with:
                 fetch-depth: 0  # This ensures git describe works correctly
+            - name: Bump Version
               run: |
                 VERSION=$(git describe --tags | tr '-' '.')
                 npm version $VERSION --no-git-tag-version --allow-same-version
