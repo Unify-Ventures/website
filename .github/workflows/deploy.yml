@@ -28,7 +28,7 @@ jobs:
                 git config user.email github-actions@github.com
                 git add package.json
                 git commit -m "ci: Bump version to ${VERSION}"
-                git push
+                git push origin HEAD:main
 
     build_site:
         runs-on: ubuntu-latest
