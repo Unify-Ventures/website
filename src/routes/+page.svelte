@@ -3,7 +3,6 @@
     import ScrollTrigger from "gsap/dist/ScrollTrigger";
     import { onMount } from "svelte";
     // import Typewriter from "svelte-typewriter";
-    import Typewriter from "typewriter-effect/dist/core";
     import { Select } from "bits-ui";
     import ArrowRight from "lucide-svelte/icons/arrow-right";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
@@ -126,7 +125,10 @@
         );
     });
 
-    onMount(() => {
+    onMount(async () => {
+        const Typewriter = (await import("typewriter-effect/dist/core"))
+            .default;
+
         let deleteInterval = setInterval(() => {
             const currentLength = headerTypewriterTarget?.innerText.length ?? 0;
 
