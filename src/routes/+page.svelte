@@ -176,15 +176,22 @@
                 that invests in managers covering B2B SaaS, Advanced
                 Manufacturing, and Fin Tech, with more thematics to come.
             </p>
-            <div class="flex w-full flex-col lg:flex-row gap-12 lg:gap-0">
+            <div
+                class="flex w-full flex-row gap-12 flex-wrap justify-center items-center"
+            >
                 {#each funds as fund}
-                    <div class="w-full">
+                    <a
+                        onmouseenter={(e) =>
+                            (e.target.style.color = fund.accent)}
+                        onmouseleave={(e) => (e.target.style.color = null)}
+                        href={fund.homepage}
+                        target="_blank"
+                    >
                         <svg
                             width="16rem"
-                            class="mx-auto"
                             use:inlineSvg={getFileUrl(fund, fund.logo)}
                         />
-                    </div>
+                    </a>
                 {/each}
             </div>
         </div>
