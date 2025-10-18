@@ -459,7 +459,7 @@
                     laudantium ea.
                 </p>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    {#each [{ key: "Members", value: 255 }, { key: "Another", value: "Statistic" }, { key: "Please", value: "And thank you!" }, { key: "Umm", value: "You are" }, { key: "Still", value: "Here, so..." }, { key: "Hmm", value: "..." }] as stat}
+                    {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat}
                         <div>
                             <p class="text-black/75">{stat.key}</p>
                             <span class="text-6xl font-light">{stat.value}</span
