@@ -37,7 +37,11 @@
 
     let funds = $state<FundsResponse[]>(data.funds);
 
-    let portfolioSelectValue = $state<{label: string, value: string}>(portfolioCategories[2]);
+    let portfolioSelectValue = $state(portfolioCategories[2].value);
+
+    const selectedLabel = $derived(
+        portfolioCategories.find((c) => c.value === portfolioSelectValue)?.label ?? "All Categories"
+    );
 
     $effect(() => {
         portfolioStore.portfolios; // hack to force svelte to update scrolling carousel
@@ -211,35 +215,48 @@
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
             <div class="flex gap-2 flex-col w-64 justify-end">
                 <Select.Root
-                    bind:value={
-                        () => portfolioSelectValue.value,
-                        (v) => {
-                            scrollingTl?.kill();
-                            portfolioStore.portfolios.length = 0;
-                            portfolioStore.loadPortfolios(v, false);
-                        }
-                    }
+                    type="single"
+                    bind:value={portfolioSelectValue}
+                    onValueChange={(v) => {
+                        console.log(v);
+                        scrollingTl?.kill();
+                        portfolioStore.portfolios.length = 0;
+                        portfolioStore.loadPortfolios(v, false);
+                    }}
                 >
                     <Select.Trigger
                         class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
                         aria-label="Select a category"
                     >
-                        {portfolioSelectValue.label}
+                        {selectedLabel}
                         <ChevronsUpDown class="ml-auto" />
                     </Select.Trigger>
-                    <Select.Content
-                        sideOffset={-3}
-                        class="border-2 border-zinc-900 bg-white flex flex-col gap-2 w-64 z-10"
-                    >
-                        {#each portfolioCategories as category}
-                            <Select.Item
-                                value={category}
-                                class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
-                            >
-                                {category.label}
-                            </Select.Item>
-                        {/each}
-                    </Select.Content>
+                    <Select.Portal>
+                        <Select.Content
+                            sideOffset={-3}
+                            class="border-2 border-zinc-900 bg-white w-64 z-10"
+                        >
+                            <Select.ScrollUpButton class="flex w-full items-center justify-center py-1">
+                                <ChevronsUpDown class="size-3" />
+                            </Select.ScrollUpButton>
+                            <Select.Viewport class="flex flex-col gap-2 p-2">
+                                {#each portfolioCategories as category}
+                                    <Select.Item
+                                        value={category.value}
+                                        label={category.label}
+                                        class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
+                                    >
+                                        {#snippet children({ selected })}
+                                            {category.label}
+                                        {/snippet}
+                                    </Select.Item>
+                                {/each}
+                            </Select.Viewport>
+                            <Select.ScrollDownButton class="flex w-full items-center justify-center py-1">
+                                <ChevronsUpDown class="size-3" />
+                            </Select.ScrollDownButton>
+                        </Select.Content>
+                    </Select.Portal>
                 </Select.Root>
                 <a
                     href="/portfolio"
