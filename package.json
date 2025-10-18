@@ -1,6 +1,6 @@
 {
     "name": "unifyventures",
-    "version": "2025.10.1-8.17.44.10",
+    "version": "2025.10.1-8.19.43.51",
     "private": true,
     "scripts": {
         "dev": "vite dev",
