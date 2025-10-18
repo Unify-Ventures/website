@@ -277,7 +277,7 @@
                 id="scroll-container"
             >
                 <div
-                    class="w-full flex flex-row gap-6 mask-r-from-80%"
+                    class="w-full flex flex-row gap-6 mask-l-from-80% mask-r-from-80%"
                     id="portfolio-container"
                 >
                     {#each portfolioStore.portfolios as portfolio}
@@ -457,7 +457,7 @@
                     class="flex flex-row gap-2 border-2 text-white bg-zinc-900 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-100 hover:text-black transition-all duration-200 w-max"
                     target="_blank"
                 >
-                    Join our syndicate <ArrowRight />
+                    Join our Syndicate <ArrowRight />
                 </a>
             </div>
         </div>
