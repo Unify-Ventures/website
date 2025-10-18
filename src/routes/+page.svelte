@@ -458,7 +458,7 @@
                     rerum ratione nihil sed aspernatur veritatis maiores soluta,
                     laudantium ea.
                 </p>
-                <div class="grid grid-cols-1 lg:grid-cols-3">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {#each [{ key: "Members", value: 255 }, { key: "Another", value: "Statistic" }, { key: "Please", value: "And thank you!" }, { key: "Umm", value: "You are" }, { key: "Still", value: "Here, so..." }, { key: "Hmm", value: "..." }] as stat}
                         <div>
                             <p class="text-black/75">{stat.key}</p>
