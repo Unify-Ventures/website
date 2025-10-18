@@ -8,7 +8,7 @@ import {
 } from "./pb-types";
 
 export const pb: TypedPocketBase = new PocketBase(
-    "https://content.unifyventures.vc"
+    "https://content.unifyventures.vc",
 );
 
 export const getFeaturedPortfolios = async (stage: string = "scaling") => {
@@ -56,11 +56,11 @@ export type PortfolioExpand = {
 
 export const getFileUrl = (
     record: { collectionId: string; id: string },
-    name: string
+    name: string,
 ) => {
     if (process.env.NODE_ENV === "development") {
         return `${pb.buildUrl(
-            `/api/files/${record.collectionId}/${record.id}/${name}`
+            `/api/files/${record.collectionId}/${record.id}/${name}`,
         )}`;
     } else {
         return `/pb/${record.collectionId}/${name}`;
@@ -69,10 +69,10 @@ export const getFileUrl = (
 
 export const getSourceFileUrl = (
     record: { collectionId: string; id: string },
-    name: string
+    name: string,
 ) => {
     return `${pb.buildUrl(
-        `/api/files/${record.collectionId}/${record.id}/${name}`
+        `/api/files/${record.collectionId}/${record.id}/${name}`,
     )}`;
 };
 

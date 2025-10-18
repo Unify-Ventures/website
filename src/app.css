@@ -1,6 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@plugin '@tailwindcss/typography';
+@plugin "@tailwindcss/typography";
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
@@ -11,21 +11,21 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
 }
 
 .section {
-    @apply flex flex-col items-center justify-center bg-zinc-100 gap-12;
+    @apply flex flex-col items-center justify-center gap-12 bg-zinc-100;
 }
 
 .section > div {
-    @apply flex flex-col items-center gap-12 xl:m-16 m-8 max-w-7xl;
+    @apply m-8 flex max-w-7xl flex-col items-center gap-12 xl:m-16;
 }
 
 .section > div > h2 {
@@ -37,7 +37,11 @@
 }
 
 * {
-    font-family: "SofiaSansCondensed", ui-sans-serif, system-ui, -apple-system;
+    font-family:
+        "SofiaSansCondensed",
+        ui-sans-serif,
+        system-ui,
+        -apple-system;
 }
 
 @font-face {

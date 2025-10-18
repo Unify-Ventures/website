@@ -19,7 +19,7 @@ async function exportPortfolios() {
                 "static",
                 "pb",
                 p.collectionId,
-                p.logo
+                p.logo,
             );
 
             fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -31,7 +31,7 @@ async function exportPortfolios() {
             "..",
             "static",
             "pb",
-            "portfolios.json"
+            "portfolios.json",
         );
         fs.writeFileSync(outPath, JSON.stringify(portfolios, null, 4));
     } catch (e) {
@@ -45,7 +45,7 @@ async function exportTeam() {
 
         fs.writeFileSync(
             path.join(__dirname, "..", "static", "pb", "team.json"),
-            JSON.stringify(team, null, 4)
+            JSON.stringify(team, null, 4),
         );
 
         team.forEach(async (t) => {
@@ -57,7 +57,7 @@ async function exportTeam() {
                 "static",
                 "pb",
                 t.collectionId,
-                t.picture
+                t.picture,
             );
 
             fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -81,7 +81,7 @@ async function exportFunds() {
                 "static",
                 "pb",
                 fund.collectionId,
-                fund.logo
+                fund.logo,
             );
 
             fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -90,7 +90,7 @@ async function exportFunds() {
 
         fs.writeFileSync(
             path.join(__dirname, "..", "static", "pb", "funds.json"),
-            JSON.stringify(funds, null, 4)
+            JSON.stringify(funds, null, 4),
         );
     } catch (e) {
         console.error(e);

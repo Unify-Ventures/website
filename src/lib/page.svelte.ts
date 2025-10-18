@@ -13,7 +13,7 @@ export function createPortfolios() {
 
     async function loadPortfolios(
         status: string = "scaling",
-        featured: boolean = true
+        featured: boolean = true,
     ) {
         portfolios = await getFeaturedPortfolios(status, featured);
         portfolioIter = 1;
@@ -46,7 +46,7 @@ export function getPortfolioCategories() {
                 value: stage,
                 label: toTitleCase(stage.replace(/_/g, " ")),
             };
-        }
+        },
     );
 
     return categories;
