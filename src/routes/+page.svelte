@@ -37,6 +37,8 @@
 
     let funds = $state<FundsResponse[]>(data.funds);
 
+    let portfolioSelectValue = $state<{label: string, value: string}>(portfolioCategories[2]);
+
     $effect(() => {
         portfolioStore.portfolios; // hack to force svelte to update scrolling carousel
         setupScrolling();
@@ -209,30 +211,29 @@
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
             <div class="flex gap-2 flex-col w-64 justify-end">
                 <Select.Root
-                    selected={portfolioCategories[2]}
-                    onSelectedChange={async (obj) => {
-                        if (!obj) return;
-                        scrollingTl?.kill();
-                        portfolioStore.portfolios.length = 0; // reset portfolios. this is allowed by ECMAScript
-                        await portfolioStore.loadPortfolios(obj.value, false);
-                    }}
+                    bind:value={
+                        () => portfolioSelectValue.value,
+                        (v) => {
+                            scrollingTl?.kill();
+                            portfolioStore.portfolios.length = 0;
+                            portfolioStore.loadPortfolios(v, false);
+                        }
+                    }
                 >
                     <Select.Trigger
                         class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
                         aria-label="Select a category"
                     >
-                        <Select.Value placeholder="Select a category" />
+                        {portfolioSelectValue.label}
                         <ChevronsUpDown class="ml-auto" />
                     </Select.Trigger>
                     <Select.Content
-                        sameWidth
-                        overlap
                         sideOffset={-3}
-                        class="border-2 border-zinc-900 bg-white flex flex-col gap-2"
+                        class="border-2 border-zinc-900 bg-white flex flex-col gap-2 w-64 z-10"
                     >
                         {#each portfolioCategories as category}
                             <Select.Item
-                                value={category.value}
+                                value={category}
                                 class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
                             >
                                 {category.label}
@@ -254,7 +255,7 @@
                 id="scroll-container"
             >
                 <div
-                    class="w-full flex flex-row gap-6"
+                    class="w-full flex flex-row gap-6 mask-r-from-80%"
                     id="portfolio-container"
                 >
                     {#each portfolioStore.portfolios as portfolio}
@@ -314,9 +315,9 @@
                 </div>
             </div>
             <div class="hidden 2xl:block relative">
-                <div
+                <!-- <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-linear-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
-                ></div>
+                ></div> -->
                 <a
                     href="/portfolio/"
                     class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
