@@ -1,8 +1,8 @@
-import { getFunds } from "$lib/pocketbase";
+import { getManagers } from "$lib/pocketbase";
 import type { PageServerLoad } from "./$types";
 
 export const load = (async () => {
     return {
-        funds: await getFunds(),
+        managers: await getManagers(),
     };
 }) satisfies PageServerLoad;

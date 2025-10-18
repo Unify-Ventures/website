@@ -17,7 +17,7 @@ export const getFeaturedPortfolios = async (stage: string = "scaling") => {
             .collection("portfolio_companies")
             .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
                 filter: `stage='${stage}'`,
-                expand: "funds",
+                expand: "funds.manager",
             });
 
         return portfolios;
@@ -37,7 +37,7 @@ export async function getPortfolios(): Promise<
         const portfolios = await pb
             .collection("portfolio_companies")
             .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
-                expand: "funds",
+                expand: "funds.manager",
             });
 
         return portfolios;
@@ -51,7 +51,7 @@ export async function getPortfolios(): Promise<
 }
 
 export type PortfolioExpand = {
-    funds: FundsResponse[];
+    funds: FundsResponse<{ manager: ManagersResponse }>[];
 };
 
 export const getFileUrl = (
@@ -86,10 +86,12 @@ export const getTeam = async () => {
     }
 };
 
-export const getFunds = async () => {
-    const funds = await pb.collection(Collections.Funds).getFullList({
-        filter: "featured=true",
-    });
+export const getManagers = async () => {
+    const managers = await pb
+        .collection(Collections.Managers)
+        .getFullList<ManagersResponse>({
+            filter: "featured=true",
+        });
 
-    return funds;
+    return managers;
 };

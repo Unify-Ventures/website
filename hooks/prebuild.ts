@@ -8,7 +8,7 @@ async function exportPortfolios() {
     try {
         const portfolios = await pb
             .collection(Collections.PortfolioCompanies)
-            .getFullList({ expand: "funds" });
+            .getFullList({ expand: "funds.manager" });
 
         portfolios.forEach(async (p) => {
             const f = await fetch(getSourceFileUrl(p, p.logo));
@@ -70,23 +70,9 @@ async function exportTeam() {
 
 async function exportFunds() {
     try {
-        const funds = await pb.collection(Collections.Funds).getFullList();
-
-        funds.forEach(async (fund) => {
-            const f = await fetch(getSourceFileUrl(fund, fund.logo));
-
-            const outPath = path.join(
-                __dirname,
-                "..",
-                "static",
-                "pb",
-                fund.collectionId,
-                fund.logo,
-            );
-
-            fs.mkdirSync(path.dirname(outPath), { recursive: true });
-            fs.writeFileSync(outPath, await f.buffer());
-        });
+        const funds = await pb
+            .collection(Collections.Funds)
+            .getFullList({ expand: "manager" });
 
         fs.writeFileSync(
             path.join(__dirname, "..", "static", "pb", "funds.json"),
@@ -97,7 +83,39 @@ async function exportFunds() {
     }
 }
 
+async function exportManagers() {
+    try {
+        const managers = await pb
+            .collection(Collections.Managers)
+            .getFullList();
+
+        managers.forEach(async (manager) => {
+            const f = await fetch(getSourceFileUrl(manager, manager.logo));
+
+            const outPath = path.join(
+                __dirname,
+                "..",
+                "static",
+                "pb",
+                manager.collectionId,
+                manager.logo,
+            );
+
+            fs.mkdirSync(path.dirname(outPath), { recursive: true });
+            fs.writeFileSync(outPath, await f.buffer());
+        });
+
+        fs.writeFileSync(
+            path.join(__dirname, "..", "static", "pb", "managers.json"),
+            JSON.stringify(managers, null, 4),
+        );
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 fs.mkdirSync(path.join(__dirname, "..", "static", "pb"), { recursive: true });
 exportPortfolios();
 exportTeam();
 exportFunds();
+exportManagers();

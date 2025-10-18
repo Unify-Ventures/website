@@ -9,7 +9,7 @@
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
     import { getFileUrl, getTeam } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
-    import { type FundsResponse, type TeamResponse } from "$lib/pb-types";
+    import { type ManagersResponse, type TeamResponse } from "$lib/pb-types";
     import Fa from "svelte-fa";
     import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
     import {
@@ -35,7 +35,7 @@
 
     let team = $state<TeamResponse[]>([]);
 
-    let funds = $state<FundsResponse[]>(data.funds);
+    let managers = $state<ManagersResponse[]>(data.managers);
 
     let portfolioSelectValue = $state(portfolioCategories[2].value);
 
@@ -179,17 +179,23 @@
             <div
                 class="flex w-full flex-row gap-12 flex-wrap justify-center items-center"
             >
-                {#each funds as fund}
+                {#each managers as manager}
                     <a
-                        onmouseenter={(e) =>
-                            (e.target.style.color = fund.accent)}
-                        onmouseleave={(e) => (e.target.style.color = null)}
-                        href={fund.homepage}
+                        onmouseenter={(e) => {
+                            if (!(e.target instanceof HTMLElement)) return;
+                            e.target.style.color = manager.accent;
+                        }}
+                        onmouseleave={(e) => {
+                            if (!(e.target instanceof HTMLElement)) return;
+                            e.target.style.removeProperty("color");
+                        }}
+                        href={manager.homepage}
                         target="_blank"
+                        aria-label={`Fund manager: ${manager.name}`}
                     >
                         <svg
                             width="16rem"
-                            use:inlineSvg={getFileUrl(fund, fund.logo)}
+                            use:inlineSvg={getFileUrl(manager, manager.logo)}
                         />
                     </a>
                 {/each}
@@ -318,11 +324,13 @@
                                     width="100%"
                                 />
                             </div>
-                            {#if portfolio.expand?.funds[0]?.logo}
+                            {#if portfolio.expand?.funds?.[0]?.expand?.manager?.logo}
                                 <svg
                                     use:inlineSvg={getFileUrl(
-                                        portfolio.expand.funds[0],
-                                        portfolio.expand.funds[0].logo,
+                                        portfolio.expand.funds[0].expand
+                                            .manager,
+                                        portfolio.expand.funds[0].expand.manager
+                                            .logo,
                                     )}
                                     class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
                                 ></svg>
