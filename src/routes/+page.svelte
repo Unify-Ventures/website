@@ -7,9 +7,18 @@
     import ArrowRight from "lucide-svelte/icons/arrow-right";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-    import { getFileUrl, getTeam } from "$lib/pocketbase";
+    import {
+        getFileUrl,
+        getPortfolios,
+        getTeam,
+        type PortfolioExpand,
+    } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
-    import { type ManagersResponse, type TeamResponse } from "$lib/pb-types";
+    import {
+        type ManagersResponse,
+        type PortfolioCompaniesResponse,
+        type TeamResponse,
+    } from "$lib/pb-types";
     import Fa from "svelte-fa";
     import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
     import {
@@ -26,6 +35,8 @@
     } = $props();
 
     const portfolioStore = createPortfolios();
+
+    let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
 
     let scrollingTl: GSAPTimeline | null = null;
 
@@ -51,6 +62,7 @@
 
     onMount(async () => {
         await portfolioStore.loadPortfolios();
+        portfolios = await getPortfolios();
         team = await getTeam();
     });
 
@@ -453,10 +465,17 @@
             <h2>Invest with Us</h2>
             <div class="flex flex-col gap-6">
                 <p>
-                    As a Lorem ipsum dolor, sit amet consectetur adipisicing
-                    elit. Ex quod labore incidunt. Repellat, odit, quisquam
-                    rerum ratione nihil sed aspernatur veritatis maiores soluta,
-                    laudantium ea.
+                    As a Fund of Funds with an underlying portfolio of {portfolios.length >
+                    0
+                        ? portfolios.length
+                        : "<loading>"}
+                    startups and a broad network of VCs, Family Offices and Venture
+                    Partners across Australia, we offer our LPs preferential access
+                    to co-investments through the Unify Syndicate. We take a patient,
+                    focused approach with two key strategies: hard-to-access startups
+                    that have demonstrated revenue momentum with a clear path to
+                    exit, and selective stakes in our partner funds on the rare occasions
+                    they become available. Image
                 </p>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat}
