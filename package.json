@@ -30,7 +30,6 @@
     "dependencies": {
         "@fortawesome/free-brands-svg-icons": "^6.7.2",
         "@tailwindcss/vite": "^4.1.14",
-        "@zshzebra/svelte-multi-filter": "npm:@jsr/zshzebra__svelte-multi-filter",
         "bits-ui": "^2.11.8",
         "gsap": "^3.13.0",
         "lucide-svelte": "^0.546.0",
