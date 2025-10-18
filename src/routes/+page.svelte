@@ -2,8 +2,9 @@
     import gsap from "gsap";
     import ScrollTrigger from "gsap/dist/ScrollTrigger";
     import { onMount } from "svelte";
-    import Typewriter from "svelte-typewriter";
-    import { Label, Select } from "bits-ui";
+    // import Typewriter from "svelte-typewriter";
+    import Typewriter from "typewriter-effect/dist/core";
+    import { Select } from "bits-ui";
     import ArrowRight from "lucide-svelte/icons/arrow-right";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
@@ -38,6 +39,8 @@
     let managers = $state<ManagersResponse[]>(data.managers);
 
     let portfolioSelectValue = $state(portfolioCategories[2].value);
+
+    let headerTypewriterTarget = $state<HTMLElement>();
 
     const selectedLabel = $derived(
         portfolioCategories.find((c) => c.value === portfolioSelectValue)
@@ -121,6 +124,37 @@
             { end: 12, ease: "linear", duration: 1 },
             0,
         );
+    });
+
+    onMount(() => {
+        let deleteInterval = setInterval(() => {
+            const currentLength = headerTypewriterTarget?.innerText.length ?? 0;
+
+            if (currentLength <= 1) {
+                let headerTypewriter = new Typewriter(headerTypewriterTarget, {
+                    strings: [
+                        "B2B Saas.",
+                        "Accelerators.",
+                        "Incubators",
+                        "Advanced Manufacturing.",
+                    ],
+                    loop: true,
+                    delay: 50,
+                    deleteSpeed: 30,
+                    autoStart: true,
+                });
+
+                headerTypewriter.deleteAll();
+                console.log(headerTypewriter);
+                clearInterval(deleteInterval);
+                return;
+            }
+
+            if (headerTypewriterTarget) {
+                headerTypewriterTarget.innerText =
+                    headerTypewriterTarget.innerText.slice(0, -1);
+            }
+        }, 30);
     });
 
     function setupScrolling() {
