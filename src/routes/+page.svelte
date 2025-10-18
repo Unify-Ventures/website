@@ -3,7 +3,7 @@
     import ScrollTrigger from "gsap/dist/ScrollTrigger";
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
-    import { Select } from "bits-ui";
+    import { Label, Select } from "bits-ui";
     import ArrowRight from "lucide-svelte/icons/arrow-right";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
@@ -40,7 +40,8 @@
     let portfolioSelectValue = $state(portfolioCategories[2].value);
 
     const selectedLabel = $derived(
-        portfolioCategories.find((c) => c.value === portfolioSelectValue)?.label ?? "All Categories"
+        portfolioCategories.find((c) => c.value === portfolioSelectValue)
+            ?.label ?? "All Categories",
     );
 
     $effect(() => {
@@ -78,7 +79,7 @@
                                 return gsap.utils
                                     .snap(
                                         config.increment,
-                                        parseFloat(innerText)
+                                        parseFloat(innerText),
                                     )
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -86,7 +87,7 @@
                         },
                         ease: config.ease,
                     },
-                    0
+                    0,
                 );
 
                 return tl;
@@ -108,23 +109,23 @@
         statTl.counter(
             "#partner-stat",
             { end: 3, ease: "linear", duration: 0.6 },
-            0
+            0,
         );
         statTl.counter(
             "#b2b-stat",
             { end: 27, ease: "linear", duration: 1.2 },
-            0
+            0,
         );
         statTl.counter(
             "#fin-stat",
             { end: 12, ease: "linear", duration: 1 },
-            0
+            0,
         );
     });
 
     function setupScrolling() {
         const portfolioContainer = document.getElementById(
-            "portfolio-container"
+            "portfolio-container",
         );
         const portfolios = document.querySelectorAll(".portfolio");
 
@@ -236,7 +237,9 @@
                             sideOffset={-3}
                             class="border-2 border-zinc-900 bg-white w-64 z-10"
                         >
-                            <Select.ScrollUpButton class="flex w-full items-center justify-center py-1">
+                            <Select.ScrollUpButton
+                                class="flex w-full items-center justify-center py-1"
+                            >
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollUpButton>
                             <Select.Viewport class="flex flex-col gap-2 p-2">
@@ -252,7 +255,9 @@
                                     </Select.Item>
                                 {/each}
                             </Select.Viewport>
-                            <Select.ScrollDownButton class="flex w-full items-center justify-center py-1">
+                            <Select.ScrollDownButton
+                                class="flex w-full items-center justify-center py-1"
+                            >
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollDownButton>
                         </Select.Content>
@@ -301,7 +306,7 @@
                                 <svg
                                     use:inlineSvg={getFileUrl(
                                         portfolio,
-                                        portfolio.logo
+                                        portfolio.logo,
                                     )}
                                     width="100%"
                                 />
@@ -310,7 +315,7 @@
                                 <svg
                                     use:inlineSvg={getFileUrl(
                                         portfolio.expand.funds[0],
-                                        portfolio.expand.funds[0].logo
+                                        portfolio.expand.funds[0].logo,
                                     )}
                                     class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
                                 ></svg>
@@ -386,7 +391,7 @@
                                                 y: 100,
                                                 duration: 1,
                                             },
-                                            0.25 * i
+                                            0.25 * i,
                                         );
                                     }}
                                 />
@@ -424,6 +429,36 @@
                         </a>
                     </div>
                 {/each}
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div>
+            <h2>Invest with Us</h2>
+            <div class="flex flex-col gap-6">
+                <p>
+                    As a Lorem ipsum dolor, sit amet consectetur adipisicing
+                    elit. Ex quod labore incidunt. Repellat, odit, quisquam
+                    rerum ratione nihil sed aspernatur veritatis maiores soluta,
+                    laudantium ea.
+                </p>
+                <div class="grid grid-cols-1 lg:grid-cols-3">
+                    {#each [{ key: "Members", value: 255 }, { key: "Another", value: "Statistic" }, { key: "Please", value: "And thank you!" }, { key: "Umm", value: "You are" }, { key: "Still", value: "Here, so..." }, { key: "Hmm", value: "..." }] as stat}
+                        <div>
+                            <p class="text-black/75">{stat.key}</p>
+                            <span class="text-6xl font-light">{stat.value}</span
+                            >
+                        </div>
+                    {/each}
+                </div>
+                <a
+                    href="https://portal.gxe.com/v/spaces/unify-ventures-syndicate/join/vip"
+                    class="flex flex-row gap-2 border-2 text-white bg-zinc-900 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-100 hover:text-black transition-all duration-200 w-max"
+                    target="_blank"
+                >
+                    Join our syndicate <ArrowRight />
+                </a>
             </div>
         </div>
     </section>
