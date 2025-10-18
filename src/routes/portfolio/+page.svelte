@@ -201,7 +201,7 @@
 
             <!-- Mobile filters -->
             <div
-                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full"
+                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full mb-4"
             >
                 <div class="border-2 p-4 border-zinc-700 bg-white w-full">
                     <div class="flex flex-col">
