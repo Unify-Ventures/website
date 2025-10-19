@@ -1,9 +1,9 @@
 <section class="section">
     <div>
         <h2>Terms</h2>
-        <div class="flex w-full flex-col lg:flex-row gap-12 lg:gap-0">
+        <div class="flex w-full flex-col lg:flex-row gap-lg lg:gap-0">
             <div class="prose max-w-none prose-lg">
-                <div class="space-y-4">
+                <div class="space-y-md">
                     <p>
                         This website is operated by and on behalf of Unify
                         Ventures Pty Ltd (ABN 24 659 500 222) (<strong

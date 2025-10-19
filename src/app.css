@@ -43,9 +43,9 @@
     --color-primary-foreground: #ffffff;
 
     /* Spacing */
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 3rem;
+    --container-sm: calc(var(--spacing) * 2);
+    --container-md: calc(var(--spacing) * 4);
+    --container-lg: calc(var(--spacing) * 12);
 
     /* Typography */
     --text-body: 0.875rem;
@@ -85,7 +85,7 @@
 }
 
 .section {
-    @apply flex flex-col items-center justify-center gap-12 bg-zinc-100;
+    @apply bg-base-alt flex flex-col items-center justify-center gap-12;
 }
 
 .section > div {

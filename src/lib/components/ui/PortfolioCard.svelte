@@ -52,7 +52,7 @@
 >
 	<div
 		role="img"
-		class="w-40 md:w-64 aspect-square flex justify-center items-center p-lg xl:p-lg transition-colors duration-150"
+		class="flex justify-center items-center p-lg xl:p-lg transition-colors duration-150"
 		id={`portfolio-${portfolio.id}-${portfolioIter}`}
 	>
 		<svg use:inlineSvg={getFileUrl(portfolio, portfolio.logo)} width="100%" />

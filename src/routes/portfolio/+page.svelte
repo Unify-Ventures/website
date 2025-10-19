@@ -10,6 +10,7 @@
     import ChevronDown from "lucide-svelte/icons/chevron-down";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
+    import { Radio, Button } from "$lib/components/ui";
 
     const stages = [
         { value: "Any", label: "Any" },
@@ -117,103 +118,98 @@
 
 {#if filterStore}
     <div class="grid place-content-center">
-        <h2 class="text-7xl font-medium">Portfolio</h2>
+        <h2 class="text-hero font-medium">Portfolio</h2>
         <div
-            class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col xl:flex-row gap-4 min-h-full"
+            class="relative w-full max-w-7xl lg:m-8 my-md mx-auto flex flex-col xl:flex-row gap-md min-h-full"
         >
             <!-- Desktop filters -->
             <div class="sticky left-0 top-10 hidden lg:block">
-                <div class="border-2 p-4 border-zinc-700 bg-white w-64">
+                <div class="border-2 p-md border-border bg-base w-64">
                     <div class="flex flex-col">
-                        <h3 class="font-bold text-xl">Stage</h3>
+                        <h3 class="font-bold text-subtitle">Stage</h3>
                         {#each stages as stage}
-                            <div class="flex flex-row gap-2 items-center p-1">
-                                <input
-                                    type="radio"
-                                    name="stage"
-                                    value={stage.value}
-                                    class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                                    id={`stage-${stage.value}`}
-                                    disabled={!filterStore
-                                        .getAvailableOptions("stage")
-                                        .includes(stage.value) &&
-                                        stage.value !== "Any"}
-                                    onchange={() =>
-                                        filterStore.select(
-                                            "stage",
-                                            stage.value,
-                                        )}
-                                    checked={filterStore.dimensions.stage
-                                        .selected === stage.value}
-                                />
-                                <label
-                                    for={`stage-${stage.value}`}
-                                    class="cursor-pointer"
-                                    >{stage.label}
+                            <Radio
+                                name="stage"
+                                value={stage.value}
+                                id={`stage-${stage.value}`}
+                                disabled={!filterStore
+                                    .getAvailableOptions("stage")
+                                    .includes(stage.value) &&
+                                    stage.value !== "Any"}
+                                onchange={() =>
+                                    filterStore.select(
+                                        "stage",
+                                        stage.value,
+                                    )}
+                                checked={filterStore.dimensions.stage
+                                    .selected === stage.value}
+                            >
+                                {#snippet children()}
+                                    {stage.label}
                                     {portfolios
                                         .map((p) => p.stage)
                                         .includes(
                                             stage.value as PortfolioCompaniesStageOptions,
                                         )
                                         ? `(${portfolios.filter((p) => p.stage === stage.value).length})`
-                                        : ""}</label
-                                >
-                            </div>
+                                        : ""}
+                                {/snippet}
+                            </Radio>
                         {/each}
 
-                        <h3 class="font-bold text-xl mt-4">Fund</h3>
+                        <h3 class="font-bold text-subtitle mt-md">Fund</h3>
                         {#each funds as fund}
-                            <div class="flex flex-row gap-2 items-center p-1">
-                                <input
-                                    type="radio"
-                                    name="fund"
-                                    value={fund.value}
-                                    class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                                    id={`fund-${fund.value}`}
-                                    disabled={!filterStore
-                                        .getAvailableOptions("fund")
-                                        .includes(fund.value) &&
-                                        fund.value !== "Any"}
-                                    onchange={() =>
-                                        filterStore.select("fund", fund.value)}
-                                    checked={filterStore.dimensions.fund
-                                        .selected === fund.value}
-                                />
-                                <label for={`fund-${fund.value}`}
-                                    >{fund.label}
+                            <Radio
+                                name="fund"
+                                value={fund.value}
+                                id={`fund-${fund.value}`}
+                                disabled={!filterStore
+                                    .getAvailableOptions("fund")
+                                    .includes(fund.value) &&
+                                    fund.value !== "Any"}
+                                onchange={() =>
+                                    filterStore.select("fund", fund.value)}
+                                checked={filterStore.dimensions.fund
+                                    .selected === fund.value}
+                            >
+                                {#snippet children()}
+                                    {fund.label}
                                     {portfolios
                                         .map((p) => p.funds)
                                         .filter((f) => f.includes(fund.value))
                                         .length
                                         ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
                                         : ""}
-                                </label>
-                            </div>
+                                {/snippet}
+                            </Radio>
                         {/each}
 
-                        <button
-                            class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
-                            onclick={filterStore.reset}>Reset Filters</button
+                        <Button
+                            variant="secondary"
+                            onclick={filterStore.reset}
+                            class="mt-lg"
                         >
+                            Reset Filters
+                        </Button>
                     </div>
                 </div>
             </div>
 
             <!-- Mobile filters -->
             <div
-                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full mb-4"
+                class="sticky left-0 top-0 lg:hidden w-full bg-base pt-md h-full mb-md"
             >
-                <div class="border-2 p-4 border-zinc-700 bg-white w-full">
+                <div class="border-2 p-md border-border bg-base w-full">
                     <div class="flex flex-col">
                         <button
-                            class="font-bold text-xl text-left flex flex-row items-center gap-4"
+                            class="font-bold text-subtitle text-left flex flex-row items-center gap-md"
                             onclick={() => {
                                 expandStage = !expandStage;
                                 expandFund = false;
                             }}
                         >
                             <span class="w-14">Stage</span>
-                            <span class="font-normal text-sm text-zinc-700"
+                            <span class="font-normal text-body text-base-content-muted"
                                 >{stageToLabel(
                                     filterStore.dimensions.stage.selected,
                                 )}</span
@@ -227,31 +223,24 @@
                         {#if expandStage}
                             <div transition:slide>
                                 {#each stages as stage}
-                                    <div
-                                        class="flex flex-row gap-2 items-center p-1"
+                                    <Radio
+                                        name="stage"
+                                        value={stage.value}
+                                        id={`stage-mobile-${stage.value}`}
+                                        disabled={!filterStore
+                                            .getAvailableOptions("stage")
+                                            .includes(stage.value) &&
+                                            stage.value !== "Any"}
+                                        onchange={() =>
+                                            filterStore.select(
+                                                "stage",
+                                                stage.value,
+                                            )}
+                                        checked={filterStore.dimensions
+                                            .stage.selected === stage.value}
                                     >
-                                        <input
-                                            type="radio"
-                                            name="stage"
-                                            value={stage.value}
-                                            class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                                            id={`stage-${stage.value}`}
-                                            disabled={!filterStore
-                                                .getAvailableOptions("stage")
-                                                .includes(stage.value) &&
-                                                stage.value !== "Any"}
-                                            onchange={() =>
-                                                filterStore.select(
-                                                    "stage",
-                                                    stage.value,
-                                                )}
-                                            checked={filterStore.dimensions
-                                                .stage.selected === stage.value}
-                                        />
-                                        <label
-                                            for={`stage-${stage.value}`}
-                                            class="cursor-pointer"
-                                            >{stage.label}
+                                        {#snippet children()}
+                                            {stage.label}
                                             {filterStore.filteredItems
                                                 .map(
                                                     (p) =>
@@ -262,21 +251,21 @@
                                                     stage.value as PortfolioCompaniesStageOptions,
                                                 )
                                                 ? `(${filterStore.filteredItems.filter((p) => portfolioMap[p.id]?.stage === stage.value).length})`
-                                                : ""}</label
-                                        >
-                                    </div>
+                                                : ""}
+                                        {/snippet}
+                                    </Radio>
                                 {/each}
                             </div>
                         {/if}
 
                         <button
-                            class="font-bold text-xl mt-4 text-left flex flex-row items-center gap-4"
+                            class="font-bold text-subtitle mt-md text-left flex flex-row items-center gap-md"
                             onclick={() => {
                                 expandFund = !expandFund;
                                 expandStage = false;
                             }}
                             ><span class="w-14">Fund</span><span
-                                class="font-normal text-sm text-zinc-700"
+                                class="font-normal text-body text-base-content-muted"
                                 >{fundToLabel(
                                     filterStore.dimensions.fund.selected,
                                 )}</span
@@ -289,29 +278,24 @@
                         {#if expandFund}
                             <div transition:slide>
                                 {#each funds as fund}
-                                    <div
-                                        class="flex flex-row gap-2 items-center p-1"
+                                    <Radio
+                                        name="fund"
+                                        value={fund.value}
+                                        id={`fund-mobile-${fund.value}`}
+                                        disabled={!filterStore
+                                            .getAvailableOptions("fund")
+                                            .includes(fund.value) &&
+                                            fund.value !== "Any"}
+                                        onchange={() =>
+                                            filterStore.select(
+                                                "fund",
+                                                fund.value,
+                                            )}
+                                        checked={filterStore.dimensions.fund
+                                            .selected === fund.value}
                                     >
-                                        <input
-                                            type="radio"
-                                            name="fund"
-                                            value={fund.value}
-                                            class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                                            id={`fund-${fund.value}`}
-                                            disabled={!filterStore
-                                                .getAvailableOptions("fund")
-                                                .includes(fund.value) &&
-                                                fund.value !== "Any"}
-                                            onchange={() =>
-                                                filterStore.select(
-                                                    "fund",
-                                                    fund.value,
-                                                )}
-                                            checked={filterStore.dimensions.fund
-                                                .selected === fund.value}
-                                        />
-                                        <label for={`fund-${fund.value}`}
-                                            >{fund.label}
+                                        {#snippet children()}
+                                            {fund.label}
                                             {portfolios
                                                 .map((p) => p.funds)
                                                 .filter((f) =>
@@ -319,19 +303,22 @@
                                                 ).length
                                                 ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
                                                 : ""}
-                                        </label>
-                                    </div>
+                                        {/snippet}
+                                    </Radio>
                                 {/each}
                             </div>
                         {/if}
 
                         {#if (expandStage || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.stage.selected === "Any")}
-                            <button
-                                transition:slide
-                                class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
-                                onclick={filterStore.reset}
-                                >Reset Filters</button
-                            >
+                            <div transition:slide>
+                                <Button
+                                    variant="secondary"
+                                    onclick={filterStore.reset}
+                                    class="w-full mt-lg"
+                                >
+                                    Reset Filters
+                                </Button>
+                            </div>
                         {/if}
                     </div>
                 </div>
@@ -339,13 +326,13 @@
 
             <!-- Portfolio results -->
             <main
-                class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
+                class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-md mb-8 h-max"
             >
                 {#each portfolios as portfolio}
                     <a
                         href={portfolioMap[portfolio.id].homepage}
                         target="_blank"
-                        class="bg-zinc-100 p-4 group h-40 w-40"
+                        class="bg-muted p-md group h-40 w-40"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}

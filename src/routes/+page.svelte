@@ -216,20 +216,20 @@
     </section>
 
     <section class="grid grid-cols-1 lg:grid-cols-3">
-        <div id="stat1" class="bg-amber-400 p-16">
-            <h3 class="text-2xl">Partner Funds</h3>
-            <span id="partner-stat" class="text-9xl">1</span>
+        <div id="stat1" class="bg-accent-warning p-16">
+            <h3 class="text-heading">Partner Funds</h3>
+            <span id="partner-stat" class="text-display">1</span>
         </div>
-        <div id="stat2" class="bg-stone-400 p-16">
-            <h3 class="text-2xl">B2B SaaS</h3>
-            <span id="b2b-stat" class="text-9xl">1</span><span class="text-9xl"
-                >+</span
+        <div id="stat2" class="bg-accent-info p-16">
+            <h3 class="text-heading">B2B SaaS</h3>
+            <span id="b2b-stat" class="text-display">1</span><span
+                class="text-display">+</span
             >
         </div>
-        <div id="stat3" class="bg-emerald-400 p-16">
-            <h3 class="text-2xl">Fin Tech</h3>
-            <span id="fin-stat" class="text-9xl">1</span><span class="text-9xl"
-                >+</span
+        <div id="stat3" class="bg-accent-success p-16">
+            <h3 class="text-heading">Fin Tech</h3>
+            <span id="fin-stat" class="text-display">1</span><span
+                class="text-display">+</span
             >
         </div>
     </section>
@@ -238,8 +238,8 @@
         <div
             class="flex max-w-7xl xl:m-16 m-8 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row items-center justify-center flex-none"
         >
-            <h2 class="text-7xl font-medium">Our Portfolio</h2>
-            <div class="flex gap-2 flex-col w-64 justify-end">
+            <h2 class="text-hero font-medium">Our Portfolio</h2>
+            <div class="flex gap-sm flex-col w-64 justify-end">
                 <Select.Root
                     type="single"
                     bind:value={portfolioSelectValue}
@@ -251,7 +251,7 @@
                     }}
                 >
                     <Select.Trigger
-                        class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
+                        class="border-2 p-md border-border hover:bg-base-alt transition-all duration-200 cursor-pointer inline-flex gap-sm"
                         aria-label="Select a category"
                     >
                         {selectedLabel}
@@ -260,19 +260,19 @@
                     <Select.Portal>
                         <Select.Content
                             sideOffset={-3}
-                            class="border-2 border-zinc-900 bg-white w-64 z-10"
+                            class="border-2 border-border bg-base w-64 z-10"
                         >
                             <Select.ScrollUpButton
                                 class="flex w-full items-center justify-center py-1"
                             >
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollUpButton>
-                            <Select.Viewport class="flex flex-col gap-2 p-2">
+                            <Select.Viewport class="flex flex-col gap-sm p-sm">
                                 {#each portfolioCategories as category}
                                     <Select.Item
                                         value={category.value}
                                         label={category.label}
-                                        class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
+                                        class="p-md hover:bg-base-alt transition-all duration-200 cursor-pointer"
                                     >
                                         {#snippet children({ selected })}
                                             {category.label}
@@ -290,13 +290,13 @@
                 </Select.Root>
                 <a
                     href="/portfolio"
-                    class="2xl:hidden flex justify-center items-center bg-zinc-900 text-white p-4"
+                    class="2xl:hidden flex justify-center items-center bg-primary text-primary-content p-md"
                 >
                     See All <ArrowRight />
                 </a>
             </div>
         </div>
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-sm">
             <div
                 class={`overflow-hidden max-w-[100vw] 2xl:max-w-6xl`}
                 id="scroll-container"
@@ -307,9 +307,9 @@
                 >
                     {#each portfolioStore.portfolios as portfolio}
                         <div
-                            class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
+                            class={`w-40 md:w-64 aspect-square bg-muted portfolio relative group text-base-content ${
                                 portfolio.invert_foreground
-                                    ? "hover:[&:not(.no-hover)]:text-zinc-100"
+                                    ? "hover:[&:not(.no-hover)]:text-muted"
                                     : ""
                             }`}
                             style:--accent={portfolio.accent}
@@ -325,7 +325,7 @@
                         >
                             <div
                                 role="img"
-                                class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
+                                class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-lg transition-colors duration-150"
                                 id={`portfolio-${portfolio.id}-${portfolioStore.portfolioIter}`}
                             >
                                 <svg
@@ -344,11 +344,11 @@
                                         portfolio.expand.funds[0].expand.manager
                                             .logo,
                                     )}
-                                    class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
+                                    class="p-sm h-12 max-w-28 text-base-content bg-base-alt absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
                                 ></svg>
                             {/if}
                             <button
-                                class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transition-all duration-150"
+                                class="flex flex-row gap-sm bg-primary p-md text-primary-content absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transition-all duration-150"
                             >
                                 Learn More <ArrowRight />
                             </button>
@@ -369,7 +369,7 @@
                 ></div> -->
                 <a
                     href="/portfolio/"
-                    class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
+                    class="flex justify-center items-center bg-primary text-primary-content w-64 h-64 text-heading gap-sm hover:bg-primary-hover duration-150 transition-all"
                 >
                     See All <ArrowRight />
                 </a>
@@ -477,10 +477,10 @@
                     exit, and selective stakes in our partner funds on the rare occasions
                     they become available. Image
                 </p>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
                     {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat}
                         <div>
-                            <p class="text-black/75">{stat.key}</p>
+                            <p class="text-base-content-muted">{stat.key}</p>
                             <span class="text-6xl font-light">{stat.value}</span
                             >
                         </div>
@@ -488,7 +488,7 @@
                 </div>
                 <a
                     href="https://portal.gxe.com/v/spaces/unify-ventures-syndicate/join/vip"
-                    class="flex flex-row gap-2 border-2 text-white bg-zinc-900 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-100 hover:text-black transition-all duration-200 w-max"
+                    class="flex flex-row gap-sm border-2 text-primary-content bg-primary border-border justify-center p-sm mt-6 hover:bg-base-alt hover:text-base-content transition-all duration-200 w-max"
                     target="_blank"
                 >
                     Join our Syndicate <ArrowRight />
