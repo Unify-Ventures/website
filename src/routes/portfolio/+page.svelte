@@ -5,6 +5,7 @@
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
     import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
+    import { adjustLightColor } from "$lib/color-utils";
     import { createFilterStore } from "$lib/multi-filter.svelte";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import ChevronDown from "lucide-svelte/icons/chevron-down";
@@ -122,7 +123,7 @@
             class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col xl:flex-row gap-4 min-h-full"
         >
             <!-- Desktop filters -->
-            <div class="sticky left-0 top-10 hidden lg:block">
+            <div class="sticky left-0 top-10 self-start hidden lg:block mb-16">
                 <div class="border-2 p-4 border-zinc-700 bg-white w-64">
                     <div class="flex flex-col">
                         <h3 class="font-bold text-xl">Stage</h3>
@@ -201,7 +202,7 @@
 
             <!-- Mobile filters -->
             <div
-                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full mb-4"
+                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full mb-4 z-10"
             >
                 <div class="border-2 p-4 border-zinc-700 bg-white w-full">
                     <div class="flex flex-col">
@@ -345,24 +346,42 @@
                     <a
                         href={portfolioMap[portfolio.id].homepage}
                         target="_blank"
-                        class="bg-zinc-100 p-4 group h-40 w-40"
+                        class="bg-zinc-100 p-4 group h-40 w-40 grid place-content-center"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}
                         aria-label="View {portfolio.name} portfolio"
                     >
-                        <div class="p-1">
-                            <svg
-                                class="portfolio w-full h-full"
-                                style:--accent={portfolioMap[portfolio.id]
-                                    .accent}
-                                width="14rem"
-                                height="14rem"
-                                use:inlineSvg={getFileUrl(
-                                    portfolioMap[portfolio.id],
-                                    portfolioMap[portfolio.id].logo,
-                                )}
-                            />
+                        <!-- TODO: Find a better method to constrain SVG size -->
+                        <div
+                            class="p-1 text-[var(--accent)] transition-all duration-150 max-h-16 aspect-video"
+                            style:--accent={adjustLightColor(
+                                portfolioMap[portfolio.id].accent,
+                            )}
+                        >
+                            {#if portfolio.logo.endsWith(".svg")}
+                                <svg
+                                    class="w-full h-full"
+                                    width="14rem"
+                                    height="14rem"
+                                    use:inlineSvg={getFileUrl(
+                                        portfolioMap[portfolio.id],
+                                        portfolioMap[portfolio.id].logo,
+                                    )}
+                                />
+                            {:else}
+                                <img
+                                    class={"w-full h-full object-contain" +
+                                        (portfolio.invert_foreground
+                                            ? " invert hue-rotate-180 contrast-75"
+                                            : "")}
+                                    src={getFileUrl(
+                                        portfolioMap[portfolio.id],
+                                        portfolioMap[portfolio.id].logo,
+                                    )}
+                                    alt={`${portfolioMap[portfolio.id].name}'s logo'`}
+                                />
+                            {/if}
                         </div>
                     </a>
                 {/each}
@@ -372,10 +391,6 @@
 {/if}
 
 <style>
-    .portfolio {
-        color: var(--accent);
-    }
-
     input:disabled + label {
         opacity: 0.5;
         cursor: not-allowed;
