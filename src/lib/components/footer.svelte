@@ -1,12 +1,13 @@
 <script>
     import Mail from "lucide-svelte/icons/mail";
     import Phone from "lucide-svelte/icons/phone";
+    import Logo from "$lib/components/logo.svelte";
 </script>
 
 <div
     class="bg-zinc-900 w-full h-max text-zinc-200 flex flex-col justify-between 2xl:p-24 p-8 gap-4"
 >
-    <img src="/logo.svg" alt="Unify Ventures Logo" class="w-96 m-8 mx-auto" />
+    <Logo class="w-96 m-8 mx-auto" />
     <div class="flex gap-6 max-w-6xl w-full">
         <a class="flex gap-2" href="mailto:hello@unifyventures.vc">
             <Mail /> hello@unifyventures.vc
