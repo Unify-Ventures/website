@@ -9,22 +9,12 @@ export const getLinkedInUsername = (url: string) =>
 
 export function createPortfolios() {
     let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
-    let portfolioIter = $state(1);
 
     async function loadPortfolios(
         status: string = "scaling",
         featured: boolean = true,
     ) {
         portfolios = await getFeaturedPortfolios(status, featured);
-        portfolioIter = 1;
-
-        if (portfolios.length > 4) {
-            while (portfolios.length < 20) {
-                portfolios.push(...portfolios);
-                portfolioIter++;
-            }
-        }
-
         return portfolios;
     }
 
@@ -32,9 +22,6 @@ export function createPortfolios() {
         loadPortfolios,
         get portfolios() {
             return portfolios;
-        },
-        get portfolioIter() {
-            return portfolioIter;
         },
     };
 }

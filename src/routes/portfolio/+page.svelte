@@ -12,6 +12,7 @@
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
     import { Link } from "lucide-svelte";
+    import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
 
     const stages = [
         { value: "Any", label: "Any" },
@@ -397,7 +398,11 @@
                                             : "")}
                                     src={getFileUrl(
                                         portfolioMap[portfolio.id],
-                                        portfolioMap[portfolio.id].logo,
+                                        !portfolioMap[portfolio.id]
+                                            .use_unoptimised_logo
+                                            ? portfolioMap[portfolio.id].logo
+                                            : portfolioMap[portfolio.id]
+                                                  .unoptimised_logo,
                                     )}
                                     alt={`${portfolioMap[portfolio.id].name}'s logo'`}
                                 />
@@ -408,47 +413,7 @@
             </main>
         </div>
     </div>
-    <dialog
-        bind:this={startupModal}
-        class="fixed m-auto max-w-md outline-none border-2"
-        style="width: calc(100vw - var(--spacing) * 8);"
-    >
-        {#if dialogStartup}
-            <div class="flex flex-col">
-                <div class="bg-zinc-100 p-4">
-                    {#if dialogStartup.logo.endsWith(".svg")}
-                        <img
-                            class="w-full h-full aspect-video"
-                            width="14rem"
-                            height="14rem"
-                            src={getFileUrl(dialogStartup, dialogStartup.logo)}
-                            aria-hidden
-                            alt={`${dialogStartup.name}'s Logo'`}
-                        />
-                    {:else}
-                        <img
-                            class={"w-full h-full object-contain" +
-                                (dialogStartup.invert_foreground
-                                    ? " invert hue-rotate-180 contrast-75"
-                                    : "")}
-                            src={getFileUrl(dialogStartup, dialogStartup.logo)}
-                            alt={`${dialogStartup.name}'s logo'`}
-                        />
-                    {/if}
-                </div>
-                <div class="p-4">
-                    <h2 class="text-2xl font-bold">{dialogStartup.name}</h2>
-                    {@html dialogStartup.blurb || "<i>No blurb available</i>"}
-                    <a
-                        class="flex flex-row gap-2 p-2 bg-zinc-900 text-white justify-center mt-4"
-                        href={dialogStartup.homepage}>Visit homepage</a
-                    >
-                </div>
-            </div>
-        {:else}
-            <h2>No startup selected</h2>
-        {/if}
-    </dialog>
+    <PortfolioDialog portfolio={dialogStartup} bind:dialogElement={startupModal} />
 {/if}
 
 <style>

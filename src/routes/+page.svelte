@@ -27,6 +27,8 @@
         getPortfolioCategories,
     } from "$lib/page.svelte";
     import type { PageServerData } from "./$types";
+    import InfiniteCarousel from "$lib/components/InfiniteCarousel.svelte";
+    import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
 
     let {
         data,
@@ -37,8 +39,6 @@
     const portfolioStore = createPortfolios();
 
     let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
-
-    let scrollingTl: GSAPTimeline | null = null;
 
     let teamTl: GSAPTimeline | null = null;
 
@@ -55,10 +55,8 @@
             ?.label ?? "All Categories",
     );
 
-    $effect(() => {
-        portfolioStore.portfolios; // hack to force svelte to update scrolling carousel
-        setupScrolling();
-    });
+    let selectedPortfolio = $state<PortfolioCompaniesResponse<PortfolioExpand> | null>(null);
+    let portfolioDialog = $state<HTMLDialogElement | null>(null);
 
     onMount(async () => {
         await portfolioStore.loadPortfolios();
@@ -134,36 +132,6 @@
             0,
         );
     });
-
-    function setupScrolling() {
-        const portfolioContainer = document.getElementById(
-            "portfolio-container",
-        );
-        const portfolios = document.querySelectorAll(".portfolio");
-
-        scrollingTl = gsap.timeline({
-            repeat: -1,
-            paused: true,
-            onRepeat: () => {
-                const firstPortfolio = portfolioContainer?.children[0];
-
-                if (!firstPortfolio) return;
-
-                portfolioContainer?.appendChild(firstPortfolio);
-                gsap.set(portfolioContainer, { x: 0 });
-            },
-        });
-
-        if (portfolioContainer && portfolios.length > 5) {
-            scrollingTl.to(portfolios, {
-                x: `-=${(portfolios[0] as HTMLElement).offsetWidth + 24}`,
-                ease: "linear",
-                duration: portfolios.length * 0.25,
-            });
-
-            scrollingTl.play();
-        }
-    }
 </script>
 
 <main>
@@ -245,7 +213,6 @@
                     bind:value={portfolioSelectValue}
                     onValueChange={(v) => {
                         console.log(v);
-                        scrollingTl?.kill();
                         portfolioStore.portfolios.length = 0;
                         portfolioStore.loadPortfolios(v, false);
                     }}
@@ -297,44 +264,60 @@
             </div>
         </div>
         <div class="flex flex-row gap-2">
-            <div
-                class={`overflow-hidden max-w-[100vw] 2xl:max-w-6xl`}
-                id="scroll-container"
-            >
-                <div
-                    class="w-full flex flex-row gap-6 mask-l-from-80% mask-r-from-80%"
-                    id="portfolio-container"
+            {#if portfolioStore.portfolios.length > 0}
+                <InfiniteCarousel
+                    class="max-w-[100vw] 2xl:max-w-6xl"
+                    trackClass="gap-6"
+                    speed={60}
+                    gap={24}
                 >
                     {#each portfolioStore.portfolios as portfolio}
-                        <div
+                        <button
                             class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
                                 portfolio.invert_foreground
                                     ? "hover:[&:not(.no-hover)]:text-zinc-100"
                                     : ""
                             }`}
                             style:--accent={portfolio.accent}
-                            onmouseenter={(e) => {
-                                scrollingTl?.pause();
+                            aria-label="View {portfolio.name} portfolio"
+                            onclick={() => {
+                                selectedPortfolio = portfolio;
+                                portfolioDialog?.showModal();
                             }}
-                            onmouseleave={(e) => {
-                                if (portfolioStore.portfolios.length > 5) {
-                                    scrollingTl?.play();
-                                }
-                            }}
-                            role="img"
                         >
                             <div
                                 role="img"
                                 class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
-                                id={`portfolio-${portfolio.id}-${portfolioStore.portfolioIter}`}
+                                id={`portfolio-${portfolio.id}`}
                             >
-                                <svg
-                                    use:inlineSvg={getFileUrl(
-                                        portfolio,
-                                        portfolio.logo,
-                                    )}
-                                    width="100%"
-                                />
+                                {#if portfolio.logo.endsWith(".svg")}
+                                    <svg
+                                        width="100%"
+                                        height="100%"
+                                        use:inlineSvg={getFileUrl(
+                                            portfolio,
+                                            !portfolio.use_unoptimised_logo
+                                                ? portfolio.logo
+                                                : portfolio.unoptimised_logo,
+                                        )}
+                                    />
+                                {:else}
+                                    <img
+                                        class={"w-full h-full object-contain" +
+                                            (portfolio.invert_foreground
+                                                ? " invert hue-rotate-180 contrast-75"
+                                                : "")}
+                                        width="100%"
+                                        height="100%"
+                                        src={getFileUrl(
+                                            portfolio,
+                                            !portfolio.use_unoptimised_logo
+                                                ? portfolio.logo
+                                                : portfolio.unoptimised_logo,
+                                        )}
+                                        alt={`${portfolio.name}'s logo'`}
+                                    />
+                                {/if}
                             </div>
                             {#if portfolio.expand?.funds?.[0]?.expand?.manager?.logo}
                                 <svg
@@ -347,22 +330,24 @@
                                     class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
                                 ></svg>
                             {/if}
-                            <button
+                            <div
                                 class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transition-all duration-150"
                             >
                                 Learn More <ArrowRight />
-                            </button>
-                        </div>
-                    {:else}
-                        <p
-                            class="text-6xl h-64 flex gap-6 items-center justify-center w-full"
-                        >
-                            <LoaderCircle class="animate-spin" size="64" /> Loading
-                            portfolios...
-                        </p>
+                            </div>
+                        </button>
                     {/each}
+                </InfiniteCarousel>
+            {:else}
+                <div class="max-w-[100vw] 2xl:max-w-6xl overflow-hidden">
+                    <p
+                        class="text-6xl h-64 flex gap-6 items-center justify-center w-full"
+                    >
+                        <LoaderCircle class="animate-spin" size="64" /> Loading
+                        portfolios...
+                    </p>
                 </div>
-            </div>
+            {/if}
             <div class="hidden 2xl:block relative">
                 <!-- <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-linear-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
@@ -498,12 +483,14 @@
     </section>
 </main>
 
+<PortfolioDialog portfolio={selectedPortfolio} bind:dialogElement={portfolioDialog} />
+
 <style>
     :root {
         --cursor-width: 0.2rem;
     }
 
-    .portfolio:hover:not(.no-hover) > div {
+    .portfolio:hover:not(.no-hover) > div[role="img"] {
         background-color: var(--accent);
         transition: all 150ms ease;
     }
