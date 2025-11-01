@@ -24,7 +24,14 @@
         }),
     ];
 
-    let funds = $state([{ value: "any", label: "Any" }]);
+    let funds = $state<
+        Array<{
+            value: string;
+            label: string;
+            managerName?: string;
+            managerFeatured?: boolean;
+        }>
+    >([{ value: "any", label: "Any" }]);
 
     let expandStage = $state(false);
     let expandFund = $state(false);
@@ -105,7 +112,9 @@
         let fundsResp: FundsResponse<unknown>[];
 
         if (process.env.NODE_ENV === "development") {
-            fundsResp = await pb.collection(Collections.Funds).getFullList();
+            fundsResp = await pb.collection(Collections.Funds).getFullList({
+                expand: "manager",
+            });
         } else {
             fundsResp = (await (await fetch("/pb/funds.json")).json()) as any[];
         }
@@ -113,11 +122,27 @@
         funds = [
             { value: "Any", label: "Any" },
             ...fundsResp
-                .sort((a, b) => (a.manager > b.manager ? 1 : 0))
-                .map((fund) => ({
-                    value: fund.id,
-                    label: fund.name,
-                })),
+                .sort((a, b) => {
+                    const aExpand = a.expand as any;
+                    const bExpand = b.expand as any;
+                    const aFeatured = aExpand?.manager?.featured ?? false;
+                    const bFeatured = bExpand?.manager?.featured ?? false;
+
+                    if (aFeatured !== bFeatured) return bFeatured ? 1 : -1;
+
+                    const aName = aExpand?.manager?.name ?? "";
+                    const bName = bExpand?.manager?.name ?? "";
+                    return aName.localeCompare(bName);
+                })
+                .map((fund) => {
+                    const expand = fund.expand as any;
+                    return {
+                        value: fund.id,
+                        label: fund.name,
+                        managerName: expand?.manager?.name ?? "",
+                        managerFeatured: expand?.manager?.featured ?? false,
+                    };
+                }),
         ];
 
         // Now this assignment will properly trigger reactivity
@@ -180,7 +205,14 @@
                         {/each}
 
                         <h3 class="font-bold text-xl mt-4">Fund</h3>
-                        {#each funds as fund}
+                        {#each funds as fund, index}
+                            {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
+                                <div
+                                    class="text-xs font-semibold text-zinc-600 mt-3 mb-1 px-1"
+                                >
+                                    {fund.managerName}
+                                </div>
+                            {/if}
                             <div class="flex flex-row gap-2 items-center p-1">
                                 <input
                                     type="radio"
@@ -306,7 +338,14 @@
                         >
                         {#if expandFund}
                             <div transition:slide>
-                                {#each funds as fund}
+                                {#each funds as fund, index}
+                                    {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
+                                        <div
+                                            class="text-xs font-semibold text-zinc-600 mt-3 mb-1 px-1"
+                                        >
+                                            {fund.managerName}
+                                        </div>
+                                    {/if}
                                     <div
                                         class="flex flex-row gap-2 items-center p-1"
                                     >
