@@ -81,9 +81,6 @@
     let setsNeeded = $state(3);
 
     // Derived
-    let shouldBePaused = $derived(
-        (pauseOnHover && isHovering) || externalPause || isPaused,
-    );
     let duplicatedSets = $derived(
         Array.from({ length: setsNeeded }, (_, i) => i),
     );
@@ -118,7 +115,7 @@
         }
 
         // Handle pause - reset time tracking during pause
-        if (shouldBePaused) {
+        if ((pauseOnHover && isHovering) || externalPause || isPaused) {
             lastTime = currentTime;
             animationId = requestAnimationFrame(animate);
             return;
