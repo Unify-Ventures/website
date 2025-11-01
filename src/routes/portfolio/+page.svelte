@@ -11,6 +11,7 @@
     import ChevronDown from "lucide-svelte/icons/chevron-down";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
+    import { Link } from "lucide-svelte";
 
     const stages = [
         { value: "Any", label: "Any" },
@@ -36,6 +37,9 @@
     let portfolios = $state<PortfolioCompaniesResponse[]>([]);
     let filterablePortfolios = $state<PortfolioFilter[]>([]);
 
+    let dialogStartup = $state<PortfolioCompaniesResponse | null>();
+    let startupModal = $state<HTMLDialogElement | null>();
+
     interface PortfolioFilter {
         id: string;
         stage:
@@ -43,12 +47,17 @@
             | "market_validation"
             | "scaling"
             | "revenue_momentum"
-            | "liquidity_event";
+            | "liquidity_event"
+            | "unassigned";
         fund:
             | "0jz3m1u87fm8c5j"
             | "l7bnwnwwzs3yr4n"
             | "4f6b55zzbes47nj"
-            | "h8c2tlfs7gt29nv";
+            | "h8c2tlfs7gt29nv"
+            | "g5dqtiodxn8w02q"
+            | "18vybohe60ln3n4"
+            | "4hwukm1xi68x58b"
+            | "73tuvm8ll0jlo6x";
     }
 
     const config = {
@@ -58,12 +67,17 @@
             "scaling",
             "revenue_momentum",
             "liquidity_event",
+            "unassigned",
         ],
         fund: [
             "0jz3m1u87fm8c5j",
             "l7bnwnwwzs3yr4n",
             "4f6b55zzbes47nj",
             "h8c2tlfs7gt29nv",
+            "g5dqtiodxn8w02q",
+            "18vybohe60ln3n4",
+            "4hwukm1xi68x58b",
+            "73tuvm8ll0jlo6x",
         ],
     } satisfies Record<string, any>;
 
@@ -343,14 +357,16 @@
                 class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
             >
                 {#each portfolios as portfolio}
-                    <a
-                        href={portfolioMap[portfolio.id].homepage}
-                        target="_blank"
+                    <button
                         class="bg-zinc-100 p-4 group h-40 w-40 grid place-content-center"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}
                         aria-label="View {portfolio.name} portfolio"
+                        onclick={() => {
+                            dialogStartup = portfolio;
+                            startupModal?.showModal();
+                        }}
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
@@ -366,7 +382,11 @@
                                     height="14rem"
                                     use:inlineSvg={getFileUrl(
                                         portfolioMap[portfolio.id],
-                                        portfolioMap[portfolio.id].logo,
+                                        !portfolioMap[portfolio.id]
+                                            .use_unoptimised_logo
+                                            ? portfolioMap[portfolio.id].logo
+                                            : portfolioMap[portfolio.id]
+                                                  .unoptimised_logo,
                                     )}
                                 />
                             {:else}
@@ -383,11 +403,52 @@
                                 />
                             {/if}
                         </div>
-                    </a>
+                    </button>
                 {/each}
             </main>
         </div>
     </div>
+    <dialog
+        bind:this={startupModal}
+        class="fixed m-auto max-w-md outline-none border-2"
+        style="width: calc(100vw - var(--spacing) * 8);"
+    >
+        {#if dialogStartup}
+            <div class="flex flex-col">
+                <div class="bg-zinc-100 p-4">
+                    {#if dialogStartup.logo.endsWith(".svg")}
+                        <img
+                            class="w-full h-full aspect-video"
+                            width="14rem"
+                            height="14rem"
+                            src={getFileUrl(dialogStartup, dialogStartup.logo)}
+                            aria-hidden
+                            alt={`${dialogStartup.name}'s Logo'`}
+                        />
+                    {:else}
+                        <img
+                            class={"w-full h-full object-contain" +
+                                (dialogStartup.invert_foreground
+                                    ? " invert hue-rotate-180 contrast-75"
+                                    : "")}
+                            src={getFileUrl(dialogStartup, dialogStartup.logo)}
+                            alt={`${dialogStartup.name}'s logo'`}
+                        />
+                    {/if}
+                </div>
+                <div class="p-4">
+                    <h2 class="text-2xl font-bold">{dialogStartup.name}</h2>
+                    {@html dialogStartup.blurb || "<i>No blurb available</i>"}
+                    <a
+                        class="flex flex-row gap-2 p-2 bg-zinc-900 text-white justify-center mt-4"
+                        href={dialogStartup.homepage}>Visit homepage</a
+                    >
+                </div>
+            </div>
+        {:else}
+            <h2>No startup selected</h2>
+        {/if}
+    </dialog>
 {/if}
 
 <style>

@@ -4,6 +4,22 @@ import { Collections } from "../src/lib/pb-types";
 import { getSourceFileUrl, pb } from "../src/lib/pocketbase";
 import fetch from "node-fetch";
 
+async function downloadImage(record: {collectionId: string, id: string}, logo: string) {
+    const f = await fetch(getSourceFileUrl(record, logo));
+
+            const outPath = path.join(
+                __dirname,
+                "..",
+                "static",
+                "pb",
+                record.collectionId,
+                logo,
+            );
+
+            fs.mkdirSync(path.dirname(outPath), { recursive: true });
+            fs.writeFileSync(outPath, await f.buffer());
+}
+
 async function exportPortfolios() {
     try {
         const portfolios = await pb
@@ -11,19 +27,8 @@ async function exportPortfolios() {
             .getFullList({ expand: "funds.manager" });
 
         portfolios.forEach(async (p) => {
-            const f = await fetch(getSourceFileUrl(p, p.logo));
-
-            const outPath = path.join(
-                __dirname,
-                "..",
-                "static",
-                "pb",
-                p.collectionId,
-                p.logo,
-            );
-
-            fs.mkdirSync(path.dirname(outPath), { recursive: true });
-            fs.writeFileSync(outPath, await f.buffer());
+            downloadImage(p, p.logo);
+            if (p.use_unoptimised_logo) downloadImage(p, p.unoptimised_logo);
         });
 
         const outPath = path.join(
