@@ -2,6 +2,7 @@
     import {
         Collections,
         PortfolioCompaniesStageOptions,
+        type FundsResponse,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
     import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
@@ -11,7 +12,6 @@
     import ChevronDown from "lucide-svelte/icons/chevron-down";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import { Link } from "lucide-svelte";
     import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
 
     const stages = [
@@ -51,14 +51,14 @@
             | "liquidity_event"
             | "unassigned";
         fund:
-            | "0jz3m1u87fm8c5j"
-            | "l7bnwnwwzs3yr4n"
-            | "4f6b55zzbes47nj"
-            | "h8c2tlfs7gt29nv"
-            | "g5dqtiodxn8w02q"
-            | "18vybohe60ln3n4"
+            | "wxjsqai6fhw7mgq"
+            | "hkdul6sd7xx2u6i"
+            | "73tuvm8ll0jlo6x"
             | "4hwukm1xi68x58b"
-            | "73tuvm8ll0jlo6x";
+            | "18vybohe60ln3n4"
+            | "h8c2tlfs7gt29nv"
+            | "l7bnwnwwzs3yr4n"
+            | "0jz3m1u87fm8c5j";
     }
 
     const config = {
@@ -71,14 +71,14 @@
             "unassigned",
         ],
         fund: [
-            "0jz3m1u87fm8c5j",
-            "l7bnwnwwzs3yr4n",
-            "4f6b55zzbes47nj",
-            "h8c2tlfs7gt29nv",
-            "g5dqtiodxn8w02q",
-            "18vybohe60ln3n4",
-            "4hwukm1xi68x58b",
+            "wxjsqai6fhw7mgq",
+            "hkdul6sd7xx2u6i",
             "73tuvm8ll0jlo6x",
+            "4hwukm1xi68x58b",
+            "18vybohe60ln3n4",
+            "h8c2tlfs7gt29nv",
+            "l7bnwnwwzs3yr4n",
+            "0jz3m1u87fm8c5j",
         ],
     } satisfies Record<string, any>;
 
@@ -102,7 +102,7 @@
             portfolioMap[p.id] = p;
         });
 
-        let fundsResp;
+        let fundsResp: FundsResponse<unknown>[];
 
         if (process.env.NODE_ENV === "development") {
             fundsResp = await pb.collection(Collections.Funds).getFullList();
@@ -112,10 +112,12 @@
 
         funds = [
             { value: "Any", label: "Any" },
-            ...fundsResp.map((fund) => ({
-                value: fund.id,
-                label: fund.name,
-            })),
+            ...fundsResp
+                .sort((a, b) => (a.manager > b.manager ? 1 : 0))
+                .map((fund) => ({
+                    value: fund.id,
+                    label: fund.name,
+                })),
         ];
 
         // Now this assignment will properly trigger reactivity
@@ -413,7 +415,10 @@
             </main>
         </div>
     </div>
-    <PortfolioDialog portfolio={dialogStartup} bind:dialogElement={startupModal} />
+    <PortfolioDialog
+        portfolio={dialogStartup}
+        bind:dialogElement={startupModal}
+    />
 {/if}
 
 <style>

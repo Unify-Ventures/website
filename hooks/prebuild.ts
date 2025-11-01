@@ -80,7 +80,7 @@ async function exportFunds() {
     try {
         const funds = await pb
             .collection(Collections.Funds)
-            .getFullList({ expand: "manager" });
+            .getFullList({ filter: process.env.NODE_ENV === "development" ? undefined : "release = true", expand: "manager" });
 
         fs.writeFileSync(
             path.join(__dirname, "..", "static", "pb", "funds.json"),
