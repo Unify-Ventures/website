@@ -91,7 +91,6 @@
 
     let portfolioMap = $state<Record<string, PortfolioCompaniesResponse>>({});
 
-    // Fix: Declare filterStore as reactive state
     let filterStore = $state<ReturnType<
         typeof createFilterStore<PortfolioFilter>
     > | null>(null);
