@@ -42,6 +42,8 @@
 
     let teamTl: GSAPTimeline | null = null;
 
+    let externalPause = $state(false);
+
     const portfolioCategories = getPortfolioCategories();
 
     let team = $state<TeamResponse[]>([]);
@@ -271,6 +273,7 @@
                     trackClass="gap-6"
                     speed={60}
                     gap={24}
+                    {externalPause}
                 >
                     {#each portfolioStore.portfolios as portfolio}
                         <button
@@ -283,6 +286,7 @@
                             aria-label="View {portfolio.name} portfolio"
                             onclick={() => {
                                 selectedPortfolio = portfolio;
+                                externalPause = true;
                                 portfolioDialog?.showModal();
                             }}
                         >
@@ -486,6 +490,9 @@
 <PortfolioDialog
     portfolio={selectedPortfolio}
     bind:dialogElement={portfolioDialog}
+    onclose={() => {
+        externalPause = false;
+    }}
 />
 
 <style>

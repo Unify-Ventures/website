@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
     import { getFileUrl } from "$lib/pocketbase";
+    import type { EventHandler } from "svelte/elements";
 
     interface Props {
         /**
@@ -11,13 +12,15 @@
          * Bind to the dialog element for programmatic control
          */
         dialogElement?: HTMLDialogElement;
+        onclose: EventHandler<Event, HTMLDialogElement>;
     }
 
-    let { portfolio, dialogElement = $bindable() }: Props = $props();
+    let { portfolio, dialogElement = $bindable(), onclose }: Props = $props();
 </script>
 
 <dialog
     bind:this={dialogElement}
+    {onclose}
     class="fixed m-auto max-w-md outline-none border-2"
     style="width: calc(100vw - var(--spacing) * 8);"
 >
