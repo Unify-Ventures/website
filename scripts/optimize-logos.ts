@@ -13,16 +13,16 @@ type OptimiseMetadata = {
     };
 };
 
-const pb = new PocketBase(process.env.PB_TYPEGEN_URL || "https://content.unifyventures.vc");
+const pb = new PocketBase(
+    process.env.PB_TYPEGEN_URL || "https://content.unifyventures.vc",
+);
 
 async function authenticateAdmin() {
     const email = process.env.PB_TYPEGEN_EMAIL;
     const password = process.env.PB_TYPEGEN_PASSWORD;
 
     if (!email || !password) {
-        throw new Error(
-            "PB_TYPEGEN_EMAIL and PB_TYPEGEN_PASSWORD must be set",
-        );
+        throw new Error("PB_TYPEGEN_EMAIL and PB_TYPEGEN_PASSWORD must be set");
     }
 
     await pb.admins.authWithPassword(email, password);
@@ -57,7 +57,7 @@ async function optimizeImage(
             path: filename,
             plugins: [
                 {
-                    name: "preset-default"
+                    name: "preset-default",
                 },
             ],
         });
@@ -66,9 +66,7 @@ async function optimizeImage(
             newFilename: filename,
         };
     } else {
-        const optimized = await sharp(buffer)
-            .webp({ quality: 85 })
-            .toBuffer();
+        const optimized = await sharp(buffer).webp({ quality: 85 }).toBuffer();
         const newFilename = filename.replace(/\.[^.]+$/, ".webp");
         return {
             buffer: optimized,
@@ -95,11 +93,16 @@ async function processCompany(
             sourceFilename = company.logo;
             const logoUrl = getFileUrl(company, sourceFilename);
             const logoBuffer = await downloadImage(logoUrl);
-            const logoFile = new File([new Uint8Array(logoBuffer)], sourceFilename);
+            const logoFile = new File(
+                [new Uint8Array(logoBuffer)],
+                sourceFilename,
+            );
 
-            await pb.collection(Collections.PortfolioCompanies).update(company.id, {
-                unoptimised_logo: logoFile,
-            });
+            await pb
+                .collection(Collections.PortfolioCompanies)
+                .update(company.id, {
+                    unoptimised_logo: logoFile,
+                });
         }
 
         const sourceUrl = getFileUrl(company, sourceFilename);
@@ -138,10 +141,13 @@ async function processCompany(
     }
 }
 
-async function processBatch(companies: PortfolioCompaniesResponse<unknown, OptimiseMetadata>[], batchSize: number = 5) {
+async function processBatch(
+    companies: PortfolioCompaniesResponse<unknown, OptimiseMetadata>[],
+    batchSize: number = 5,
+) {
     for (let i = 0; i < companies.length; i += batchSize) {
         const batch = companies.slice(i, i + batchSize);
-        await Promise.all(batch.map(company => processCompany(company)));
+        await Promise.all(batch.map((company) => processCompany(company)));
     }
 }
 
@@ -151,7 +157,9 @@ async function main() {
 
         const companies = await pb
             .collection(Collections.PortfolioCompanies)
-            .getFullList<PortfolioCompaniesResponse<unknown, OptimiseMetadata>>();
+            .getFullList<
+                PortfolioCompaniesResponse<unknown, OptimiseMetadata>
+            >();
 
         console.log(`\nFound ${companies.length} companies\n`);
 

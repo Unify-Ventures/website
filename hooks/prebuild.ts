@@ -4,20 +4,23 @@ import { Collections } from "../src/lib/pb-types";
 import { getSourceFileUrl, pb } from "../src/lib/pocketbase";
 import fetch from "node-fetch";
 
-async function downloadImage(record: {collectionId: string, id: string}, logo: string) {
+async function downloadImage(
+    record: { collectionId: string; id: string },
+    logo: string,
+) {
     const f = await fetch(getSourceFileUrl(record, logo));
 
-            const outPath = path.join(
-                __dirname,
-                "..",
-                "static",
-                "pb",
-                record.collectionId,
-                logo,
-            );
+    const outPath = path.join(
+        __dirname,
+        "..",
+        "static",
+        "pb",
+        record.collectionId,
+        logo,
+    );
 
-            fs.mkdirSync(path.dirname(outPath), { recursive: true });
-            fs.writeFileSync(outPath, await f.buffer());
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    fs.writeFileSync(outPath, await f.buffer());
 }
 
 async function exportPortfolios() {

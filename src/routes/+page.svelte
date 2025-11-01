@@ -55,7 +55,8 @@
             ?.label ?? "All Categories",
     );
 
-    let selectedPortfolio = $state<PortfolioCompaniesResponse<PortfolioExpand> | null>(null);
+    let selectedPortfolio =
+        $state<PortfolioCompaniesResponse<PortfolioExpand> | null>(null);
     let portfolioDialog = $state<HTMLDialogElement | null>(null);
 
     onMount(async () => {
@@ -343,8 +344,7 @@
                     <p
                         class="text-6xl h-64 flex gap-6 items-center justify-center w-full"
                     >
-                        <LoaderCircle class="animate-spin" size="64" /> Loading
-                        portfolios...
+                        <LoaderCircle class="animate-spin" size="64" /> Loading portfolios...
                     </p>
                 </div>
             {/if}
@@ -483,7 +483,10 @@
     </section>
 </main>
 
-<PortfolioDialog portfolio={selectedPortfolio} bind:dialogElement={portfolioDialog} />
+<PortfolioDialog
+    portfolio={selectedPortfolio}
+    bind:dialogElement={portfolioDialog}
+/>
 
 <style>
     :root {

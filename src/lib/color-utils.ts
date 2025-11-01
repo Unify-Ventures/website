@@ -65,7 +65,6 @@ function hslToHex(h: number, s: number, l: number): string {
     );
 }
 
-
 export function adjustLightColor(color: string): string {
     const [h, s, l] = hexToHsl(color);
 
