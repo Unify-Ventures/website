@@ -10,7 +10,8 @@
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "typegen": "pocketbase-typegen --env --out src/lib/pb-types.ts",
         "deploy": "git tag $(date +%Y-%m-%d-%H-%M-%S) && git push --tags",
-        "optimize-logos": "bun run scripts/optimize-logos.ts"
+        "optimize-logos": "bun run scripts/optimize-logos.ts",
+        "auto-invert": "bun run scripts/auto-invert.ts"
     },
     "devDependencies": {
         "@svelte-put/inline-svg": "^4.0.2",
