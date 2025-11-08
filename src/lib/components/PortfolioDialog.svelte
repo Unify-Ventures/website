@@ -9,13 +9,22 @@
          */
         portfolio: PortfolioCompaniesResponse | null;
         /**
+         * All of the portfolio logo URLs, pre-rendered offscreen, then made visible depending on the active selection
+         */
+        logos: { logoURL: string; portfolio: PortfolioCompaniesResponse }[];
+        /**
          * Bind to the dialog element for programmatic control
          */
         dialogElement?: HTMLDialogElement;
         onclose: EventHandler<Event, HTMLDialogElement>;
     }
 
-    let { portfolio, dialogElement = $bindable(), onclose }: Props = $props();
+    let {
+        portfolio,
+        logos,
+        dialogElement = $bindable(),
+        onclose,
+    }: Props = $props();
 </script>
 
 <dialog
@@ -24,39 +33,48 @@
     class="fixed m-auto max-w-md outline-none border-2"
     style="width: calc(100vw - var(--spacing) * 8);"
 >
-    {#if portfolio}
-        <div class="flex flex-col">
-            <div class="bg-zinc-100 p-4">
-                {#if portfolio.logo.endsWith(".svg")}
+    <div class="flex flex-col">
+        <div class="bg-zinc-100 p-4">
+            {#each logos as logo}
+                {#if logo.logoURL.endsWith(".svg")}
                     <img
                         class="w-full h-full aspect-video"
+                        class:hidden={!(
+                            portfolio?.logo === logo.portfolio.logo
+                        )}
                         width="14rem"
                         height="14rem"
-                        src={getFileUrl(portfolio, portfolio.logo)}
-                        aria-hidden
-                        alt={`${portfolio.name}'s Logo'`}
+                        src={logo.logoURL}
+                        aria-hidden="true"
+                        alt="Portfolio logo"
                     />
                 {:else}
                     <img
                         class={"w-full h-full object-contain" +
-                            (portfolio.invert_foreground
+                            (logo.portfolio.invert_foreground
                                 ? " invert hue-rotate-180 contrast-75"
                                 : "")}
-                        src={getFileUrl(portfolio, portfolio.logo)}
-                        alt={`${portfolio.name}'s logo'`}
+                        class:hidden={!(
+                            portfolio?.logo === logo.portfolio.logo
+                        )}
+                        src={logo.logoURL}
+                        aria-hidden="true"
+                        alt="Portfolio logo"
                     />
                 {/if}
-            </div>
-            <div class="p-4">
+            {/each}
+        </div>
+        <div class="p-4">
+            {#if portfolio}
                 <h2 class="text-2xl font-bold">{portfolio.name}</h2>
                 {@html portfolio.blurb || "<i>No blurb available</i>"}
                 <a
                     class="flex flex-row gap-2 p-2 bg-zinc-900 text-white justify-center mt-4"
                     href={portfolio.homepage}>Visit homepage</a
                 >
-            </div>
+            {:else}
+                <h2>No startup selected</h2>
+            {/if}
         </div>
-    {:else}
-        <h2>No startup selected</h2>
-    {/if}
+    </div>
 </dialog>

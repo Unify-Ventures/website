@@ -5,7 +5,12 @@
         type FundsResponse,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
+    import {
+        getFileUrl,
+        getPortfolios,
+        pb,
+        type PortfolioExpand,
+    } from "$lib/pocketbase";
     import { adjustLightColor } from "$lib/color-utils";
     import { createFilterStore } from "$lib/multi-filter.svelte";
     import { inlineSvg } from "@svelte-put/inline-svg";
@@ -137,7 +142,7 @@
                     const expand = fund.expand as any;
                     return {
                         value: fund.id,
-                        label: fund.name,
+                        label: fund.short_name || fund.name,
                         managerName: expand?.manager?.name ?? "",
                         managerFeatured: expand?.manager?.featured ?? false,
                     };
@@ -399,7 +404,7 @@
             >
                 {#each portfolios as portfolio}
                     <button
-                        class="bg-zinc-100 p-4 group h-40 w-40 grid place-content-center"
+                        class="bg-zinc-100 p-4 group h-40 w-40 grid place-content-center cursor-pointer"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}
@@ -455,6 +460,13 @@
     </div>
     <PortfolioDialog
         portfolio={dialogStartup}
+        logos={portfolios.map((p) => ({
+            logoURL: getFileUrl(
+                p,
+                !p.use_unoptimised_logo ? p.logo : p.unoptimised_logo,
+            ),
+            portfolio: p,
+        }))}
         bind:dialogElement={startupModal}
     />
 {/if}
