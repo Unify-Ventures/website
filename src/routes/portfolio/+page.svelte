@@ -166,7 +166,7 @@
     <div class="grid place-content-center">
         <h2 class="text-7xl font-medium">Portfolio</h2>
         <div
-            class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col xl:flex-row gap-4 min-h-full"
+            class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col lg:flex-row gap-4 min-h-full"
         >
             <!-- Desktop filters -->
             <div class="sticky left-0 top-10 self-start hidden lg:block mb-16">
@@ -400,7 +400,7 @@
 
             <!-- Portfolio results -->
             <main
-                class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
+                class="grid grid-cols-2 min-w-[336px] lg:min-w-[512px] 2xl:min-w-[688px] lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
             >
                 {#each portfolios as portfolio}
                     <button
