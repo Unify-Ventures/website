@@ -137,6 +137,14 @@
     });
 </script>
 
+<svelte:head>
+    <!-- Prefetch portfolio and portfolio company logos -->
+    <link rel="prefetch" href="/portfolio" />
+    {#each data.portfolioLogos as logo}
+        <link rel="prefetch" href={logo} />
+    {/each}
+</svelte:head>
+
 <main>
     <h2
         class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-10 lg:text-center"
@@ -293,6 +301,9 @@
                             <div
                                 role="img"
                                 class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
+                                class:no-hover={!portfolio.logo.endsWith(
+                                    ".svg",
+                                )}
                                 id={`portfolio-${portfolio.id}`}
                             >
                                 {#if portfolio.logo.endsWith(".svg")}
