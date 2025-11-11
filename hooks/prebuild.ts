@@ -27,7 +27,13 @@ async function exportPortfolios() {
     try {
         const portfolios = await pb
             .collection(Collections.PortfolioCompanies)
-            .getFullList({ expand: "funds.manager" });
+            .getFullList({
+                expand: "funds.manager",
+                filter:
+                    process.env.NODE_ENV === "development"
+                        ? undefined
+                        : "release = true",
+            });
 
         portfolios.forEach(async (p) => {
             downloadImage(p, p.logo);
@@ -80,7 +86,7 @@ async function exportFunds() {
     try {
         const funds = await pb
             .collection(Collections.Funds)
-            .getFullList({ filter: process.env.NODE_ENV === "development" ? undefined : "release = true", expand: "manager" });
+            .getFullList({ expand: "manager" });
 
         fs.writeFileSync(
             path.join(__dirname, "..", "static", "pb", "funds.json"),
