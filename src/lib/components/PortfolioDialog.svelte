@@ -1,6 +1,9 @@
 <script lang="ts">
+    import { page } from "$app/state";
+    import { toCamelCase } from "$lib/case";
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
     import { getFileUrl } from "$lib/pocketbase";
+    import { Link } from "lucide-svelte";
     import type { EventHandler } from "svelte/elements";
 
     interface Props {
@@ -33,7 +36,20 @@
     class="fixed m-auto max-w-md outline-none border-2"
     style="width: calc(100vw - var(--spacing) * 8);"
 >
-    <div class="flex flex-col">
+    <div class="flex flex-col relative">
+        <button
+            class="absolute top-2.5 left-2.5"
+            onclick={() => {
+                navigator.clipboard.writeText(
+                    page.url.host +
+                        "/portfolio/#" +
+                        toCamelCase(portfolio?.name ?? ""),
+                );
+                // TODO: Add visual feedback
+            }}
+        >
+            <Link />
+        </button>
         <div class="bg-zinc-100 p-4">
             {#each logos as logo}
                 {#if logo.logoURL.endsWith(".svg")}

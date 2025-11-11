@@ -18,6 +18,8 @@
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
     import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
+    import { page } from "$app/state";
+    import { toCamelCase } from "$lib/case";
 
     const stages = [
         { value: "Any", label: "Any" },
@@ -100,6 +102,37 @@
         typeof createFilterStore<PortfolioFilter>
     > | null>(null);
 
+    function handleHash() {
+        if (!window.location.hash) return;
+        const portfolioElement = document.getElementById(
+            (Object.entries(portfolioMap).find(
+                ([_, value]) =>
+                    toCamelCase(value.name) === page.url.hash.slice(1),
+            ) || [])[0] || "",
+        );
+
+        if (!portfolioElement) return;
+
+        let scrollEndHandler = () => {
+            portfolioElement.classList.add("flash");
+            setTimeout(() => {
+                portfolioElement.classList.remove("flash");
+            }, 750);
+            window.removeEventListener("scrollend", scrollEndHandler);
+        };
+
+        window.addEventListener("scrollend", scrollEndHandler);
+
+        portfolioElement.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
+
+    $effect(() => {
+        if (page.url.hash) handleHash();
+    });
+
     onMount(async () => {
         portfolios = await getPortfolios();
 
@@ -151,6 +184,8 @@
 
         // Now this assignment will properly trigger reactivity
         filterStore = createFilterStore(filterablePortfolios, config);
+
+        setTimeout(handleHash, 500);
     });
 
     function fundToLabel(fund: string) {
@@ -413,6 +448,7 @@
                             dialogStartup = portfolio;
                             startupModal?.showModal();
                         }}
+                        id={portfolio.id}
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
@@ -475,5 +511,30 @@
     input:disabled + label {
         opacity: 0.5;
         cursor: not-allowed;
+    }
+
+    .flash {
+        animation: flash 750ms ease-in-out;
+    }
+
+    @keyframes flash {
+        0% {
+            transform: scale(1);
+        }
+        15% {
+            transform: scale(1.1);
+        }
+        30% {
+            transform: scale(0.9);
+        }
+        50% {
+            transform: scale(1.075);
+        }
+        65% {
+            transform: scale(0.95);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
 </style>
