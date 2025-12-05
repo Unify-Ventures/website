@@ -20,6 +20,7 @@
     import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
     import { page } from "$app/state";
     import { toCamelCase } from "$lib/case";
+    import { CircleSlash } from "lucide-svelte";
 
     const stages = [
         { value: "Any", label: "Any" },
@@ -471,7 +472,7 @@
                                                   .unoptimised_logo,
                                     )}
                                 />
-                            {:else}
+                            {:else if portfolio.logo}
                                 <img
                                     class={"w-full h-full object-contain" +
                                         (portfolio.invert_foreground
@@ -487,6 +488,8 @@
                                     )}
                                     alt={`${portfolioMap[portfolio.id].name}'s logo'`}
                                 />
+                            {:else}
+                                <CircleSlash size="64" />
                             {/if}
                         </div>
                     </button>
