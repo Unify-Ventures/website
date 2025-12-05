@@ -41,6 +41,7 @@
         "lucide-svelte": "^0.546.0",
         "pocketbase": "^0.26.2",
         "svelte-fa": "^4.0.4",
-        "svelte-typewriter": "^3.2.3"
+        "svelte-typewriter": "^3.2.3",
+        "unplugin-preprocessor-directives": "^1.2.0"
     }
 }
