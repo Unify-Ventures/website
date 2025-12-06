@@ -206,7 +206,10 @@
         >
             <!-- Desktop filters -->
             <div class="sticky left-0 top-10 self-start hidden lg:block mb-16">
-                <div class="border-2 p-4 border-zinc-700 bg-white w-64">
+                <!-- TODO: Implement proper overflow handling for when filter is not floating -->
+                <div
+                    class="border-2 p-4 border-zinc-700 bg-white w-64 max-h-[calc(100vh-80px)] overflow-scroll"
+                >
                     <div class="flex flex-col">
                         <h3 class="font-bold text-xl">Stage</h3>
                         {#each stages as stage}
