@@ -489,7 +489,11 @@
                                     alt={`${portfolioMap[portfolio.id].name}'s logo'`}
                                 />
                             {:else}
-                                <CircleSlash size="64" />
+                                <div
+                                    class="w-full h-full grid place-content-center"
+                                >
+                                    <CircleSlash size="64" />
+                                </div>
                             {/if}
                         </div>
                     </button>
