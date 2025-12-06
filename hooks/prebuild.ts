@@ -30,9 +30,10 @@ async function exportPortfolios() {
             .getFullList({
                 expand: "funds.manager",
                 filter:
-                    process.env.NODE_ENV === "development"
-                        ? undefined
-                        : "release = true",
+                    process.env.NODE_ENV === "production" &&
+                    process.env.PORTFOLIO_ENV === "production"
+                        ? "release = true"
+                        : undefined,
             });
 
         portfolios.forEach(async (p) => {
