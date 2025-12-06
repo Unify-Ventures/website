@@ -36,8 +36,9 @@ async function exportPortfolios() {
             });
 
         portfolios.forEach(async (p) => {
-            downloadImage(p, p.logo);
-            if (p.use_unoptimised_logo) downloadImage(p, p.unoptimised_logo);
+            if (p.logo) downloadImage(p, p.logo);
+            if (p.unoptimised_logo && p.use_unoptimised_logo)
+                downloadImage(p, p.unoptimised_logo);
         });
 
         const outPath = path.join(
