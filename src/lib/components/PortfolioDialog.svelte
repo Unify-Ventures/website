@@ -35,6 +35,7 @@
     {onclose}
     class="fixed m-auto max-w-md outline-none border-2"
     style="width: calc(100vw - var(--spacing) * 8);"
+    closedby="any"
 >
     <div class="flex flex-col relative">
         <button
