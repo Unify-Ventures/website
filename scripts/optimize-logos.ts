@@ -46,13 +46,15 @@ async function readJsonFromStdin(): Promise<ViewBoxData[]> {
         output: process.stdout,
     });
 
-    console.log("Please paste the JSON data and press Ctrl+D (or Ctrl+Z on Windows) when done:");
-    
-    let input = '';
+    console.log(
+        "Please paste the JSON data and press Ctrl+D (or Ctrl+Z on Windows) when done:",
+    );
+
+    let input = "";
     for await (const line of rl) {
-        input += line + '\n';
+        input += line + "\n";
     }
-    
+
     try {
         return JSON.parse(input.trim());
     } catch (error) {
@@ -83,16 +85,25 @@ function extractViewBoxFromSvg(svgContent: string): string | null {
 }
 
 function setViewBoxInSvg(svgContent: string, viewBox: string): string {
-    let result = svgContent.replace(/\s+(?:width|height)\s*=\s*["'][^"']*["']/gi, '');
-    
+    let result = svgContent.replace(
+        /\s+(?:width|height)\s*=\s*["'][^"']*["']/gi,
+        "",
+    );
+
     const hasViewBox = /viewBox\s*=/i.test(result);
-    
+
     if (hasViewBox) {
-        result = result.replace(/viewBox\s*=\s*["'][^"']*["']/i, `viewBox="${viewBox}"`);
+        result = result.replace(
+            /viewBox\s*=\s*["'][^"']*["']/i,
+            `viewBox="${viewBox}"`,
+        );
     } else {
-        result = result.replace(/<svg([^>]*?)>/i, `<svg$1 viewBox="${viewBox}">`);
+        result = result.replace(
+            /<svg([^>]*?)>/i,
+            `<svg$1 viewBox="${viewBox}">`,
+        );
     }
-    
+
     return result;
 }
 
@@ -104,7 +115,7 @@ async function optimizeImage(
     const isSvg = filename.toLowerCase().endsWith(".svg");
     if (isSvg) {
         let svgContent = buffer.toString();
-        
+
         if (viewBoxData) {
             const currentViewBox = extractViewBoxFromSvg(svgContent);
             if (!currentViewBox || currentViewBox !== viewBoxData) {
@@ -114,7 +125,7 @@ async function optimizeImage(
                 console.log(`ViewBox already matches: ${viewBoxData}`);
             }
         }
-        
+
         const result = optimize(svgContent, {
             path: filename,
             plugins: [
@@ -167,12 +178,12 @@ async function processCompany(
         const sourceUrl = getFileUrl(company, sourceFilename);
         console.log(`[${company.name}] Downloading ${sourceFilename}`);
         const imageBuffer = await downloadImage(sourceUrl);
-        
+
         const viewBoxData = viewBoxMap?.get(company.name);
         if (viewBoxData) {
             console.log(`[${company.name}] Found viewBox data: ${viewBoxData}`);
         }
-        
+
         console.log(`[${company.name}] Optimizing`);
         const { buffer: optimizedBuffer, newFilename } = await optimizeImage(
             imageBuffer,
@@ -210,30 +221,36 @@ async function processBatch(
 ) {
     for (let i = 0; i < companies.length; i += batchSize) {
         const batch = companies.slice(i, i + batchSize);
-        await Promise.all(batch.map((company) => processCompany(company, viewBoxMap)));
+        await Promise.all(
+            batch.map((company) => processCompany(company, viewBoxMap)),
+        );
     }
 }
 
 async function main() {
     try {
         await authenticateAdmin();
-        
+
         let viewBoxMap: Map<string, string> | undefined;
-        
+
         if (viewboxMode) {
             console.log("ViewBox mode enabled - reading JSON from stdin...");
             const viewBoxData = await readJsonFromStdin();
-            viewBoxMap = new Map(viewBoxData.map(item => [item.name, item.bbox]));
-            console.log(`Loaded viewBox data for ${viewBoxMap.size} companies\n`);
+            viewBoxMap = new Map(
+                viewBoxData.map((item) => [item.name, item.bbox]),
+            );
+            console.log(
+                `Loaded viewBox data for ${viewBoxMap.size} companies\n`,
+            );
         }
-        
+
         const companies = await pb
             .collection(Collections.PortfolioCompanies)
             .getFullList<
                 PortfolioCompaniesResponse<unknown, OptimiseMetadata>
             >();
         console.log(`\nFound ${companies.length} companies\n`);
-        
+
         await processBatch(companies, viewBoxMap, 5);
         console.log("\nDone!");
     } catch (error) {

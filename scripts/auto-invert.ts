@@ -3,7 +3,7 @@ import {
     Collections,
     type PortfolioCompaniesResponse,
 } from "../src/lib/pb-types";
-import {hexToHsl} from "../src/lib/color-utils"
+import { hexToHsl } from "../src/lib/color-utils";
 
 type AutoInvertMetadata = {
     auto_invert?: {
@@ -78,7 +78,7 @@ async function main() {
             .getFullList<
                 PortfolioCompaniesResponse<unknown, AutoInvertMetadata>
             >({
-                filter: "logo ~ \"%.svg\""
+                filter: 'logo ~ "%.svg"',
             });
 
         console.log(`\nFound ${companies.length} companies\n`);

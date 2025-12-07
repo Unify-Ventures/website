@@ -33,11 +33,11 @@
 <dialog
     bind:this={dialogElement}
     {onclose}
-    class="fixed m-auto max-w-md outline-none border-2"
+    class="fixed m-auto max-w-md border-2 outline-none"
     style="width: calc(100vw - var(--spacing) * 8);"
     closedby="any"
 >
-    <div class="flex flex-col relative">
+    <div class="relative flex flex-col">
         <button
             class="absolute top-2.5 left-2.5"
             onclick={() => {
@@ -55,7 +55,7 @@
             {#each logos as logo}
                 {#if logo.logoURL.endsWith(".svg")}
                     <img
-                        class="w-full h-full aspect-video"
+                        class="aspect-video h-full w-full"
                         class:hidden={!(
                             portfolio?.logo === logo.portfolio.logo
                         )}
@@ -67,9 +67,9 @@
                     />
                 {:else}
                     <img
-                        class={"w-full h-full object-contain" +
+                        class={"h-full w-full object-contain" +
                             (logo.portfolio.invert_foreground
-                                ? " invert hue-rotate-180 contrast-75"
+                                ? " contrast-75 hue-rotate-180 invert"
                                 : "")}
                         class:hidden={!(
                             portfolio?.logo === logo.portfolio.logo
@@ -86,7 +86,7 @@
                 <h2 class="text-2xl font-bold">{portfolio.name}</h2>
                 {@html portfolio.blurb || "<i>No blurb available</i>"}
                 <a
-                    class="flex flex-row gap-2 p-2 bg-zinc-900 text-white justify-center mt-4"
+                    class="mt-4 flex flex-row justify-center gap-2 bg-zinc-900 p-2 text-white"
                     href={portfolio.homepage}>Visit homepage</a
                 >
             {:else}

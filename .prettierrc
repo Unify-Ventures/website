@@ -1,5 +1,5 @@
 {
     "trailingComma": "all",
     "tabWidth": 4,
-    "plugins": ["prettier-plugin-tailwindcss"]
+    "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"]
 }

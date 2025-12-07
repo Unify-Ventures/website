@@ -1,8 +1,8 @@
 <section class="section">
     <div>
         <h2>Terms</h2>
-        <div class="flex w-full flex-col lg:flex-row gap-12 lg:gap-0">
-            <div class="prose max-w-none prose-lg">
+        <div class="flex w-full flex-col gap-12 lg:flex-row lg:gap-0">
+            <div class="prose prose-lg max-w-none">
                 <div class="space-y-4">
                     <p>
                         This website is operated by and on behalf of Unify

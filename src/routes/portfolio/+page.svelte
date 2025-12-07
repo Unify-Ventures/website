@@ -22,7 +22,10 @@
     import { toCamelCase } from "$lib/case";
     import { CircleSlash } from "lucide-svelte";
 
-    const stages: { value: "Any" | PortfolioCompaniesStageOptions; label: string }[] = [
+    const stages: {
+        value: "Any" | PortfolioCompaniesStageOptions;
+        label: string;
+    }[] = [
         { value: "Any", label: "Any" },
         ...Object.values(PortfolioCompaniesStageOptions).map((stage) => ({
             value: stage,
@@ -115,11 +118,13 @@
     onMount(async () => {
         portfolios = await getPortfolios();
 
-        const filterablePortfolios: PortfolioFilterItem[] = portfolios.map((p) => ({
-            id: p.id,
-            stage: p.stage ?? PortfolioCompaniesStageOptions.unassigned,
-            fund: p.funds?.[0] ?? "",
-        }));
+        const filterablePortfolios: PortfolioFilterItem[] = portfolios.map(
+            (p) => ({
+                id: p.id,
+                stage: p.stage ?? PortfolioCompaniesStageOptions.unassigned,
+                fund: p.funds?.[0] ?? "",
+            }),
+        );
 
         portfolios.forEach((p) => {
             portfolioMap[p.id] = p;
@@ -186,7 +191,10 @@
         if (rect.height <= window.innerHeight) return;
         const gridTop = rect.top + window.scrollY;
         const viewportCenter = window.scrollY + window.innerHeight / 2;
-        relativeScroll = Math.max(0, Math.min(1, (viewportCenter - gridTop) / rect.height));
+        relativeScroll = Math.max(
+            0,
+            Math.min(1, (viewportCenter - gridTop) / rect.height),
+        );
     }
 
     function selectFilter(dimension: "stage" | "fund", value: string) {
@@ -205,7 +213,10 @@
         tick().then(() => {
             const rect = portfolioGrid!.getBoundingClientRect();
             const gridTop = rect.top + window.scrollY;
-            const target = gridTop + relativeScroll! * rect.height - window.innerHeight / 2;
+            const target =
+                gridTop +
+                relativeScroll! * rect.height -
+                window.innerHeight / 2;
             window.scrollTo({ top: Math.max(0, target), behavior: "instant" });
             relativeScroll = null;
         });
@@ -216,29 +227,30 @@
     <div class="grid place-content-center">
         <h2 class="text-7xl font-medium">Portfolio</h2>
         <div
-            class="relative w-full max-w-7xl lg:m-8 my-4 mx-auto flex flex-col lg:flex-row gap-4 min-h-full"
+            class="relative mx-auto my-4 flex min-h-full w-full max-w-7xl flex-col gap-4 lg:m-8 lg:flex-row"
         >
             <!-- Desktop filters -->
-            <div class="sticky left-0 top-10 self-start hidden lg:block mb-16">
+            <div class="sticky top-10 left-0 mb-16 hidden self-start lg:block">
                 <!-- TODO: Implement proper overflow handling for when filter is not floating -->
                 <div
-                    class="border-2 p-4 border-zinc-700 bg-white w-64 max-h-[calc(100vh-80px)] overflow-scroll"
+                    class="max-h-[calc(100vh-80px)] w-64 overflow-scroll border-2 border-zinc-700 bg-white p-4"
                 >
                     <div class="flex flex-col">
-                        <h3 class="font-bold text-xl">Stage</h3>
+                        <h3 class="text-xl font-bold">Stage</h3>
                         {#each stages as stage}
-                            <div class="flex flex-row gap-2 items-center p-1">
+                            <div class="flex flex-row items-center gap-2 p-1">
                                 <input
                                     type="radio"
                                     name="stage"
                                     value={stage.value}
-                                    class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                    class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
                                     id={`stage-${stage.value}`}
                                     disabled={stage.value !== "Any" &&
                                         !filterStore
                                             .getAvailableOptions("stage")
                                             .includes(stage.value)}
-                                    onchange={() => selectFilter("stage", stage.value)}
+                                    onchange={() =>
+                                        selectFilter("stage", stage.value)}
                                     checked={filterStore.dimensions.stage
                                         .selected === stage.value}
                                 />
@@ -257,27 +269,28 @@
                             </div>
                         {/each}
 
-                        <h3 class="font-bold text-xl mt-4">Fund</h3>
+                        <h3 class="mt-4 text-xl font-bold">Fund</h3>
                         {#each funds as fund, index}
                             {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
                                 <div
-                                    class="text-xs font-semibold text-zinc-600 mt-3 mb-1 px-1"
+                                    class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
                                 >
                                     {fund.managerName}
                                 </div>
                             {/if}
-                            <div class="flex flex-row gap-2 items-center p-1">
+                            <div class="flex flex-row items-center gap-2 p-1">
                                 <input
                                     type="radio"
                                     name="fund"
                                     value={fund.value}
-                                    class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                    class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
                                     id={`fund-${fund.value}`}
                                     disabled={!filterStore
                                         .getAvailableOptions("fund")
                                         .includes(fund.value) &&
                                         fund.value !== "Any"}
-                                    onchange={() => selectFilter("fund", fund.value)}
+                                    onchange={() =>
+                                        selectFilter("fund", fund.value)}
                                     checked={filterStore.dimensions.fund
                                         .selected === fund.value}
                                 />
@@ -294,7 +307,7 @@
                         {/each}
 
                         <button
-                            class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
+                            class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
                             onclick={resetFilters}>Reset Filters</button
                         >
                     </div>
@@ -303,19 +316,19 @@
 
             <!-- Mobile filters -->
             <div
-                class="sticky left-0 top-0 lg:hidden w-full bg-white pt-4 h-full mb-4 z-10"
+                class="sticky top-0 left-0 z-10 mb-4 h-full w-full bg-white pt-4 lg:hidden"
             >
-                <div class="border-2 p-4 border-zinc-700 bg-white w-full">
+                <div class="w-full border-2 border-zinc-700 bg-white p-4">
                     <div class="flex flex-col">
                         <button
-                            class="font-bold text-xl text-left flex flex-row items-center gap-4"
+                            class="flex flex-row items-center gap-4 text-left text-xl font-bold"
                             onclick={() => {
                                 expandStage = !expandStage;
                                 expandFund = false;
                             }}
                         >
                             <span class="w-14">Stage</span>
-                            <span class="font-normal text-sm text-zinc-700"
+                            <span class="text-sm font-normal text-zinc-700"
                                 >{stageToLabel(
                                     filterStore.dimensions.stage.selected,
                                 )}</span
@@ -330,19 +343,25 @@
                             <div transition:slide>
                                 {#each stages as stage}
                                     <div
-                                        class="flex flex-row gap-2 items-center p-1"
+                                        class="flex flex-row items-center gap-2 p-1"
                                     >
                                         <input
                                             type="radio"
                                             name="stage"
                                             value={stage.value}
-                                            class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                            class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
                                             id={`stage-${stage.value}`}
                                             disabled={stage.value !== "Any" &&
                                                 !filterStore
-                                                    .getAvailableOptions("stage")
+                                                    .getAvailableOptions(
+                                                        "stage",
+                                                    )
                                                     .includes(stage.value)}
-                                            onchange={() => selectFilter("stage", stage.value)}
+                                            onchange={() =>
+                                                selectFilter(
+                                                    "stage",
+                                                    stage.value,
+                                                )}
                                             checked={filterStore.dimensions
                                                 .stage.selected === stage.value}
                                         />
@@ -368,13 +387,13 @@
                         {/if}
 
                         <button
-                            class="font-bold text-xl mt-4 text-left flex flex-row items-center gap-4"
+                            class="mt-4 flex flex-row items-center gap-4 text-left text-xl font-bold"
                             onclick={() => {
                                 expandFund = !expandFund;
                                 expandStage = false;
                             }}
                             ><span class="w-14">Fund</span><span
-                                class="font-normal text-sm text-zinc-700"
+                                class="text-sm font-normal text-zinc-700"
                                 >{fundToLabel(
                                     filterStore.dimensions.fund.selected,
                                 )}</span
@@ -389,25 +408,29 @@
                                 {#each funds as fund, index}
                                     {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
                                         <div
-                                            class="text-xs font-semibold text-zinc-600 mt-3 mb-1 px-1"
+                                            class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
                                         >
                                             {fund.managerName}
                                         </div>
                                     {/if}
                                     <div
-                                        class="flex flex-row gap-2 items-center p-1"
+                                        class="flex flex-row items-center gap-2 p-1"
                                     >
                                         <input
                                             type="radio"
                                             name="fund"
                                             value={fund.value}
-                                            class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                            class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
                                             id={`fund-${fund.value}`}
                                             disabled={!filterStore
                                                 .getAvailableOptions("fund")
                                                 .includes(fund.value) &&
                                                 fund.value !== "Any"}
-                                            onchange={() => selectFilter("fund", fund.value)}
+                                            onchange={() =>
+                                                selectFilter(
+                                                    "fund",
+                                                    fund.value,
+                                                )}
                                             checked={filterStore.dimensions.fund
                                                 .selected === fund.value}
                                         />
@@ -429,9 +452,8 @@
                         {#if (expandStage || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.stage.selected === "Any")}
                             <button
                                 transition:slide
-                                class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
-                                onclick={resetFilters}
-                                >Reset Filters</button
+                                class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
+                                onclick={resetFilters}>Reset Filters</button
                             >
                         {/if}
                     </div>
@@ -441,11 +463,11 @@
             <!-- Portfolio results -->
             <main
                 bind:this={portfolioGrid}
-                class="grid grid-cols-2 min-w-[336px] lg:min-w-lg 2xl:min-w-[688px] lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
+                class="mb-8 grid h-max min-w-[336px] grid-cols-2 gap-4 lg:min-w-lg lg:grid-cols-3 2xl:min-w-[688px] 2xl:grid-cols-4"
             >
                 {#each portfolios as portfolio}
                     <button
-                        class="bg-zinc-100 p-4 group h-40 w-40 grid place-content-center cursor-pointer"
+                        class="group grid h-40 w-40 cursor-pointer place-content-center bg-zinc-100 p-4"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}
@@ -458,14 +480,14 @@
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
-                            class="p-1 text-(--accent) transition-all duration-150 max-h-16 aspect-video"
+                            class="aspect-video max-h-16 p-1 text-(--accent) transition-all duration-150"
                             style:--accent={adjustLightColor(
                                 portfolioMap[portfolio.id].accent,
                             )}
                         >
                             {#if portfolio.logo.endsWith(".svg")}
                                 <svg
-                                    class="w-full h-full"
+                                    class="h-full w-full"
                                     width="14rem"
                                     height="14rem"
                                     use:inlineSvg={getFileUrl(
@@ -479,9 +501,9 @@
                                 />
                             {:else if portfolio.logo}
                                 <img
-                                    class={"w-full h-full object-contain" +
+                                    class={"h-full w-full object-contain" +
                                         (portfolio.invert_foreground
-                                            ? " invert hue-rotate-180 contrast-75"
+                                            ? " contrast-75 hue-rotate-180 invert"
                                             : "")}
                                     src={getFileUrl(
                                         portfolioMap[portfolio.id],
@@ -495,7 +517,7 @@
                                 />
                             {:else}
                                 <div
-                                    class="w-full h-full grid place-content-center"
+                                    class="grid h-full w-full place-content-center"
                                 >
                                     <CircleSlash size="64" />
                                 </div>

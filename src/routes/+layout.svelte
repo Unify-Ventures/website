@@ -9,7 +9,7 @@
 <div class="flex min-h-full flex-col">
     <Header />
     <div class="flex-1">
-      {@render children()}
+        {@render children()}
     </div>
     <Footer />
 </div>

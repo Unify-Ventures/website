@@ -5,10 +5,10 @@
 </script>
 
 <div
-    class="bg-zinc-900 w-full h-max text-zinc-200 flex flex-col justify-between 2xl:p-24 p-8 gap-4"
+    class="flex h-max w-full flex-col justify-between gap-4 bg-zinc-900 p-8 text-zinc-200 2xl:p-24"
 >
-    <Logo class="w-96 m-8 mx-auto" />
-    <div class="flex gap-6 max-w-6xl w-full">
+    <Logo class="m-8 mx-auto w-96" />
+    <div class="flex w-full max-w-6xl gap-6">
         <a class="flex gap-2" href="mailto:hello@unifyventures.vc">
             <Mail /> hello@unifyventures.vc
         </a>
@@ -58,7 +58,7 @@
         on the basis of information in this website, or for any negligent
         misstatements, errors or omissions. Logos and Trademarks do not belong
         to Unify. Unify has endeavoured to request permission for their
-        inclusion for illustrative purposes only. Copyright © Unify Ventures
-        Pty Ltd
+        inclusion for illustrative purposes only. Copyright © Unify Ventures Pty
+        Ltd
     </p>
 </div>

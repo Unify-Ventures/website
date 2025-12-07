@@ -38,7 +38,9 @@
 
     const portfolioStore = createPortfolios();
 
-    let portfolios = $state<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]>([]);
+    let portfolios = $state<
+        PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
+    >([]);
 
     let teamTl: GSAPTimeline | null = null;
 
@@ -57,8 +59,11 @@
             ?.label ?? "All Categories",
     );
 
-    let selectedPortfolio =
-        $state<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand> | null>(null);
+    let selectedPortfolio = $state<PortfolioCompaniesResponse<
+        unknown,
+        unknown,
+        PortfolioExpand
+    > | null>(null);
     let portfolioDialog = $state<HTMLDialogElement | undefined>(undefined);
 
     onMount(async () => {
@@ -147,7 +152,7 @@
 
 <main>
     <h2
-        class="2xl:text-7xl text-5xl font-medium lg:mx-16 mx-6 my-10 lg:text-center"
+        class="mx-6 my-10 text-5xl font-medium lg:mx-16 lg:text-center 2xl:text-7xl"
     >
         <span>
             We invest in thematic funds across,
@@ -168,7 +173,7 @@
                 Manufacturing, and Fin Tech, with more thematics to come.
             </p>
             <div
-                class="flex w-full flex-row gap-12 flex-wrap justify-center items-center"
+                class="flex w-full flex-row flex-wrap items-center justify-center gap-12"
             >
                 {#each managers as manager}
                     <a
@@ -213,12 +218,12 @@
         </div>
     </section>
 
-    <section class="flex flex-col justify-center items-center mb-16">
+    <section class="mb-16 flex flex-col items-center justify-center">
         <div
-            class="flex max-w-7xl xl:m-16 m-8 xl:gap-64 lg:gap-36 gap-12 flex-col lg:flex-row items-center justify-center flex-none"
+            class="m-8 flex max-w-7xl flex-none flex-col items-center justify-center gap-12 lg:flex-row lg:gap-36 xl:m-16 xl:gap-64"
         >
             <h2 class="text-7xl font-medium">Our Portfolio</h2>
-            <div class="flex gap-2 flex-col w-64 justify-end">
+            <div class="flex w-64 flex-col justify-end gap-2">
                 <Select.Root
                     type="single"
                     bind:value={portfolioSelectValue}
@@ -229,7 +234,7 @@
                     }}
                 >
                     <Select.Trigger
-                        class="border-2 p-4 border-zinc-900 hover:bg-zinc-100 transition-all duration-200 cursor-pointer inline-flex gap-2"
+                        class="inline-flex cursor-pointer gap-2 border-2 border-zinc-900 p-4 transition-all duration-200 hover:bg-zinc-100"
                         aria-label="Select a category"
                     >
                         {selectedLabel}
@@ -238,7 +243,7 @@
                     <Select.Portal>
                         <Select.Content
                             sideOffset={-3}
-                            class="border-2 border-zinc-900 bg-white w-64 z-10"
+                            class="z-10 w-64 border-2 border-zinc-900 bg-white"
                         >
                             <Select.ScrollUpButton
                                 class="flex w-full items-center justify-center py-1"
@@ -250,7 +255,7 @@
                                     <Select.Item
                                         value={category.value}
                                         label={category.label}
-                                        class="p-4 hover:bg-zinc-100 transition-all duration-200 cursor-pointer"
+                                        class="cursor-pointer p-4 transition-all duration-200 hover:bg-zinc-100"
                                     >
                                         {#snippet children({ selected })}
                                             {category.label}
@@ -268,7 +273,7 @@
                 </Select.Root>
                 <a
                     href="/portfolio"
-                    class="2xl:hidden flex justify-center items-center bg-zinc-900 text-white p-4"
+                    class="flex items-center justify-center bg-zinc-900 p-4 text-white 2xl:hidden"
                 >
                     See All <ArrowRight />
                 </a>
@@ -285,7 +290,7 @@
                 >
                     {#each portfolioStore.portfolios as portfolio}
                         <button
-                            class={`w-40 md:w-64 aspect-square bg-zinc-100 portfolio relative group text-zinc-800 ${
+                            class={`portfolio group relative aspect-square w-40 bg-zinc-100 text-zinc-800 md:w-64 ${
                                 portfolio.invert_foreground
                                     ? "hover:[&:not(.no-hover)]:text-zinc-100"
                                     : ""
@@ -300,7 +305,7 @@
                         >
                             <div
                                 role="img"
-                                class="w-40 md:w-64 aspect-square flex justify-center items-center p-6 xl:p-12 transition-colors duration-150"
+                                class="flex aspect-square w-40 items-center justify-center p-6 transition-colors duration-150 md:w-64 xl:p-12"
                                 class:no-hover={!portfolio.logo.endsWith(
                                     ".svg",
                                 )}
@@ -319,9 +324,9 @@
                                     />
                                 {:else}
                                     <img
-                                        class={"w-full h-full object-contain" +
+                                        class={"h-full w-full object-contain" +
                                             (portfolio.invert_foreground
-                                                ? " invert hue-rotate-180 contrast-75"
+                                                ? " contrast-75 hue-rotate-180 invert"
                                                 : "")}
                                         width="100%"
                                         height="100%"
@@ -343,11 +348,11 @@
                                         portfolio.expand.funds[0].expand.manager
                                             .logo,
                                     )}
-                                    class="p-2 h-12 max-w-28 text-zinc-900 bg-zinc-200 absolute bottom-0 right-0 translate-y-0 group-hover:translate-y-full transition-all duration-150"
+                                    class="absolute right-0 bottom-0 h-12 max-w-28 translate-y-0 bg-zinc-200 p-2 text-zinc-900 transition-all duration-150 group-hover:translate-y-full"
                                 ></svg>
                             {/if}
                             <div
-                                class="flex flex-row gap-2 bg-zinc-900 p-4 text-white absolute bottom-0 right-0 translate-y-full group-hover:translate-y-0 transition-all duration-150"
+                                class="absolute right-0 bottom-0 flex translate-y-full flex-row gap-2 bg-zinc-900 p-4 text-white transition-all duration-150 group-hover:translate-y-0"
                             >
                                 Learn More <ArrowRight />
                             </div>
@@ -355,21 +360,21 @@
                     {/each}
                 </InfiniteCarousel>
             {:else}
-                <div class="max-w-[100vw] 2xl:max-w-6xl overflow-hidden">
+                <div class="max-w-[100vw] overflow-hidden 2xl:max-w-6xl">
                     <p
-                        class="text-6xl h-64 flex gap-6 items-center justify-center w-full"
+                        class="flex h-64 w-full items-center justify-center gap-6 text-6xl"
                     >
                         <LoaderCircle class="animate-spin" size="64" /> Loading portfolios...
                     </p>
                 </div>
             {/if}
-            <div class="hidden 2xl:block relative">
+            <div class="relative hidden 2xl:block">
                 <!-- <div
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-linear-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div> -->
                 <a
                     href="/portfolio/"
-                    class="flex justify-center items-center bg-zinc-900 text-white w-64 h-64 text-2xl gap-2 hover:bg-zinc-800 duration-150 transition-all"
+                    class="flex h-64 w-64 items-center justify-center gap-2 bg-zinc-900 text-2xl text-white transition-all duration-150 hover:bg-zinc-800"
                 >
                     See All <ArrowRight />
                 </a>
@@ -381,25 +386,25 @@
         <div>
             <h2>Our Team</h2>
             <div
-                class="flex flex-col lg:flex-row lg:space-between gap-16 flex-wrap justify-center"
+                class="lg:space-between flex flex-col flex-wrap justify-center gap-16 lg:flex-row"
             >
                 {#each team as member, i}
                     <div
-                        class="flex flex-col items-center gap-2 group 2xl:w-96 2xl:h-96"
+                        class="group flex flex-col items-center gap-2 2xl:h-96 2xl:w-96"
                         id={"member-" + member.id}
                     >
                         <div
-                            class="flex 2xl:flex-row items-center gap-4 w-64 group-hover:w-max transition-all duration-300 flex-col 2xl:mr-auto"
+                            class="flex w-64 flex-col items-center gap-4 transition-all duration-300 group-hover:w-max 2xl:mr-auto 2xl:flex-row"
                         >
                             <a
                                 href={member.linkedin}
                                 target="_blank"
-                                class="relative flex-none pointer-events-none 2xl:pointer-events-auto"
+                                class="pointer-events-none relative flex-none 2xl:pointer-events-auto"
                             >
                                 <img
                                     src={getFileUrl(member, member.picture)}
                                     alt={`${member.name}'s avatar`}
-                                    class="w-64 h-64 m-auto aspect-square 2xl:group-hover:w-24 2xl:group-hover:h-24 rounded-none 2xl:group-hover:rounded-[50%] object-cover transition-all duration-300"
+                                    class="m-auto aspect-square h-64 w-64 rounded-none object-cover transition-all duration-300 2xl:group-hover:h-24 2xl:group-hover:w-24 2xl:group-hover:rounded-[50%]"
                                     onload={() => {
                                         if (i == 0) {
                                             teamTl = gsap.timeline({
@@ -423,13 +428,13 @@
                                     }}
                                 />
                                 <div
-                                    class="hidden 2xl:block absolute bottom-0 right-0 p-1 rounded-full bg-zinc-200 scale-0 group-hover:scale-100 transition-all duration-300"
+                                    class="absolute right-0 bottom-0 hidden scale-0 rounded-full bg-zinc-200 p-1 transition-all duration-300 group-hover:scale-100 2xl:block"
                                 >
                                     <Fa size="lg" icon={faLinkedin} />
                                 </div>
                             </a>
                             <div
-                                class="flex 2xl:scale-50 2xl:-translate-x-32 flex-col gap-1 2xl:opacity-0 2xl:translate-y-10 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0 transition-all duration-300"
+                                class="flex flex-col gap-1 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:-translate-x-32 2xl:translate-y-10 2xl:scale-50 2xl:opacity-0"
                             >
                                 <h3 class="text-3xl font-medium">
                                     {member.name}
@@ -441,7 +446,7 @@
                         </div>
 
                         <p
-                            class="2xl:max-w-sm max-w-64 p-2 text-justify 2xl:scale-75 2xl:-translate-y-8 2xl:opacity-0 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-300"
+                            class="max-w-64 p-2 text-justify transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:max-w-sm 2xl:-translate-y-8 2xl:scale-75 2xl:opacity-0"
                         >
                             {member.blurb}
                         </p>
@@ -449,7 +454,7 @@
                         <a
                             href={member.linkedin}
                             target="_blank"
-                            class="flex flex-row 2xl:hidden items-center gap-2"
+                            class="flex flex-row items-center gap-2 2xl:hidden"
                         >
                             <Fa size="lg" icon={faLinkedin} />
                             <span>{getLinkedInUsername(member.linkedin)}</span>
@@ -473,11 +478,11 @@
                     Partners across Australia, we offer our LPs preferential access
                     to co-investments through the Unify Syndicate. We take a patient,
                     focused approach with two key strategies: hard-to-access startups
-                    that have demonstrated revenue momentum with a clear path to
-                    exit, and selective stakes in our partner funds on the rare occasions
+                    that have demonstrated revenue momentum with a clear path to exit,
+                    and selective stakes in our partner funds on the rare occasions
                     they become available. Image
                 </p>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
                     {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat}
                         <div>
                             <p class="text-black/75">{stat.key}</p>
@@ -488,7 +493,7 @@
                 </div>
                 <a
                     href="https://portal.gxe.com/v/spaces/unify-ventures-syndicate/join/vip"
-                    class="flex flex-row gap-2 border-2 text-white bg-zinc-900 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-100 hover:text-black transition-all duration-200 w-max"
+                    class="mt-6 flex w-max flex-row justify-center gap-2 border-2 border-zinc-900 bg-zinc-900 p-2 text-white transition-all duration-200 hover:bg-zinc-100 hover:text-black"
                     target="_blank"
                 >
                     Join our Syndicate <ArrowRight />

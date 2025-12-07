@@ -1,14 +1,15 @@
-'use strict';
+"use strict";
 
 exports.name = "addViewBox";
 
-exports.type = 'perItem';
+exports.type = "perItem";
 
 exports.active = true;
 
-exports.description = 'replaces width, height attributes of an svg with viewBox attribute to make it responsive';
+exports.description =
+    "replaces width, height attributes of an svg with viewBox attribute to make it responsive";
 
-var viewBoxElems = ['svg'];
+var viewBoxElems = ["svg"];
 
 /**
  * Replaces width, height attributes of an svg with viewBox attribute to make it responsive.
@@ -28,24 +29,22 @@ var viewBoxElems = ['svg'];
  * @author Guy Lando
  */
 exports.fn = (item) => {
-
     if (
         item.isElem &&
         item.isElem(viewBoxElems) &&
-        !item.hasAttr('viewBox') &&
-        item.hasAttr('width') &&
-        item.hasAttr('height')
+        !item.hasAttr("viewBox") &&
+        item.hasAttr("width") &&
+        item.hasAttr("height")
     ) {
-		var width = parseFloat(item.attr('width').value.replace(/px$/, ''));
-		var height = parseFloat(item.attr('height').value.replace(/px$/, ''));
-		item.removeAttr('width');
-		item.removeAttr('height');
-		item.addAttr({
-			name: 'viewBox',
-			prefix: '',
-			local: 'viewBox',
-			value: '0 0 ' + width + ' ' + height
-		});
+        var width = parseFloat(item.attr("width").value.replace(/px$/, ""));
+        var height = parseFloat(item.attr("height").value.replace(/px$/, ""));
+        item.removeAttr("width");
+        item.removeAttr("height");
+        item.addAttr({
+            name: "viewBox",
+            prefix: "",
+            local: "viewBox",
+            value: "0 0 " + width + " " + height,
+        });
     }
-
 };
