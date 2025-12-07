@@ -15,7 +15,7 @@
     import { createFilterStore } from "$lib/multi-filter.svelte";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import ChevronDown from "lucide-svelte/icons/chevron-down";
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { slide } from "svelte/transition";
     import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
     import { page } from "$app/state";
@@ -55,6 +55,8 @@
 
     let dialogStartup = $state<PortfolioCompaniesResponse | null>();
     let startupModal = $state<HTMLDialogElement | null>();
+    let portfolioGrid = $state<HTMLElement | null>(null);
+    let relativeScroll = $state<number | null>(null);
 
     interface PortfolioFilter {
         id: string;
@@ -196,6 +198,37 @@
     function stageToLabel(stage: string) {
         return stages.find((s) => s.value === stage)?.label ?? "";
     }
+
+    function saveScrollPosition() {
+        if (!portfolioGrid) return;
+        const rect = portfolioGrid.getBoundingClientRect();
+        if (rect.height <= window.innerHeight) return;
+        const gridTop = rect.top + window.scrollY;
+        const viewportCenter = window.scrollY + window.innerHeight / 2;
+        relativeScroll = Math.max(0, Math.min(1, (viewportCenter - gridTop) / rect.height));
+    }
+
+    function selectFilter(dimension: "stage" | "fund", value: string) {
+        saveScrollPosition();
+        filterStore!.select(dimension, value);
+    }
+
+    function resetFilters() {
+        saveScrollPosition();
+        filterStore!.reset();
+    }
+
+    $effect(() => {
+        filterStore?.filteredItems;
+        if (relativeScroll === null || !portfolioGrid) return;
+        tick().then(() => {
+            const rect = portfolioGrid!.getBoundingClientRect();
+            const gridTop = rect.top + window.scrollY;
+            const target = gridTop + relativeScroll! * rect.height - window.innerHeight / 2;
+            window.scrollTo({ top: Math.max(0, target), behavior: "instant" });
+            relativeScroll = null;
+        });
+    });
 </script>
 
 {#if filterStore}
@@ -224,11 +257,7 @@
                                         .getAvailableOptions("stage")
                                         .includes(stage.value) &&
                                         stage.value !== "Any"}
-                                    onchange={() =>
-                                        filterStore.select(
-                                            "stage",
-                                            stage.value,
-                                        )}
+                                    onchange={() => selectFilter("stage", stage.value)}
                                     checked={filterStore.dimensions.stage
                                         .selected === stage.value}
                                 />
@@ -267,8 +296,7 @@
                                         .getAvailableOptions("fund")
                                         .includes(fund.value) &&
                                         fund.value !== "Any"}
-                                    onchange={() =>
-                                        filterStore.select("fund", fund.value)}
+                                    onchange={() => selectFilter("fund", fund.value)}
                                     checked={filterStore.dimensions.fund
                                         .selected === fund.value}
                                 />
@@ -286,7 +314,7 @@
 
                         <button
                             class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
-                            onclick={filterStore.reset}>Reset Filters</button
+                            onclick={resetFilters}>Reset Filters</button
                         >
                     </div>
                 </div>
@@ -333,11 +361,7 @@
                                                 .getAvailableOptions("stage")
                                                 .includes(stage.value) &&
                                                 stage.value !== "Any"}
-                                            onchange={() =>
-                                                filterStore.select(
-                                                    "stage",
-                                                    stage.value,
-                                                )}
+                                            onchange={() => selectFilter("stage", stage.value)}
                                             checked={filterStore.dimensions
                                                 .stage.selected === stage.value}
                                         />
@@ -402,11 +426,7 @@
                                                 .getAvailableOptions("fund")
                                                 .includes(fund.value) &&
                                                 fund.value !== "Any"}
-                                            onchange={() =>
-                                                filterStore.select(
-                                                    "fund",
-                                                    fund.value,
-                                                )}
+                                            onchange={() => selectFilter("fund", fund.value)}
                                             checked={filterStore.dimensions.fund
                                                 .selected === fund.value}
                                         />
@@ -429,7 +449,7 @@
                             <button
                                 transition:slide
                                 class="flex flex-row gap-2 border-2 border-zinc-900 justify-center p-2 mt-6 hover:bg-zinc-900 hover:text-white transition-all duration-200"
-                                onclick={filterStore.reset}
+                                onclick={resetFilters}
                                 >Reset Filters</button
                             >
                         {/if}
@@ -439,6 +459,7 @@
 
             <!-- Portfolio results -->
             <main
+                bind:this={portfolioGrid}
                 class="grid grid-cols-2 min-w-[336px] lg:min-w-[512px] 2xl:min-w-[688px] lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
             >
                 {#each portfolios as portfolio}
