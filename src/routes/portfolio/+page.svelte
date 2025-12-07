@@ -22,14 +22,12 @@
     import { toCamelCase } from "$lib/case";
     import { CircleSlash } from "lucide-svelte";
 
-    const stages = [
+    const stages: { value: "Any" | PortfolioCompaniesStageOptions; label: string }[] = [
         { value: "Any", label: "Any" },
-        ...Object.keys(PortfolioCompaniesStageOptions).map((stage) => {
-            return {
-                value: stage,
-                label: toTitleCase(stage.replace(/_/g, " ")),
-            };
-        }),
+        ...Object.values(PortfolioCompaniesStageOptions).map((stage) => ({
+            value: stage,
+            label: toTitleCase(stage.replace(/_/g, " ")),
+        })),
     ];
 
     let funds = $state<
@@ -51,58 +49,36 @@
     }
 
     let portfolios = $state<PortfolioCompaniesResponse[]>([]);
-    let filterablePortfolios = $state<PortfolioFilter[]>([]);
 
-    let dialogStartup = $state<PortfolioCompaniesResponse | null>();
-    let startupModal = $state<HTMLDialogElement | null>();
+    let dialogStartup = $state<PortfolioCompaniesResponse | null>(null);
+    let startupModal = $state<HTMLDialogElement | undefined>(undefined);
     let portfolioGrid = $state<HTMLElement | null>(null);
     let relativeScroll = $state<number | null>(null);
 
-    interface PortfolioFilter {
+    interface PortfolioFilterItem {
+        [key: string]: string | PortfolioCompaniesStageOptions;
         id: string;
-        stage:
-            | "product_launch"
-            | "market_validation"
-            | "scaling"
-            | "revenue_momentum"
-            | "liquidity_event"
-            | "unassigned";
-        fund:
-            | "wxjsqai6fhw7mgq"
-            | "hkdul6sd7xx2u6i"
-            | "73tuvm8ll0jlo6x"
-            | "4hwukm1xi68x58b"
-            | "18vybohe60ln3n4"
-            | "h8c2tlfs7gt29nv"
-            | "l7bnwnwwzs3yr4n"
-            | "0jz3m1u87fm8c5j";
+        stage: PortfolioCompaniesStageOptions;
+        fund: string;
     }
 
     const config = {
+        id: [] as string[],
         stage: [
-            "product_launch",
-            "market_validation",
-            "scaling",
-            "revenue_momentum",
-            "liquidity_event",
-            "unassigned",
+            PortfolioCompaniesStageOptions.product_launch,
+            PortfolioCompaniesStageOptions.market_validation,
+            PortfolioCompaniesStageOptions.scaling,
+            PortfolioCompaniesStageOptions.revenue_momentum,
+            PortfolioCompaniesStageOptions.liquidity_event,
+            PortfolioCompaniesStageOptions.unassigned,
         ],
-        fund: [
-            "wxjsqai6fhw7mgq",
-            "hkdul6sd7xx2u6i",
-            "73tuvm8ll0jlo6x",
-            "4hwukm1xi68x58b",
-            "18vybohe60ln3n4",
-            "h8c2tlfs7gt29nv",
-            "l7bnwnwwzs3yr4n",
-            "0jz3m1u87fm8c5j",
-        ],
-    } satisfies Record<string, any>;
+        fund: [] as string[],
+    };
 
     let portfolioMap = $state<Record<string, PortfolioCompaniesResponse>>({});
 
     let filterStore = $state<ReturnType<
-        typeof createFilterStore<PortfolioFilter>
+        typeof createFilterStore<PortfolioFilterItem>
     > | null>(null);
 
     function handleHash() {
@@ -139,10 +115,10 @@
     onMount(async () => {
         portfolios = await getPortfolios();
 
-        filterablePortfolios = portfolios.map((p) => ({
+        const filterablePortfolios: PortfolioFilterItem[] = portfolios.map((p) => ({
             id: p.id,
-            stage: p.stage,
-            fund: p.funds[0],
+            stage: p.stage ?? PortfolioCompaniesStageOptions.unassigned,
+            fund: p.funds?.[0] ?? "",
         }));
 
         portfolios.forEach((p) => {
@@ -185,8 +161,13 @@
                 }),
         ];
 
-        // Now this assignment will properly trigger reactivity
-        filterStore = createFilterStore(filterablePortfolios, config);
+        const dynamicConfig = {
+            id: filterablePortfolios.map((p) => p.id),
+            stage: config.stage,
+            fund: [...new Set(filterablePortfolios.map((p) => p.fund))],
+        };
+
+        filterStore = createFilterStore(filterablePortfolios, dynamicConfig);
 
         setTimeout(handleHash, 500);
     });
@@ -253,10 +234,10 @@
                                     value={stage.value}
                                     class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                                     id={`stage-${stage.value}`}
-                                    disabled={!filterStore
-                                        .getAvailableOptions("stage")
-                                        .includes(stage.value) &&
-                                        stage.value !== "Any"}
+                                    disabled={stage.value !== "Any" &&
+                                        !filterStore
+                                            .getAvailableOptions("stage")
+                                            .includes(stage.value)}
                                     onchange={() => selectFilter("stage", stage.value)}
                                     checked={filterStore.dimensions.stage
                                         .selected === stage.value}
@@ -357,10 +338,10 @@
                                             value={stage.value}
                                             class="appearance-none w-3 h-3 rounded-full border border-zinc-900 focus:bg-zinc-900 checked:bg-zinc-900 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                                             id={`stage-${stage.value}`}
-                                            disabled={!filterStore
-                                                .getAvailableOptions("stage")
-                                                .includes(stage.value) &&
-                                                stage.value !== "Any"}
+                                            disabled={stage.value !== "Any" &&
+                                                !filterStore
+                                                    .getAvailableOptions("stage")
+                                                    .includes(stage.value)}
                                             onchange={() => selectFilter("stage", stage.value)}
                                             checked={filterStore.dimensions
                                                 .stage.selected === stage.value}
@@ -460,7 +441,7 @@
             <!-- Portfolio results -->
             <main
                 bind:this={portfolioGrid}
-                class="grid grid-cols-2 min-w-[336px] lg:min-w-[512px] 2xl:min-w-[688px] lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
+                class="grid grid-cols-2 min-w-[336px] lg:min-w-lg 2xl:min-w-[688px] lg:grid-cols-3 2xl:grid-cols-4 gap-4 mb-8 h-max"
             >
                 {#each portfolios as portfolio}
                     <button
@@ -477,7 +458,7 @@
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
-                            class="p-1 text-[var(--accent)] transition-all duration-150 max-h-16 aspect-video"
+                            class="p-1 text-(--accent) transition-all duration-150 max-h-16 aspect-video"
                             style:--accent={adjustLightColor(
                                 portfolioMap[portfolio.id].accent,
                             )}
@@ -535,6 +516,7 @@
             portfolio: p,
         }))}
         bind:dialogElement={startupModal}
+        onclose={() => {}}
     />
 {/if}
 

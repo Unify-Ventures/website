@@ -38,7 +38,7 @@
 
     const portfolioStore = createPortfolios();
 
-    let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
+    let portfolios = $state<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]>([]);
 
     let teamTl: GSAPTimeline | null = null;
 
@@ -48,7 +48,7 @@
 
     let team = $state<TeamResponse[]>([]);
 
-    let managers = $state<ManagersResponse[]>(data.managers);
+    let managers = $derived(data.managers);
 
     let portfolioSelectValue = $state(portfolioCategories[2].value);
 
@@ -58,8 +58,8 @@
     );
 
     let selectedPortfolio =
-        $state<PortfolioCompaniesResponse<PortfolioExpand> | null>(null);
-    let portfolioDialog = $state<HTMLDialogElement | null>(null);
+        $state<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand> | null>(null);
+    let portfolioDialog = $state<HTMLDialogElement | undefined>(undefined);
 
     onMount(async () => {
         await portfolioStore.loadPortfolios();
@@ -500,6 +500,13 @@
 
 <PortfolioDialog
     portfolio={selectedPortfolio}
+    logos={portfolios.map((p) => ({
+        logoURL: getFileUrl(
+            p,
+            !p.use_unoptimised_logo ? p.logo : p.unoptimised_logo,
+        ),
+        portfolio: p,
+    }))}
     bind:dialogElement={portfolioDialog}
     onclose={() => {
         externalPause = false;

@@ -8,13 +8,15 @@ export const getLinkedInUsername = (url: string) =>
     new URL(url).pathname.split("/").filter(Boolean).pop();
 
 export function createPortfolios() {
-    let portfolios = $state<PortfolioCompaniesResponse<PortfolioExpand>[]>([]);
+    let portfolios = $state<
+        PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
+    >([]);
 
     async function loadPortfolios(
         status: string = "scaling",
         featured: boolean = true,
     ) {
-        portfolios = await getFeaturedPortfolios(status, featured);
+        portfolios = await getFeaturedPortfolios(status);
         return portfolios;
     }
 

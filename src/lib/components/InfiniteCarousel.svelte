@@ -202,6 +202,7 @@
     // Setup event listeners
     $effect(() => {
         if (!container) return;
+        const containerRef = container;
 
         const handleMouseEnter = () => {
             isHovering = true;
@@ -219,13 +220,13 @@
             }
         };
 
-        container.addEventListener("mouseenter", handleMouseEnter);
-        container.addEventListener("mouseleave", handleMouseLeave);
+        containerRef.addEventListener("mouseenter", handleMouseEnter);
+        containerRef.addEventListener("mouseleave", handleMouseLeave);
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
-            container.removeEventListener("mouseenter", handleMouseEnter);
-            container.removeEventListener("mouseleave", handleMouseLeave);
+            containerRef.removeEventListener("mouseenter", handleMouseEnter);
+            containerRef.removeEventListener("mouseleave", handleMouseLeave);
             document.removeEventListener(
                 "visibilitychange",
                 handleVisibilityChange,

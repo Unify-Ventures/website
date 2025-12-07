@@ -2,6 +2,7 @@ import PocketBase from "pocketbase";
 import {
     Collections,
     type FundsResponse,
+    type ManagersResponse,
     type PortfolioCompaniesResponse,
     type TeamResponse,
     type TypedPocketBase,
@@ -15,7 +16,9 @@ export const getFeaturedPortfolios = async (stage: string = "scaling") => {
     if (process.env.NODE_ENV === "development") {
         const portfolios = await pb
             .collection("portfolio_companies")
-            .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
+            .getFullList<
+                PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>
+            >({
                 filter: `stage='${stage}'`,
                 expand: "funds.manager",
             });
@@ -31,12 +34,14 @@ export const getFeaturedPortfolios = async (stage: string = "scaling") => {
 };
 
 export async function getPortfolios(): Promise<
-    PortfolioCompaniesResponse<PortfolioExpand>[]
+    PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
 > {
     if (process.env.NODE_ENV === "development") {
         const portfolios = await pb
             .collection("portfolio_companies")
-            .getFullList<PortfolioCompaniesResponse<PortfolioExpand>>({
+            .getFullList<
+                PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>
+            >({
                 expand: "funds.manager",
             });
 
