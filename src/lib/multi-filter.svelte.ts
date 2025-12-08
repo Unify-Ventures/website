@@ -1,3 +1,5 @@
+import { SvelteSet } from "svelte/reactivity";
+
 export type FilterDimension<T> = {
     options: T[];
     selected: T | "Any";
@@ -51,7 +53,7 @@ export function createFilterStore<T extends Record<string, unknown>>(
         );
 
         const possibleValues = [
-            ...new Set(availableItems.map((item) => item[dimension])),
+            ...new SvelteSet(availableItems.map((item) => item[dimension])),
         ] as T[K][];
 
         return config[dimension].filter((option) =>

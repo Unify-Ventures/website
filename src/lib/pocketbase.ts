@@ -25,9 +25,13 @@ export const getFeaturedPortfolios = async (stage: string = "scaling") => {
 
         return portfolios;
     } else {
-        let portfolios = (await (
+        const portfolios = (await (
             await fetch("/pb/portfolios.json")
-        ).json()) as any[];
+        ).json()) as PortfolioCompaniesResponse<
+            unknown,
+            unknown,
+            PortfolioExpand
+        >[];
 
         return portfolios.filter((p) => p.stage === stage);
     }
@@ -47,9 +51,13 @@ export async function getPortfolios(): Promise<
 
         return portfolios;
     } else {
-        let portfolios = (await (
+        const portfolios = (await (
             await fetch("/pb/portfolios.json")
-        ).json()) as any[];
+        ).json()) as PortfolioCompaniesResponse<
+            unknown,
+            unknown,
+            PortfolioExpand
+        >[];
 
         return portfolios;
     }
@@ -87,7 +95,7 @@ export const getTeam = async () => {
             .collection(Collections.Team)
             .getFullList<TeamResponse>();
     } else {
-        return (await (await fetch("/pb/team.json")).json()) as any[];
+        return (await (await fetch("/pb/team.json")).json()) as TeamResponse[];
     }
 };
 

@@ -49,12 +49,16 @@ async function processCompany(
         });
 
         console.log(`[${company.name}] Completed`);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(`[${company.name}] Failed`);
-        if (error.response?.data) {
-            console.error(JSON.stringify(error.response.data, null, 2));
+        const err = error as {
+            response?: { data?: unknown };
+            message?: string;
+        };
+        if (err.response?.data) {
+            console.error(JSON.stringify(err.response.data, null, 2));
         } else {
-            console.error(error.message || error);
+            console.error(err.message || error);
         }
     }
 }

@@ -2,9 +2,9 @@
     import { page } from "$app/state";
     import { toCamelCase } from "$lib/case";
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
-    import { getFileUrl } from "$lib/pocketbase";
     import { Link } from "lucide-svelte";
     import type { EventHandler } from "svelte/elements";
+    import DOMPurify from "isomorphic-dompurify";
 
     interface Props {
         /**
@@ -52,7 +52,7 @@
             <Link />
         </button>
         <div class="bg-zinc-100 p-4">
-            {#each logos as logo}
+            {#each logos as logo (logo.portfolio.id)}
                 {#if logo.logoURL.endsWith(".svg")}
                     <img
                         class="aspect-video h-full w-full"
@@ -84,11 +84,18 @@
         <div class="p-4">
             {#if portfolio}
                 <h2 class="text-2xl font-bold">{portfolio.name}</h2>
-                {@html portfolio.blurb || "<i>No blurb available</i>"}
+                <!-- eslint-disable-next-line svelte/no-at-html-tags -- sanitized with DOMPurify -->
+                {@html DOMPurify.sanitize(
+                    portfolio.blurb || "<i>No blurb available</i>",
+                )}
+                <!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
                 <a
                     class="mt-4 flex flex-row justify-center gap-2 bg-zinc-900 p-2 text-white"
-                    href={portfolio.homepage}>Visit homepage</a
+                    href={portfolio.homepage}
+                    target="_blank"
+                    rel="noopener noreferrer">Visit homepage</a
                 >
+                <!-- eslint-enable svelte/no-navigation-without-resolve -->
             {:else}
                 <h2>No startup selected</h2>
             {/if}

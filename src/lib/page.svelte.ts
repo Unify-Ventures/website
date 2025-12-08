@@ -4,18 +4,17 @@ import {
 } from "./pb-types";
 import { getFeaturedPortfolios, type PortfolioExpand } from "./pocketbase";
 
+import { SvelteURL } from "svelte/reactivity";
+
 export const getLinkedInUsername = (url: string) =>
-    new URL(url).pathname.split("/").filter(Boolean).pop();
+    new SvelteURL(url).pathname.split("/").filter(Boolean).pop();
 
 export function createPortfolios() {
     let portfolios = $state<
         PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
     >([]);
 
-    async function loadPortfolios(
-        status: string = "scaling",
-        featured: boolean = true,
-    ) {
+    async function loadPortfolios(status: string = "scaling") {
         portfolios = await getFeaturedPortfolios(status);
         return portfolios;
     }

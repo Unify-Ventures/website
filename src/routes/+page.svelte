@@ -3,7 +3,7 @@
     import ScrollTrigger from "gsap/dist/ScrollTrigger";
     import { onMount } from "svelte";
     import Typewriter from "svelte-typewriter";
-    import { Label, Select } from "bits-ui";
+    import { Select } from "bits-ui";
     import ArrowRight from "lucide-svelte/icons/arrow-right";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
@@ -15,10 +15,10 @@
     } from "$lib/pocketbase";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import {
-        type ManagersResponse,
         type PortfolioCompaniesResponse,
         type TeamResponse,
     } from "$lib/pb-types";
+    import { resolve } from "$app/paths";
     import Fa from "svelte-fa";
     import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
     import {
@@ -82,9 +82,17 @@
                 ease: "power1",
                 increment: 1,
             },
-            effect: (targets: HTMLElement[], config: any) => {
+            effect: (
+                targets: HTMLElement[],
+                config: {
+                    duration: number;
+                    end: number;
+                    increment: number;
+                    ease: string;
+                },
+            ) => {
                 let tl = gsap.timeline();
-                const num = targets[0].innerText.replace(/\,/g, "");
+                const num = targets[0].innerText.replace(/,/g, "");
                 targets[0].innerText = num;
 
                 tl.to(
@@ -145,7 +153,7 @@
 <svelte:head>
     <!-- Prefetch portfolio and portfolio company logos -->
     <link rel="prefetch" href="/portfolio" />
-    {#each data.portfolioLogos as logo}
+    {#each data.portfolioLogos as logo (logo)}
         <link rel="prefetch" href={logo} />
     {/each}
 </svelte:head>
@@ -175,7 +183,8 @@
             <div
                 class="flex w-full flex-row flex-wrap items-center justify-center gap-12"
             >
-                {#each managers as manager}
+                {#each managers as manager (manager.id)}
+                    <!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
                     <a
                         onmouseenter={(e) => {
                             if (!(e.target instanceof HTMLElement)) return;
@@ -187,8 +196,10 @@
                         }}
                         href={manager.homepage}
                         target="_blank"
+                        rel="noopener noreferrer"
                         aria-label={`Fund manager: ${manager.name}`}
                     >
+                        <!-- eslint-enable svelte/no-navigation-without-resolve -->
                         <svg
                             width="16rem"
                             use:inlineSvg={getFileUrl(manager, manager.logo)}
@@ -230,7 +241,7 @@
                     onValueChange={(v) => {
                         console.log(v);
                         portfolioStore.portfolios.length = 0;
-                        portfolioStore.loadPortfolios(v, false);
+                        portfolioStore.loadPortfolios(v);
                     }}
                 >
                     <Select.Trigger
@@ -251,16 +262,12 @@
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollUpButton>
                             <Select.Viewport class="flex flex-col gap-2 p-2">
-                                {#each portfolioCategories as category}
+                                {#each portfolioCategories as category (category.value)}
                                     <Select.Item
                                         value={category.value}
                                         label={category.label}
                                         class="cursor-pointer p-4 transition-all duration-200 hover:bg-zinc-100"
-                                    >
-                                        {#snippet children({ selected })}
-                                            {category.label}
-                                        {/snippet}
-                                    </Select.Item>
+                                    />
                                 {/each}
                             </Select.Viewport>
                             <Select.ScrollDownButton
@@ -272,7 +279,7 @@
                     </Select.Portal>
                 </Select.Root>
                 <a
-                    href="/portfolio"
+                    href={resolve("/portfolio")}
                     class="flex items-center justify-center bg-zinc-900 p-4 text-white 2xl:hidden"
                 >
                     See All <ArrowRight />
@@ -288,7 +295,7 @@
                     gap={24}
                     {externalPause}
                 >
-                    {#each portfolioStore.portfolios as portfolio}
+                    {#each portfolioStore.portfolios as portfolio (portfolio.id)}
                         <button
                             class={`portfolio group relative aspect-square w-40 bg-zinc-100 text-zinc-800 md:w-64 ${
                                 portfolio.invert_foreground
@@ -373,7 +380,7 @@
                     class="absolute top-0 left-0 bottom-0 -translate-x-full bg-linear-to-r from-transparent via-white/75 to-white w-44 transition-all duration-150 shadow-effect"
                 ></div> -->
                 <a
-                    href="/portfolio/"
+                    href={resolve("/portfolio")}
                     class="flex h-64 w-64 items-center justify-center gap-2 bg-zinc-900 text-2xl text-white transition-all duration-150 hover:bg-zinc-800"
                 >
                     See All <ArrowRight />
@@ -388,7 +395,7 @@
             <div
                 class="lg:space-between flex flex-col flex-wrap justify-center gap-16 lg:flex-row"
             >
-                {#each team as member, i}
+                {#each team as member, i (member.id)}
                     <div
                         class="group flex flex-col items-center gap-2 2xl:h-96 2xl:w-96"
                         id={"member-" + member.id}
@@ -396,11 +403,13 @@
                         <div
                             class="flex w-64 flex-col items-center gap-4 transition-all duration-300 group-hover:w-max 2xl:mr-auto 2xl:flex-row"
                         >
+                            <!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
                             <a
                                 href={member.linkedin}
                                 target="_blank"
                                 class="pointer-events-none relative flex-none 2xl:pointer-events-auto"
                             >
+                                <!-- eslint-enable svelte/no-navigation-without-resolve -->
                                 <img
                                     src={getFileUrl(member, member.picture)}
                                     alt={`${member.name}'s avatar`}
@@ -451,11 +460,13 @@
                             {member.blurb}
                         </p>
 
+                        <!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
                         <a
                             href={member.linkedin}
                             target="_blank"
                             class="flex flex-row items-center gap-2 2xl:hidden"
                         >
+                            <!-- eslint-enable svelte/no-navigation-without-resolve -->
                             <Fa size="lg" icon={faLinkedin} />
                             <span>{getLinkedInUsername(member.linkedin)}</span>
                         </a>
@@ -483,7 +494,7 @@
                     they become available. Image
                 </p>
                 <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
-                    {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat}
+                    {#each [{ key: "Deals", value: 4 }, { key: "Capital Raised", value: "$865,000" }, { key: "Average Deal Size", value: "$216,250" }] as stat (stat.key)}
                         <div>
                             <p class="text-black/75">{stat.key}</p>
                             <span class="text-6xl font-light">{stat.value}</span

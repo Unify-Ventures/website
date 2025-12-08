@@ -5,12 +5,7 @@
         type FundsResponse,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import {
-        getFileUrl,
-        getPortfolios,
-        pb,
-        type PortfolioExpand,
-    } from "$lib/pocketbase";
+    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
     import { adjustLightColor } from "$lib/color-utils";
     import { createFilterStore } from "$lib/multi-filter.svelte";
     import { inlineSvg } from "@svelte-put/inline-svg";
@@ -88,7 +83,7 @@
         if (!window.location.hash) return;
         const portfolioElement = document.getElementById(
             (Object.entries(portfolioMap).find(
-                ([_, value]) =>
+                ([, value]) =>
                     toCamelCase(value.name) === page.url.hash.slice(1),
             ) || [])[0] || "",
         );
@@ -137,15 +132,21 @@
                 expand: "manager",
             });
         } else {
-            fundsResp = (await (await fetch("/pb/funds.json")).json()) as any[];
+            fundsResp = (await (
+                await fetch("/pb/funds.json")
+            ).json()) as FundsResponse<{
+                manager: { name: string; featured: boolean };
+            }>[];
         }
+
+        type FundExpand = { manager?: { name?: string; featured?: boolean } };
 
         funds = [
             { value: "Any", label: "Any" },
             ...fundsResp
                 .sort((a, b) => {
-                    const aExpand = a.expand as any;
-                    const bExpand = b.expand as any;
+                    const aExpand = a.expand as FundExpand | undefined;
+                    const bExpand = b.expand as FundExpand | undefined;
                     const aFeatured = aExpand?.manager?.featured ?? false;
                     const bFeatured = bExpand?.manager?.featured ?? false;
 
@@ -156,7 +157,7 @@
                     return aName.localeCompare(bName);
                 })
                 .map((fund) => {
-                    const expand = fund.expand as any;
+                    const expand = fund.expand as FundExpand | undefined;
                     return {
                         value: fund.id,
                         label: fund.short_name || fund.name,
@@ -208,7 +209,7 @@
     }
 
     $effect(() => {
-        filterStore?.filteredItems;
+        void filterStore?.filteredItems;
         if (relativeScroll === null || !portfolioGrid) return;
         tick().then(() => {
             const rect = portfolioGrid!.getBoundingClientRect();
@@ -237,7 +238,7 @@
                 >
                     <div class="flex flex-col">
                         <h3 class="text-xl font-bold">Stage</h3>
-                        {#each stages as stage}
+                        {#each stages as stage (stage.value)}
                             <div class="flex flex-row items-center gap-2 p-1">
                                 <input
                                     type="radio"
@@ -270,7 +271,7 @@
                         {/each}
 
                         <h3 class="mt-4 text-xl font-bold">Fund</h3>
-                        {#each funds as fund, index}
+                        {#each funds as fund, index (fund.value)}
                             {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
                                 <div
                                     class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
@@ -341,7 +342,7 @@
                         >
                         {#if expandStage}
                             <div transition:slide>
-                                {#each stages as stage}
+                                {#each stages as stage (stage.value)}
                                     <div
                                         class="flex flex-row items-center gap-2 p-1"
                                     >
@@ -405,7 +406,7 @@
                         >
                         {#if expandFund}
                             <div transition:slide>
-                                {#each funds as fund, index}
+                                {#each funds as fund, index (fund.value)}
                                     {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
                                         <div
                                             class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
@@ -465,7 +466,7 @@
                 bind:this={portfolioGrid}
                 class="mb-8 grid h-max min-w-[336px] grid-cols-2 gap-4 lg:min-w-lg lg:grid-cols-3 2xl:min-w-[688px] 2xl:grid-cols-4"
             >
-                {#each portfolios as portfolio}
+                {#each portfolios as portfolio (portfolio.id)}
                     <button
                         class="group grid h-40 w-40 cursor-pointer place-content-center bg-zinc-100 p-4"
                         class:hidden={!filterStore.filteredItems.some(

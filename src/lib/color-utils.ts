@@ -7,7 +7,7 @@ export function hexToHsl(hex: string): [number, number, number] {
     const min = Math.min(r, g, b);
     let h = 0;
     let s = 0;
-    let l = (max + min) / 2;
+    const l = (max + min) / 2;
 
     if (max !== min) {
         const d = max - min;

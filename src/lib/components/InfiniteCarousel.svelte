@@ -268,7 +268,7 @@
     // Recalculate when children change
     $effect(() => {
         // Track the snippet to re-run when it changes
-        children;
+        void children;
 
         // Use untrack to avoid infinite loops when updating dimensions
         untrack(() => {
