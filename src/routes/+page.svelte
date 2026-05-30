@@ -457,7 +457,7 @@
                         </div>
 
                         <p
-                            class="max-w-64 p-2 text-justify transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:max-w-sm 2xl:-translate-y-8 2xl:scale-75 2xl:opacity-0"
+                            class="max-w-64 p-2 transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:max-w-sm 2xl:-translate-y-8 2xl:scale-75 2xl:opacity-0"
                         >
                             {member.blurb}
                         </p>
