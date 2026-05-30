@@ -481,7 +481,7 @@
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
-                            class="max-h-16 p-4 text-(--accent) transition-all duration-150"
+                            class="p-4 text-(--accent) transition-all duration-150"
                             style:--accent={adjustLightColor(
                                 portfolioMap[portfolio.id].accent,
                             )}
