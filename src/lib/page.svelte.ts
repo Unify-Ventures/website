@@ -14,8 +14,8 @@ export function createPortfolios() {
         PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
     >([]);
 
-    async function loadPortfolios(status: string = "scaling") {
-        portfolios = await getFeaturedPortfolios(status);
+    async function loadPortfolios(stage: string) {
+        portfolios = await getFeaturedPortfolios(stage);
         return portfolios;
     }
 
@@ -27,17 +27,15 @@ export function createPortfolios() {
     };
 }
 
-export function getPortfolioCategories() {
-    const categories = Object.keys(PortfolioCompaniesStageOptions).map(
-        (stage) => {
-            return {
-                value: stage,
-                label: toTitleCase(stage.replace(/_/g, " ")),
-            };
-        },
-    );
+export function getPortfolioStages() {
+    const stages = Object.keys(PortfolioCompaniesStageOptions).map((stage) => {
+        return {
+            value: stage,
+            label: toTitleCase(stage.replace(/_/g, " ")),
+        };
+    });
 
-    return categories;
+    return stages;
 }
 
 function toTitleCase(str: string) {

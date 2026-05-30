@@ -24,7 +24,7 @@
     import {
         getLinkedInUsername,
         createPortfolios,
-        getPortfolioCategories,
+        getPortfolioStages,
     } from "$lib/page.svelte";
     import type { PageServerData } from "./$types";
     import InfiniteCarousel from "$lib/components/InfiniteCarousel.svelte";
@@ -46,17 +46,17 @@
 
     let externalPause = $state(false);
 
-    const portfolioCategories = getPortfolioCategories();
+    const portfolioStages = getPortfolioStages();
 
     let team = $state<TeamResponse[]>([]);
 
     let managers = $derived(data.managers);
 
-    let portfolioSelectValue = $state(portfolioCategories[2].value);
+    let portfolioSelectValue = $state(portfolioStages[2].value);
 
     const selectedLabel = $derived(
-        portfolioCategories.find((c) => c.value === portfolioSelectValue)
-            ?.label ?? "All Categories",
+        portfolioStages.find((s) => s.value === portfolioSelectValue)?.label ??
+            "All Stages",
     );
 
     let selectedPortfolio = $state<PortfolioCompaniesResponse<
@@ -67,7 +67,7 @@
     let portfolioDialog = $state<HTMLDialogElement | undefined>(undefined);
 
     onMount(async () => {
-        await portfolioStore.loadPortfolios();
+        await portfolioStore.loadPortfolios(portfolioSelectValue);
         portfolios = await getPortfolios();
         team = await getTeam();
     });
@@ -246,7 +246,7 @@
                 >
                     <Select.Trigger
                         class="inline-flex cursor-pointer gap-2 border-2 border-zinc-900 p-4 transition-all duration-200 hover:bg-zinc-100"
-                        aria-label="Select a category"
+                        aria-label="Select a stage"
                     >
                         {selectedLabel}
                         <ChevronsUpDown class="ml-auto" />
@@ -262,13 +262,13 @@
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollUpButton>
                             <Select.Viewport class="flex flex-col gap-2">
-                                {#each portfolioCategories as category (category.value)}
+                                {#each portfolioStages as stage (stage.value)}
                                     <Select.Item
-                                        value={category.value}
-                                        label={category.label}
+                                        value={stage.value}
+                                        label={stage.label}
                                         class="cursor-pointer p-4 transition-all duration-200 hover:bg-zinc-100"
                                     >
-                                        {category.label}
+                                        {stage.label}
                                     </Select.Item>
                                 {/each}
                             </Select.Viewport>

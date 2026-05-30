@@ -12,7 +12,7 @@ export const pb: TypedPocketBase = new PocketBase(
     "https://content.unifyventures.vc",
 );
 
-export const getFeaturedPortfolios = async (stage: string = "scaling") => {
+export const getFeaturedPortfolios = async (stage: string) => {
     if (process.env.NODE_ENV === "development") {
         const portfolios = await pb
             .collection("portfolio_companies")

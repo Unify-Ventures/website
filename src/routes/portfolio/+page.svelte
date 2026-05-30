@@ -1,7 +1,7 @@
 <script lang="ts">
     import {
         Collections,
-        PortfolioCompaniesStageOptions,
+        PortfolioCompaniesCategoryOptions,
         type FundsResponse,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
@@ -17,14 +17,14 @@
     import { toCamelCase } from "$lib/case";
     import { CircleSlash } from "lucide-svelte";
 
-    const stages: {
-        value: "Any" | PortfolioCompaniesStageOptions;
+    const categories: {
+        value: "Any" | PortfolioCompaniesCategoryOptions;
         label: string;
     }[] = [
         { value: "Any", label: "Any" },
-        ...Object.values(PortfolioCompaniesStageOptions).map((stage) => ({
-            value: stage,
-            label: toTitleCase(stage.replace(/_/g, " ")),
+        ...Object.values(PortfolioCompaniesCategoryOptions).map((category) => ({
+            value: category,
+            label: toTitleCase(category.replace(/_/g, " ")),
         })),
     ];
 
@@ -37,7 +37,7 @@
         }>
     >([{ value: "any", label: "Any" }]);
 
-    let expandStage = $state(false);
+    let expandCategory = $state(false);
     let expandFund = $state(false);
 
     function toTitleCase(str: string) {
@@ -54,22 +54,15 @@
     let relativeScroll = $state<number | null>(null);
 
     interface PortfolioFilterItem {
-        [key: string]: string | PortfolioCompaniesStageOptions;
+        [key: string]: string | PortfolioCompaniesCategoryOptions;
         id: string;
-        stage: PortfolioCompaniesStageOptions;
+        category: PortfolioCompaniesCategoryOptions;
         fund: string;
     }
 
     const config = {
         id: [] as string[],
-        stage: [
-            PortfolioCompaniesStageOptions.product_launch,
-            PortfolioCompaniesStageOptions.market_validation,
-            PortfolioCompaniesStageOptions.scaling,
-            PortfolioCompaniesStageOptions.revenue_momentum,
-            PortfolioCompaniesStageOptions.liquidity_event,
-            PortfolioCompaniesStageOptions.unassigned,
-        ],
+        category: Object.values(PortfolioCompaniesCategoryOptions),
         fund: [] as string[],
     };
 
@@ -116,7 +109,8 @@
         const filterablePortfolios: PortfolioFilterItem[] = portfolios.map(
             (p) => ({
                 id: p.id,
-                stage: p.stage ?? PortfolioCompaniesStageOptions.unassigned,
+                category:
+                    p.category ?? PortfolioCompaniesCategoryOptions.Unassigned,
                 fund: p.funds?.[0] ?? "",
             }),
         );
@@ -169,7 +163,7 @@
 
         const dynamicConfig = {
             id: filterablePortfolios.map((p) => p.id),
-            stage: config.stage,
+            category: config.category,
             fund: [...new Set(filterablePortfolios.map((p) => p.fund))],
         };
 
@@ -182,8 +176,8 @@
         return funds.find((f) => f.value === fund)?.label ?? "";
     }
 
-    function stageToLabel(stage: string) {
-        return stages.find((s) => s.value === stage)?.label ?? "";
+    function categoryToLabel(category: string) {
+        return categories.find((c) => c.value === category)?.label ?? "";
     }
 
     function saveScrollPosition() {
@@ -198,7 +192,7 @@
         );
     }
 
-    function selectFilter(dimension: "stage" | "fund", value: string) {
+    function selectFilter(dimension: "category" | "fund", value: string) {
         saveScrollPosition();
         filterStore!.select(dimension, value);
     }
@@ -237,34 +231,37 @@
                     class="max-h-[calc(100vh-80px)] w-64 overflow-scroll border-2 border-zinc-700 bg-white p-4"
                 >
                     <div class="flex flex-col">
-                        <h3 class="text-xl font-bold">Stage</h3>
-                        {#each stages as stage (stage.value)}
+                        <h3 class="text-xl font-bold">Category</h3>
+                        {#each categories as category (category.value)}
                             <div class="flex flex-row items-center gap-2 p-1">
                                 <input
                                     type="radio"
-                                    name="stage"
-                                    value={stage.value}
+                                    name="category"
+                                    value={category.value}
                                     class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                    id={`stage-${stage.value}`}
-                                    disabled={stage.value !== "Any" &&
+                                    id={`category-${category.value}`}
+                                    disabled={category.value !== "Any" &&
                                         !filterStore
-                                            .getAvailableOptions("stage")
-                                            .includes(stage.value)}
+                                            .getAvailableOptions("category")
+                                            .includes(category.value)}
                                     onchange={() =>
-                                        selectFilter("stage", stage.value)}
-                                    checked={filterStore.dimensions.stage
-                                        .selected === stage.value}
+                                        selectFilter(
+                                            "category",
+                                            category.value,
+                                        )}
+                                    checked={filterStore.dimensions.category
+                                        .selected === category.value}
                                 />
                                 <label
-                                    for={`stage-${stage.value}`}
+                                    for={`category-${category.value}`}
                                     class="cursor-pointer"
-                                    >{stage.label}
+                                    >{category.label}
                                     {portfolios
-                                        .map((p) => p.stage)
+                                        .map((p) => p.category)
                                         .includes(
-                                            stage.value as PortfolioCompaniesStageOptions,
+                                            category.value as PortfolioCompaniesCategoryOptions,
                                         )
-                                        ? `(${portfolios.filter((p) => p.stage === stage.value).length})`
+                                        ? `(${portfolios.filter((p) => p.category === category.value).length})`
                                         : ""}</label
                                 >
                             </div>
@@ -324,62 +321,64 @@
                         <button
                             class="flex flex-row items-center gap-4 text-left text-xl font-bold"
                             onclick={() => {
-                                expandStage = !expandStage;
+                                expandCategory = !expandCategory;
                                 expandFund = false;
                             }}
                         >
-                            <span class="w-14">Stage</span>
+                            <span class="w-14">Category</span>
                             <span class="text-sm font-normal text-zinc-700"
-                                >{stageToLabel(
-                                    filterStore.dimensions.stage.selected,
+                                >{categoryToLabel(
+                                    filterStore.dimensions.category.selected,
                                 )}</span
                             >
                             <ChevronDown
-                                class="ml-auto transition-all duration-200 {expandStage
+                                class="ml-auto transition-all duration-200 {expandCategory
                                     ? 'rotate-180'
                                     : ''}"
                             /></button
                         >
-                        {#if expandStage}
+                        {#if expandCategory}
                             <div transition:slide>
-                                {#each stages as stage (stage.value)}
+                                {#each categories as category (category.value)}
                                     <div
                                         class="flex flex-row items-center gap-2 p-1"
                                     >
                                         <input
                                             type="radio"
-                                            name="stage"
-                                            value={stage.value}
+                                            name="category"
+                                            value={category.value}
                                             class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                            id={`stage-${stage.value}`}
-                                            disabled={stage.value !== "Any" &&
+                                            id={`category-${category.value}`}
+                                            disabled={category.value !==
+                                                "Any" &&
                                                 !filterStore
                                                     .getAvailableOptions(
-                                                        "stage",
+                                                        "category",
                                                     )
-                                                    .includes(stage.value)}
+                                                    .includes(category.value)}
                                             onchange={() =>
                                                 selectFilter(
-                                                    "stage",
-                                                    stage.value,
+                                                    "category",
+                                                    category.value,
                                                 )}
                                             checked={filterStore.dimensions
-                                                .stage.selected === stage.value}
+                                                .category.selected ===
+                                                category.value}
                                         />
                                         <label
-                                            for={`stage-${stage.value}`}
+                                            for={`category-${category.value}`}
                                             class="cursor-pointer"
-                                            >{stage.label}
+                                            >{category.label}
                                             {filterStore.filteredItems
                                                 .map(
                                                     (p) =>
                                                         portfolioMap[p.id]
-                                                            ?.stage,
+                                                            ?.category,
                                                 )
                                                 .includes(
-                                                    stage.value as PortfolioCompaniesStageOptions,
+                                                    category.value as PortfolioCompaniesCategoryOptions,
                                                 )
-                                                ? `(${filterStore.filteredItems.filter((p) => portfolioMap[p.id]?.stage === stage.value).length})`
+                                                ? `(${filterStore.filteredItems.filter((p) => portfolioMap[p.id]?.category === category.value).length})`
                                                 : ""}</label
                                         >
                                     </div>
@@ -391,7 +390,7 @@
                             class="mt-4 flex flex-row items-center gap-4 text-left text-xl font-bold"
                             onclick={() => {
                                 expandFund = !expandFund;
-                                expandStage = false;
+                                expandCategory = false;
                             }}
                             ><span class="w-14">Fund</span><span
                                 class="text-sm font-normal text-zinc-700"
@@ -450,7 +449,7 @@
                             </div>
                         {/if}
 
-                        {#if (expandStage || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.stage.selected === "Any")}
+                        {#if (expandCategory || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.category.selected === "Any")}
                             <button
                                 transition:slide
                                 class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
