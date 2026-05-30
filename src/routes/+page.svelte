@@ -261,13 +261,15 @@
                             >
                                 <ChevronsUpDown class="size-3" />
                             </Select.ScrollUpButton>
-                            <Select.Viewport class="flex flex-col gap-2 p-2">
+                            <Select.Viewport class="flex flex-col gap-2">
                                 {#each portfolioCategories as category (category.value)}
                                     <Select.Item
                                         value={category.value}
                                         label={category.label}
                                         class="cursor-pointer p-4 transition-all duration-200 hover:bg-zinc-100"
-                                    />
+                                    >
+                                        {category.label}
+                                    </Select.Item>
                                 {/each}
                             </Select.Viewport>
                             <Select.ScrollDownButton
