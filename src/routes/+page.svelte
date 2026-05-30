@@ -297,7 +297,7 @@
                 >
                     {#each portfolioStore.portfolios as portfolio (portfolio.id)}
                         <button
-                            class={`portfolio group relative aspect-square w-40 bg-zinc-100 text-zinc-800 md:w-64 ${
+                            class={`portfolio group relative h-40 w-40 bg-zinc-100 text-zinc-800 md:h-64 md:w-64 ${
                                 portfolio.invert_foreground
                                     ? "hover:[&:not(.no-hover)]:text-zinc-100"
                                     : ""
@@ -312,7 +312,7 @@
                         >
                             <div
                                 role="img"
-                                class="flex aspect-square w-40 items-center justify-center p-6 transition-colors duration-150 md:w-64 xl:p-12"
+                                class="flex h-40 w-40 items-center justify-center p-6 transition-colors duration-150 md:h-64 md:w-64 xl:p-12"
                                 class:no-hover={!portfolio.logo.endsWith(
                                     ".svg",
                                 )}

@@ -228,7 +228,7 @@
     <div class="grid place-content-center">
         <h2 class="text-7xl font-medium">Portfolio</h2>
         <div
-            class="relative mx-auto my-4 flex min-h-full w-full max-w-7xl flex-col gap-4 lg:m-8 lg:flex-row"
+            class="relative mx-auto my-4 flex w-full max-w-7xl flex-col gap-4 lg:m-8 lg:flex-row"
         >
             <!-- Desktop filters -->
             <div class="sticky top-10 left-0 mb-16 hidden self-start lg:block">
@@ -481,7 +481,7 @@
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
-                            class="aspect-video max-h-16 p-1 text-(--accent) transition-all duration-150"
+                            class="max-h-16 p-4 text-(--accent) transition-all duration-150"
                             style:--accent={adjustLightColor(
                                 portfolioMap[portfolio.id].accent,
                             )}
