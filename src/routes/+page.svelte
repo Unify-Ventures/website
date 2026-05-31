@@ -331,7 +331,7 @@
                                                 : portfolio.unoptimised_logo,
                                         )}
                                     />
-                                {:else}
+                                {:else if portfolio.logo}
                                     <img
                                         class={"h-full w-full object-contain" +
                                             (portfolio.invert_foreground
@@ -347,6 +347,12 @@
                                         )}
                                         alt={`${portfolio.name}'s logo'`}
                                     />
+                                {:else}
+                                    <div
+                                        class="grid h-full w-full place-content-center"
+                                    >
+                                        <span>{portfolio.name}</span>
+                                    </div>
                                 {/if}
                             </div>
                             {#if portfolio.expand?.funds?.[0]?.expand?.manager?.logo}

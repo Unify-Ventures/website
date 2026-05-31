@@ -53,12 +53,19 @@
         </button>
         <div class="bg-zinc-100 p-4">
             {#each logos as logo (logo.portfolio.id)}
-                {#if logo.logoURL.endsWith(".svg")}
+                {#if !logo.portfolio.logo}
+                    <div
+                        class="grid aspect-video h-full w-full place-content-center"
+                        class:hidden={portfolio?.id !== logo.portfolio.id}
+                    >
+                        <span class="text-4xl font-bold"
+                            >{logo.portfolio.name}</span
+                        >
+                    </div>
+                {:else if logo.logoURL.endsWith(".svg")}
                     <img
                         class="aspect-video h-full w-full"
-                        class:hidden={!(
-                            portfolio?.logo === logo.portfolio.logo
-                        )}
+                        class:hidden={portfolio?.id !== logo.portfolio.id}
                         width="14rem"
                         height="14rem"
                         src={logo.logoURL}
@@ -71,9 +78,7 @@
                             (logo.portfolio.invert_foreground
                                 ? " contrast-75 hue-rotate-180 invert"
                                 : "")}
-                        class:hidden={!(
-                            portfolio?.logo === logo.portfolio.logo
-                        )}
+                        class:hidden={portfolio?.id !== logo.portfolio.id}
                         src={logo.logoURL}
                         aria-hidden="true"
                         alt="Portfolio logo"

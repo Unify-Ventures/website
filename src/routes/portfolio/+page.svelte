@@ -519,7 +519,7 @@
                                 <div
                                     class="grid h-full w-full place-content-center"
                                 >
-                                    <CircleSlash size="64" />
+                                    <span>{portfolio.name}</span>
                                 </div>
                             {/if}
                         </div>
