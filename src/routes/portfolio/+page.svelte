@@ -278,7 +278,7 @@
                                 expandFund = false;
                             }}
                         >
-                            <span class="w-14">Category</span>
+                            <span class="w-24">Category</span>
                             <span class="text-sm font-normal text-zinc-700"
                                 >{categoryToLabel(
                                     filterStore.dimensions.category.selected,
@@ -345,7 +345,7 @@
                                 expandFund = !expandFund;
                                 expandCategory = false;
                             }}
-                            ><span class="w-14">Fund</span><span
+                            ><span class="w-24">Fund</span><span
                                 class="text-sm font-normal text-zinc-700"
                                 >{fundToLabel(
                                     filterStore.dimensions.fund.selected,
