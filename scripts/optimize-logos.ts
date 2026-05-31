@@ -74,7 +74,7 @@ function getFileUrl(
     record: { collectionId: string; id: string },
     filename: string,
 ): string {
-    return pb.buildUrl(
+    return pb.buildURL(
         `/api/files/${record.collectionId}/${record.id}/${filename}`,
     );
 }

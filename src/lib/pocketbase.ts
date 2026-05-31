@@ -74,7 +74,9 @@ export async function getFunds(
             expand: "manager",
         });
     } else {
-        return (await (await fetchFn("/pb/funds.json")).json()) as FundsResponse<{
+        return (await (
+            await fetchFn("/pb/funds.json")
+        ).json()) as FundsResponse<{
             manager: { name: string; featured: boolean };
         }>[];
     }
@@ -89,7 +91,7 @@ export const getFileUrl = (
     name: string,
 ) => {
     if (process.env.NODE_ENV === "development") {
-        return `${pb.buildUrl(
+        return `${pb.buildURL(
             `/api/files/${record.collectionId}/${record.id}/${name}`,
         )}`;
     } else {
@@ -101,7 +103,7 @@ export const getSourceFileUrl = (
     record: { collectionId: string; id: string },
     name: string,
 ) => {
-    return `${pb.buildUrl(
+    return `${pb.buildURL(
         `/api/files/${record.collectionId}/${record.id}/${name}`,
     )}`;
 };
