@@ -291,7 +291,7 @@
                             /></button
                         >
                         {#if expandCategory}
-                            <div transition:slide>
+                            <div transition:slide class="overflow-y-scroll max-h-72">
                                 {#each categories as category (category.value)}
                                     <div
                                         class="flex flex-row items-center gap-2 p-1"
@@ -357,7 +357,7 @@
                             /></button
                         >
                         {#if expandFund}
-                            <div transition:slide>
+                            <div transition:slide class="overflow-y-scroll max-h-72">
                                 {#each funds as fund, index (fund.value)}
                                     {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
                                         <div
