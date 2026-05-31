@@ -202,7 +202,10 @@
                         <!-- eslint-enable svelte/no-navigation-without-resolve -->
                         <svg
                             width="16rem"
-                            use:inlineSvg={getFileUrl(manager, manager.logo)}
+                            use:inlineSvg={{
+                                src: getFileUrl(manager, manager.logo),
+                                cache: "force-cache",
+                            }}
                         />
                     </a>
                 {/each}
@@ -324,12 +327,15 @@
                                     <svg
                                         width="100%"
                                         height="100%"
-                                        use:inlineSvg={getFileUrl(
-                                            portfolio,
-                                            !portfolio.use_unoptimised_logo
-                                                ? portfolio.logo
-                                                : portfolio.unoptimised_logo,
-                                        )}
+                                        use:inlineSvg={{
+                                            src: getFileUrl(
+                                                portfolio,
+                                                !portfolio.use_unoptimised_logo
+                                                    ? portfolio.logo
+                                                    : portfolio.unoptimised_logo,
+                                            ),
+                                            cache: "force-cache",
+                                        }}
                                     />
                                 {:else if portfolio.logo}
                                     <img
@@ -357,12 +363,15 @@
                             </div>
                             {#if portfolio.expand?.funds?.[0]?.expand?.manager?.logo}
                                 <svg
-                                    use:inlineSvg={getFileUrl(
-                                        portfolio.expand.funds[0].expand
-                                            .manager,
-                                        portfolio.expand.funds[0].expand.manager
-                                            .logo,
-                                    )}
+                                    use:inlineSvg={{
+                                        src: getFileUrl(
+                                            portfolio.expand.funds[0].expand
+                                                .manager,
+                                            portfolio.expand.funds[0].expand
+                                                .manager.logo,
+                                        ),
+                                        cache: "force-cache",
+                                    }}
                                     class="absolute right-0 bottom-0 h-12 max-w-28 translate-y-0 bg-zinc-200 p-2 text-zinc-900 transition-all duration-150 group-hover:translate-y-full"
                                 ></svg>
                             {/if}
