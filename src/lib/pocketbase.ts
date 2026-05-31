@@ -12,7 +12,10 @@ export const pb: TypedPocketBase = new PocketBase(
     "https://content.unifyventures.vc",
 );
 
-export const getFeaturedPortfolios = async (stage: string) => {
+export const getFeaturedPortfolios = async (
+    stage: string,
+    fetchFn: typeof fetch = fetch,
+) => {
     if (process.env.NODE_ENV === "development") {
         const portfolios = await pb
             .collection("portfolio_companies")
@@ -26,7 +29,7 @@ export const getFeaturedPortfolios = async (stage: string) => {
         return portfolios;
     } else {
         const portfolios = (await (
-            await fetch("/pb/portfolios.json")
+            await fetchFn("/pb/portfolios.json")
         ).json()) as PortfolioCompaniesResponse<
             unknown,
             unknown,
@@ -37,9 +40,9 @@ export const getFeaturedPortfolios = async (stage: string) => {
     }
 };
 
-export async function getPortfolios(): Promise<
-    PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]
-> {
+export async function getPortfolios(
+    fetchFn: typeof fetch = fetch,
+): Promise<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]> {
     if (process.env.NODE_ENV === "development") {
         const portfolios = await pb
             .collection("portfolio_companies")
@@ -52,7 +55,7 @@ export async function getPortfolios(): Promise<
         return portfolios;
     } else {
         const portfolios = (await (
-            await fetch("/pb/portfolios.json")
+            await fetchFn("/pb/portfolios.json")
         ).json()) as PortfolioCompaniesResponse<
             unknown,
             unknown,
@@ -60,6 +63,20 @@ export async function getPortfolios(): Promise<
         >[];
 
         return portfolios;
+    }
+}
+
+export async function getFunds(
+    fetchFn: typeof fetch = fetch,
+): Promise<FundsResponse<unknown>[]> {
+    if (process.env.NODE_ENV === "development") {
+        return await pb.collection(Collections.Funds).getFullList({
+            expand: "manager",
+        });
+    } else {
+        return (await (await fetchFn("/pb/funds.json")).json()) as FundsResponse<{
+            manager: { name: string; featured: boolean };
+        }>[];
     }
 }
 

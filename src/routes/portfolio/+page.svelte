@@ -1,21 +1,21 @@
 <script lang="ts">
     import {
-        Collections,
         PortfolioCompaniesCategoryOptions,
-        type FundsResponse,
         type PortfolioCompaniesResponse,
     } from "$lib/pb-types";
-    import { getFileUrl, getPortfolios, pb } from "$lib/pocketbase";
+    import { getFileUrl } from "$lib/pocketbase";
     import { adjustLightColor } from "$lib/color-utils";
     import { createFilterStore } from "$lib/multi-filter.svelte";
     import { inlineSvg } from "@svelte-put/inline-svg";
     import ChevronDown from "lucide-svelte/icons/chevron-down";
-    import { onMount, tick } from "svelte";
+    import { tick } from "svelte";
     import { slide } from "svelte/transition";
     import PortfolioDialog from "$lib/components/PortfolioDialog.svelte";
     import { page } from "$app/state";
     import { toCamelCase } from "$lib/case";
-    import { CircleSlash } from "lucide-svelte";
+    import type { PageData } from "./$types";
+
+    let { data }: { data: PageData } = $props();
 
     const categories: {
         value: "Any" | PortfolioCompaniesCategoryOptions;
@@ -28,15 +28,6 @@
         })),
     ];
 
-    let funds = $state<
-        Array<{
-            value: string;
-            label: string;
-            managerName?: string;
-            managerFeatured?: boolean;
-        }>
-    >([{ value: "any", label: "Any" }]);
-
     let expandCategory = $state(false);
     let expandFund = $state(false);
 
@@ -46,7 +37,7 @@
         });
     }
 
-    let portfolios = $state<PortfolioCompaniesResponse[]>([]);
+    const portfolios: PortfolioCompaniesResponse[] = data.portfolios;
 
     let dialogStartup = $state<PortfolioCompaniesResponse | null>(null);
     let startupModal = $state<HTMLDialogElement | undefined>(undefined);
@@ -60,17 +51,49 @@
         fund: string;
     }
 
-    const config = {
-        id: [] as string[],
+    type FundExpand = { manager?: { name?: string; featured?: boolean } };
+
+    const funds = [
+        { value: "Any", label: "Any" },
+        ...data.funds
+            .slice()
+            .sort((a, b) => {
+                const aExpand = a.expand as FundExpand | undefined;
+                const bExpand = b.expand as FundExpand | undefined;
+                const aFeatured = aExpand?.manager?.featured ?? false;
+                const bFeatured = bExpand?.manager?.featured ?? false;
+
+                if (aFeatured !== bFeatured) return bFeatured ? 1 : -1;
+
+                const aName = aExpand?.manager?.name ?? "";
+                const bName = bExpand?.manager?.name ?? "";
+                return aName.localeCompare(bName);
+            })
+            .map((fund) => {
+                const expand = fund.expand as FundExpand | undefined;
+                return {
+                    value: fund.id,
+                    label: fund.short_name || fund.name,
+                    managerName: expand?.manager?.name ?? "",
+                    managerFeatured: expand?.manager?.featured ?? false,
+                };
+            }),
+    ];
+
+    const filterablePortfolios: PortfolioFilterItem[] = portfolios.map((p) => ({
+        id: p.id,
+        category: p.category ?? PortfolioCompaniesCategoryOptions.Unassigned,
+        fund: p.funds?.[0] ?? "",
+    }));
+
+    const portfolioMap: Record<string, PortfolioCompaniesResponse> =
+        Object.fromEntries(portfolios.map((p) => [p.id, p]));
+
+    const filterStore = createFilterStore(filterablePortfolios, {
+        id: filterablePortfolios.map((p) => p.id),
         category: Object.values(PortfolioCompaniesCategoryOptions),
-        fund: [] as string[],
-    };
-
-    let portfolioMap = $state<Record<string, PortfolioCompaniesResponse>>({});
-
-    let filterStore = $state<ReturnType<
-        typeof createFilterStore<PortfolioFilterItem>
-    > | null>(null);
+        fund: [...new Set(filterablePortfolios.map((p) => p.fund))],
+    });
 
     function handleHash() {
         if (!window.location.hash) return;
@@ -103,75 +126,6 @@
         if (page.url.hash) handleHash();
     });
 
-    onMount(async () => {
-        portfolios = await getPortfolios();
-
-        const filterablePortfolios: PortfolioFilterItem[] = portfolios.map(
-            (p) => ({
-                id: p.id,
-                category:
-                    p.category ?? PortfolioCompaniesCategoryOptions.Unassigned,
-                fund: p.funds?.[0] ?? "",
-            }),
-        );
-
-        portfolios.forEach((p) => {
-            portfolioMap[p.id] = p;
-        });
-
-        let fundsResp: FundsResponse<unknown>[];
-
-        if (process.env.NODE_ENV === "development") {
-            fundsResp = await pb.collection(Collections.Funds).getFullList({
-                expand: "manager",
-            });
-        } else {
-            fundsResp = (await (
-                await fetch("/pb/funds.json")
-            ).json()) as FundsResponse<{
-                manager: { name: string; featured: boolean };
-            }>[];
-        }
-
-        type FundExpand = { manager?: { name?: string; featured?: boolean } };
-
-        funds = [
-            { value: "Any", label: "Any" },
-            ...fundsResp
-                .sort((a, b) => {
-                    const aExpand = a.expand as FundExpand | undefined;
-                    const bExpand = b.expand as FundExpand | undefined;
-                    const aFeatured = aExpand?.manager?.featured ?? false;
-                    const bFeatured = bExpand?.manager?.featured ?? false;
-
-                    if (aFeatured !== bFeatured) return bFeatured ? 1 : -1;
-
-                    const aName = aExpand?.manager?.name ?? "";
-                    const bName = bExpand?.manager?.name ?? "";
-                    return aName.localeCompare(bName);
-                })
-                .map((fund) => {
-                    const expand = fund.expand as FundExpand | undefined;
-                    return {
-                        value: fund.id,
-                        label: fund.short_name || fund.name,
-                        managerName: expand?.manager?.name ?? "",
-                        managerFeatured: expand?.manager?.featured ?? false,
-                    };
-                }),
-        ];
-
-        const dynamicConfig = {
-            id: filterablePortfolios.map((p) => p.id),
-            category: config.category,
-            fund: [...new Set(filterablePortfolios.map((p) => p.fund))],
-        };
-
-        filterStore = createFilterStore(filterablePortfolios, dynamicConfig);
-
-        setTimeout(handleHash, 500);
-    });
-
     function fundToLabel(fund: string) {
         return funds.find((f) => f.value === fund)?.label ?? "";
     }
@@ -194,12 +148,12 @@
 
     function selectFilter(dimension: "category" | "fund", value: string) {
         saveScrollPosition();
-        filterStore!.select(dimension, value);
+        filterStore.select(dimension, value);
     }
 
     function resetFilters() {
         saveScrollPosition();
-        filterStore!.reset();
+        filterStore.reset();
     }
 
     $effect(() => {
@@ -218,8 +172,7 @@
     });
 </script>
 
-{#if filterStore}
-    <div class="grid place-content-center">
+<div class="grid place-content-center">
         <h2 class="text-7xl font-medium">Portfolio</h2>
         <div
             class="relative mx-auto my-4 flex w-full max-w-7xl flex-col gap-4 lg:m-8 lg:flex-row"
@@ -540,7 +493,6 @@
         bind:dialogElement={startupModal}
         onclose={() => {}}
     />
-{/if}
 
 <style>
     input:disabled + label {
