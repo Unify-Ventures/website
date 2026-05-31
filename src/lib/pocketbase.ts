@@ -16,7 +16,7 @@ export const getFeaturedPortfolios = async (
     stage: string,
     fetchFn: typeof fetch = fetch,
 ) => {
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
         const portfolios = await pb
             .collection("portfolio_companies")
             .getFullList<
@@ -43,7 +43,7 @@ export const getFeaturedPortfolios = async (
 export async function getPortfolios(
     fetchFn: typeof fetch = fetch,
 ): Promise<PortfolioCompaniesResponse<unknown, unknown, PortfolioExpand>[]> {
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
         const portfolios = await pb
             .collection("portfolio_companies")
             .getFullList<
@@ -69,7 +69,7 @@ export async function getPortfolios(
 export async function getFunds(
     fetchFn: typeof fetch = fetch,
 ): Promise<FundsResponse<unknown>[]> {
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
         return await pb.collection(Collections.Funds).getFullList({
             expand: "manager",
         });
@@ -90,7 +90,7 @@ export const getFileUrl = (
     record: { collectionId: string; id: string },
     name: string,
 ) => {
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
         return `${pb.buildURL(
             `/api/files/${record.collectionId}/${record.id}/${name}`,
         )}`;
@@ -109,7 +109,7 @@ export const getSourceFileUrl = (
 };
 
 export const getTeam = async () => {
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
         return await pb
             .collection(Collections.Team)
             .getFullList<TeamResponse>();

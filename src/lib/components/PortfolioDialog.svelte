@@ -2,7 +2,7 @@
     import { page } from "$app/state";
     import { toCamelCase } from "$lib/case";
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
-    import { Link } from "lucide-svelte";
+    import Link from "lucide-svelte/icons/link";
     import type { EventHandler } from "svelte/elements";
     import DOMPurify from "isomorphic-dompurify";
 
