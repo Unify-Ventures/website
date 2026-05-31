@@ -1,10 +1,10 @@
 import { getFileUrl, getManagers, getPortfolios } from "$lib/pocketbase";
 import type { PageServerLoad } from "./$types";
 
-export const load = (async () => {
+export const load = (async ({ fetch }) => {
     return {
         managers: await getManagers(),
-        portfolioLogos: (await getPortfolios())
+        portfolioLogos: (await getPortfolios(fetch))
             .map((p) => {
                 return p.use_unoptimised_logo
                     ? [
