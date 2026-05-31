@@ -42,8 +42,8 @@
             class="absolute top-2.5 left-2.5"
             onclick={() => {
                 navigator.clipboard.writeText(
-                    page.url.host +
-                        "/portfolio/#" +
+                    page.url.origin +
+                        "/portfolio#" +
                         toCamelCase(portfolio?.name ?? ""),
                 );
                 // TODO: #16 Add visual feedback
