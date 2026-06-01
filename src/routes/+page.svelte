@@ -5,6 +5,7 @@
     import Typewriter from "svelte-typewriter";
     import { Select } from "bits-ui";
     import ArrowRight from "lucide-svelte/icons/arrow-right";
+    import ExternalLink from "lucide-svelte/icons/external-link";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
     import {
@@ -521,10 +522,10 @@
                 </div>
                 <a
                     href="https://portal.gxe.com/v/spaces/unify-ventures-syndicate/join/vip"
-                    class="mt-6 flex w-max flex-row justify-center gap-2 border-2 border-zinc-900 bg-zinc-900 p-2 text-white transition-all duration-200 hover:bg-zinc-100 hover:text-black"
+                    class="mt-6 flex w-max flex-row justify-center gap-2 border-2 border-zinc-900 bg-zinc-900 p-2 text-white transition-all duration-200 hover:bg-transparent hover:text-black"
                     target="_blank"
                 >
-                    Join our Syndicate <ArrowRight />
+                    Join our Syndicate <ExternalLink />
                 </a>
             </div>
         </div>

@@ -3,6 +3,7 @@
     import { toCamelCase } from "$lib/case";
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
     import Link from "lucide-svelte/icons/link";
+    import ExternalLink from "lucide-svelte/icons/external-link";
     import Check from "lucide-svelte/icons/check";
     import X from "lucide-svelte/icons/x";
     import type { EventHandler } from "svelte/elements";
@@ -110,10 +111,10 @@
                 )}
                 <!-- eslint-disable svelte/no-navigation-without-resolve -- external URL -->
                 <a
-                    class="mt-4 flex flex-row justify-center gap-2 bg-zinc-900 p-2 text-white"
+                    class="mt-6 flex w-full flex-row justify-center gap-2 border-2 border-zinc-900 bg-zinc-900 p-2 text-white transition-all duration-200 hover:bg-transparent hover:text-black"
                     href={portfolio.homepage}
                     target="_blank"
-                    rel="noopener noreferrer">Visit homepage</a
+                    rel="noopener noreferrer">Visit homepage <ExternalLink /> </a
                 >
                 <!-- eslint-enable svelte/no-navigation-without-resolve -->
             {:else}
