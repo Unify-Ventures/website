@@ -172,10 +172,10 @@
     });
 </script>
 
-<div class="grid place-content-center">
-        <h2 class="text-7xl font-medium">Portfolio</h2>
+<div class="grid w-full grid-cols-1 place-content-center px-4 lg:px-8">
+        <h2 class="mx-auto w-full max-w-380 text-7xl font-medium">Portfolio</h2>
         <div
-            class="relative mx-auto my-4 flex w-full max-w-7xl flex-col gap-4 lg:m-8 lg:flex-row"
+            class="relative mx-auto my-4 flex w-full max-w-380 flex-col gap-4 lg:my-8 lg:flex-row"
         >
             <!-- Desktop filters -->
             <div class="sticky top-10 left-0 mb-16 hidden self-start lg:block">
@@ -416,11 +416,11 @@
             <!-- Portfolio results -->
             <main
                 bind:this={portfolioGrid}
-                class="mb-8 grid h-max min-w-[336px] grid-cols-2 gap-4 lg:min-w-lg lg:grid-cols-3 2xl:min-w-[688px] 2xl:grid-cols-4"
+                class="mb-8 grid h-max min-w-0 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 lg:grid-cols-3 xl:grid-cols-4"
             >
                 {#each portfolios as portfolio (portfolio.id)}
                     <button
-                        class="group grid h-40 w-40 cursor-pointer place-content-center bg-zinc-100 p-4"
+                        class="group block min-w-0 cursor-pointer bg-zinc-100 p-4"
                         class:hidden={!filterStore.filteredItems.some(
                             (r) => r.id === portfolio.id,
                         )}
@@ -433,7 +433,7 @@
                     >
                         <!-- TODO: Find a better method to constrain SVG size -->
                         <div
-                            class="p-4 text-(--accent) transition-all duration-150"
+                            class="grid aspect-square w-full place-content-center p-4 text-(--accent) transition-all duration-150"
                             style:--accent={adjustLightColor(
                                 portfolioMap[portfolio.id].accent,
                             )}
