@@ -7,7 +7,7 @@
 <div
     class="flex h-max w-full flex-col justify-between gap-4 bg-zinc-900 p-8 text-zinc-200 2xl:p-24"
 >
-    <Logo class="m-8 mx-auto w-96" />
+    <Logo class="m-8 mx-auto w-full max-w-96" />
     <div class="flex w-full max-w-6xl gap-6">
         <a class="flex gap-2" href="mailto:hello@unifyventures.vc">
             <Mail /> hello@unifyventures.vc
