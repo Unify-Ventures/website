@@ -44,7 +44,7 @@
 >
     <div class="relative flex flex-col">
         <button
-            class="swap absolute top-2.5 left-2.5 w-min"
+            class="swap absolute top-5 left-2.5 h-0 w-min"
             class:swapped={copiedFeedback}
             onclick={() => {
                 navigator.clipboard
