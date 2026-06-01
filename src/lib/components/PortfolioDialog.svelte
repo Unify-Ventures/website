@@ -3,6 +3,8 @@
     import { toCamelCase } from "$lib/case";
     import type { PortfolioCompaniesResponse } from "$lib/pb-types";
     import Link from "lucide-svelte/icons/link";
+    import Check from "lucide-svelte/icons/check";
+    import X from "lucide-svelte/icons/x";
     import type { EventHandler } from "svelte/elements";
     import DOMPurify from "isomorphic-dompurify";
 
@@ -28,6 +30,9 @@
         dialogElement = $bindable(),
         onclose,
     }: Props = $props();
+
+    let copiedFeedback = $state(false);
+    let copiedErrored = $state(false);
 </script>
 
 <dialog
@@ -39,17 +44,27 @@
 >
     <div class="relative flex flex-col">
         <button
-            class="absolute top-2.5 left-2.5"
+            class="swap absolute top-2.5 left-2.5 w-min"
+            class:swapped={copiedFeedback}
             onclick={() => {
-                navigator.clipboard.writeText(
-                    page.url.origin +
-                        "/portfolio#" +
-                        toCamelCase(portfolio?.name ?? ""),
-                );
-                // TODO: #16 Add visual feedback
+                navigator.clipboard
+                    .writeText(
+                        page.url.origin +
+                            "/portfolio#" +
+                            toCamelCase(portfolio?.name ?? ""),
+                    )
+                    .then(() => (copiedErrored = false))
+                    .catch(() => (copiedErrored = true));
+                copiedFeedback = true;
+                setTimeout(() => (copiedFeedback = false), 1000);
             }}
         >
-            <Link />
+            {#if !copiedErrored}
+                <Check class="swap-on" />
+            {:else}
+                <X class="swap-on" />
+            {/if}
+            <Link class="swap-off" />
         </button>
         <div class="bg-zinc-100 p-4">
             {#each logos as logo (logo.portfolio.id)}
@@ -107,3 +122,35 @@
         </div>
     </div>
 </dialog>
+
+<style>
+    .swap {
+        @apply relative inline-grid cursor-pointer place-content-center align-middle select-none;
+    }
+
+    .swap :global(.swap-on),
+    .swap :global(.swap-off) {
+        @apply col-start-1 row-start-1;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .swap :global(.swap-on),
+        .swap :global(.swap-off) {
+            transition:
+                rotate 0.2s cubic-bezier(0, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0, 0, 0.2, 1);
+        }
+    }
+
+    .swap :global(.swap-on) {
+        @apply rotate-45 opacity-0;
+    }
+
+    .swap.swapped :global(.swap-on) {
+        @apply rotate-0 opacity-100;
+    }
+
+    .swap.swapped :global(.swap-off) {
+        @apply -rotate-45 opacity-0;
+    }
+</style>
