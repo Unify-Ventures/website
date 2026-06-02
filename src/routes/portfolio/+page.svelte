@@ -36,34 +36,7 @@
         fund: string;
     }
 
-    type FundExpand = { manager?: { name?: string; featured?: boolean } };
-
-    const funds = [
-        { value: "Any", label: "Any" },
-        ...data.funds
-            .slice()
-            .sort((a, b) => {
-                const aExpand = a.expand as FundExpand | undefined;
-                const bExpand = b.expand as FundExpand | undefined;
-                const aFeatured = aExpand?.manager?.featured ?? false;
-                const bFeatured = bExpand?.manager?.featured ?? false;
-
-                if (aFeatured !== bFeatured) return bFeatured ? 1 : -1;
-
-                const aName = aExpand?.manager?.name ?? "";
-                const bName = bExpand?.manager?.name ?? "";
-                return aName.localeCompare(bName);
-            })
-            .map((fund) => {
-                const expand = fund.expand as FundExpand | undefined;
-                return {
-                    value: fund.id,
-                    label: fund.short_name || fund.name,
-                    managerName: expand?.manager?.name ?? "",
-                    managerFeatured: expand?.manager?.featured ?? false,
-                };
-            }),
-    ];
+    const funds = data.funds;
 
     const filterablePortfolios: PortfolioFilterItem[] = portfolios.map((p) => ({
         id: p.id,
