@@ -17,25 +17,10 @@
 
     let { data }: { data: PageData } = $props();
 
-    const categories: {
-        value: "Any" | PortfolioCompaniesCategoryOptions;
-        label: string;
-    }[] = [
-        { value: "Any", label: "Any" },
-        ...Object.values(PortfolioCompaniesCategoryOptions).map((category) => ({
-            value: category,
-            label: toTitleCase(category.replace(/_/g, " ")),
-        })),
-    ];
+    const categories = data.categories;
 
     let expandCategory = $state(false);
     let expandFund = $state(false);
-
-    function toTitleCase(str: string) {
-        return str.replace(/\w\S*/g, (txt) => {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
-    }
 
     const portfolios: PortfolioCompaniesResponse[] = data.portfolios;
 
