@@ -173,326 +173,322 @@
 </script>
 
 <div class="grid w-full grid-cols-1 place-content-center px-4 lg:px-8">
-        <h2 class="mx-auto w-full max-w-380 text-7xl font-medium">Portfolio</h2>
+    <h2 class="mx-auto w-full max-w-380 text-7xl font-medium">Portfolio</h2>
+    <div
+        class="relative mx-auto my-4 flex w-full max-w-380 flex-col gap-4 lg:my-8 lg:flex-row"
+    >
+        <!-- Desktop filters -->
+        <div class="sticky top-10 left-0 mb-16 hidden self-start lg:block">
+            <!-- TODO: Implement proper overflow handling for when filter is not floating -->
+            <div
+                class="max-h-[calc(100vh-80px)] w-64 overflow-scroll border-2 border-zinc-700 bg-white p-4"
+            >
+                <div class="flex flex-col">
+                    <h3 class="text-xl font-bold">Category</h3>
+                    {#each categories as category (category.value)}
+                        <div class="flex flex-row items-center gap-2 p-1">
+                            <input
+                                type="radio"
+                                name="category"
+                                value={category.value}
+                                class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                id={`category-${category.value}`}
+                                disabled={category.value !== "Any" &&
+                                    !filterStore
+                                        .getAvailableOptions("category")
+                                        .includes(category.value)}
+                                onchange={() =>
+                                    selectFilter("category", category.value)}
+                                checked={filterStore.dimensions.category
+                                    .selected === category.value}
+                            />
+                            <label
+                                for={`category-${category.value}`}
+                                class="cursor-pointer"
+                                >{category.label}
+                                {portfolios
+                                    .map((p) => p.category)
+                                    .includes(
+                                        category.value as PortfolioCompaniesCategoryOptions,
+                                    )
+                                    ? `(${portfolios.filter((p) => p.category === category.value).length})`
+                                    : ""}</label
+                            >
+                        </div>
+                    {/each}
+
+                    <h3 class="mt-4 text-xl font-bold">Fund</h3>
+                    {#each funds as fund, index (fund.value)}
+                        {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
+                            <div
+                                class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
+                            >
+                                {fund.managerName}
+                            </div>
+                        {/if}
+                        <div class="flex flex-row items-center gap-2 p-1">
+                            <input
+                                type="radio"
+                                name="fund"
+                                value={fund.value}
+                                class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                id={`fund-${fund.value}`}
+                                disabled={!filterStore
+                                    .getAvailableOptions("fund")
+                                    .includes(fund.value) &&
+                                    fund.value !== "Any"}
+                                onchange={() =>
+                                    selectFilter("fund", fund.value)}
+                                checked={filterStore.dimensions.fund
+                                    .selected === fund.value}
+                            />
+                            <label for={`fund-${fund.value}`}
+                                >{fund.label}
+                                {portfolios
+                                    .map((p) => p.funds)
+                                    .filter((f) => f.includes(fund.value))
+                                    .length
+                                    ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
+                                    : ""}
+                            </label>
+                        </div>
+                    {/each}
+
+                    <button
+                        class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
+                        onclick={resetFilters}>Reset Filters</button
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile filters -->
         <div
-            class="relative mx-auto my-4 flex w-full max-w-380 flex-col gap-4 lg:my-8 lg:flex-row"
+            class="sticky top-0 left-0 z-10 mb-4 h-full w-full bg-white pt-4 lg:hidden"
         >
-            <!-- Desktop filters -->
-            <div class="sticky top-10 left-0 mb-16 hidden self-start lg:block">
-                <!-- TODO: Implement proper overflow handling for when filter is not floating -->
-                <div
-                    class="max-h-[calc(100vh-80px)] w-64 overflow-scroll border-2 border-zinc-700 bg-white p-4"
-                >
-                    <div class="flex flex-col">
-                        <h3 class="text-xl font-bold">Category</h3>
-                        {#each categories as category (category.value)}
-                            <div class="flex flex-row items-center gap-2 p-1">
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value={category.value}
-                                    class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                    id={`category-${category.value}`}
-                                    disabled={category.value !== "Any" &&
-                                        !filterStore
-                                            .getAvailableOptions("category")
-                                            .includes(category.value)}
-                                    onchange={() =>
-                                        selectFilter(
-                                            "category",
-                                            category.value,
-                                        )}
-                                    checked={filterStore.dimensions.category
-                                        .selected === category.value}
-                                />
-                                <label
-                                    for={`category-${category.value}`}
-                                    class="cursor-pointer"
-                                    >{category.label}
-                                    {portfolios
-                                        .map((p) => p.category)
-                                        .includes(
-                                            category.value as PortfolioCompaniesCategoryOptions,
-                                        )
-                                        ? `(${portfolios.filter((p) => p.category === category.value).length})`
-                                        : ""}</label
-                                >
-                            </div>
-                        {/each}
-
-                        <h3 class="mt-4 text-xl font-bold">Fund</h3>
-                        {#each funds as fund, index (fund.value)}
-                            {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
+            <div class="w-full border-2 border-zinc-700 bg-white p-4">
+                <div class="flex flex-col">
+                    <button
+                        class="flex flex-row items-center gap-4 text-left text-xl font-bold"
+                        onclick={() => {
+                            expandCategory = !expandCategory;
+                            expandFund = false;
+                        }}
+                    >
+                        <span class="w-24">Category</span>
+                        <span class="text-sm font-normal text-zinc-700"
+                            >{categoryToLabel(
+                                filterStore.dimensions.category.selected,
+                            )}</span
+                        >
+                        <ChevronDown
+                            class="ml-auto transition-all duration-200 {expandCategory
+                                ? 'rotate-180'
+                                : ''}"
+                        /></button
+                    >
+                    {#if expandCategory}
+                        <div
+                            transition:slide
+                            class="max-h-72 overflow-y-scroll"
+                        >
+                            {#each categories as category (category.value)}
                                 <div
-                                    class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
+                                    class="flex flex-row items-center gap-2 p-1"
                                 >
-                                    {fund.managerName}
+                                    <input
+                                        type="radio"
+                                        name="category"
+                                        value={category.value}
+                                        class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                        id={`category-${category.value}`}
+                                        disabled={category.value !== "Any" &&
+                                            !filterStore
+                                                .getAvailableOptions("category")
+                                                .includes(category.value)}
+                                        onchange={() =>
+                                            selectFilter(
+                                                "category",
+                                                category.value,
+                                            )}
+                                        checked={filterStore.dimensions.category
+                                            .selected === category.value}
+                                    />
+                                    <label
+                                        for={`category-${category.value}`}
+                                        class="cursor-pointer"
+                                        >{category.label}
+                                        {filterStore.filteredItems
+                                            .map(
+                                                (p) =>
+                                                    portfolioMap[p.id]
+                                                        ?.category,
+                                            )
+                                            .includes(
+                                                category.value as PortfolioCompaniesCategoryOptions,
+                                            )
+                                            ? `(${filterStore.filteredItems.filter((p) => portfolioMap[p.id]?.category === category.value).length})`
+                                            : ""}</label
+                                    >
                                 </div>
-                            {/if}
-                            <div class="flex flex-row items-center gap-2 p-1">
-                                <input
-                                    type="radio"
-                                    name="fund"
-                                    value={fund.value}
-                                    class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                    id={`fund-${fund.value}`}
-                                    disabled={!filterStore
-                                        .getAvailableOptions("fund")
-                                        .includes(fund.value) &&
-                                        fund.value !== "Any"}
-                                    onchange={() =>
-                                        selectFilter("fund", fund.value)}
-                                    checked={filterStore.dimensions.fund
-                                        .selected === fund.value}
-                                />
-                                <label for={`fund-${fund.value}`}
-                                    >{fund.label}
-                                    {portfolios
-                                        .map((p) => p.funds)
-                                        .filter((f) => f.includes(fund.value))
-                                        .length
-                                        ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
-                                        : ""}
-                                </label>
-                            </div>
-                        {/each}
+                            {/each}
+                        </div>
+                    {/if}
 
+                    <button
+                        class="mt-4 flex flex-row items-center gap-4 text-left text-xl font-bold"
+                        onclick={() => {
+                            expandFund = !expandFund;
+                            expandCategory = false;
+                        }}
+                        ><span class="w-24">Fund</span><span
+                            class="text-sm font-normal text-zinc-700"
+                            >{fundToLabel(
+                                filterStore.dimensions.fund.selected,
+                            )}</span
+                        ><ChevronDown
+                            class="ml-auto transition-all duration-200 {expandFund
+                                ? 'rotate-180'
+                                : ''}"
+                        /></button
+                    >
+                    {#if expandFund}
+                        <div
+                            transition:slide
+                            class="max-h-72 overflow-y-scroll"
+                        >
+                            {#each funds as fund, index (fund.value)}
+                                {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
+                                    <div
+                                        class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
+                                    >
+                                        {fund.managerName}
+                                    </div>
+                                {/if}
+                                <div
+                                    class="flex flex-row items-center gap-2 p-1"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="fund"
+                                        value={fund.value}
+                                        class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                        id={`fund-${fund.value}`}
+                                        disabled={!filterStore
+                                            .getAvailableOptions("fund")
+                                            .includes(fund.value) &&
+                                            fund.value !== "Any"}
+                                        onchange={() =>
+                                            selectFilter("fund", fund.value)}
+                                        checked={filterStore.dimensions.fund
+                                            .selected === fund.value}
+                                    />
+                                    <label for={`fund-${fund.value}`}
+                                        >{fund.label}
+                                        {portfolios
+                                            .map((p) => p.funds)
+                                            .filter((f) =>
+                                                f.includes(fund.value),
+                                            ).length
+                                            ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
+                                            : ""}
+                                    </label>
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+
+                    {#if (expandCategory || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.category.selected === "Any")}
                         <button
+                            transition:slide
                             class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
                             onclick={resetFilters}>Reset Filters</button
                         >
-                    </div>
+                    {/if}
                 </div>
             </div>
-
-            <!-- Mobile filters -->
-            <div
-                class="sticky top-0 left-0 z-10 mb-4 h-full w-full bg-white pt-4 lg:hidden"
-            >
-                <div class="w-full border-2 border-zinc-700 bg-white p-4">
-                    <div class="flex flex-col">
-                        <button
-                            class="flex flex-row items-center gap-4 text-left text-xl font-bold"
-                            onclick={() => {
-                                expandCategory = !expandCategory;
-                                expandFund = false;
-                            }}
-                        >
-                            <span class="w-24">Category</span>
-                            <span class="text-sm font-normal text-zinc-700"
-                                >{categoryToLabel(
-                                    filterStore.dimensions.category.selected,
-                                )}</span
-                            >
-                            <ChevronDown
-                                class="ml-auto transition-all duration-200 {expandCategory
-                                    ? 'rotate-180'
-                                    : ''}"
-                            /></button
-                        >
-                        {#if expandCategory}
-                            <div transition:slide class="overflow-y-scroll max-h-72">
-                                {#each categories as category (category.value)}
-                                    <div
-                                        class="flex flex-row items-center gap-2 p-1"
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="category"
-                                            value={category.value}
-                                            class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                            id={`category-${category.value}`}
-                                            disabled={category.value !==
-                                                "Any" &&
-                                                !filterStore
-                                                    .getAvailableOptions(
-                                                        "category",
-                                                    )
-                                                    .includes(category.value)}
-                                            onchange={() =>
-                                                selectFilter(
-                                                    "category",
-                                                    category.value,
-                                                )}
-                                            checked={filterStore.dimensions
-                                                .category.selected ===
-                                                category.value}
-                                        />
-                                        <label
-                                            for={`category-${category.value}`}
-                                            class="cursor-pointer"
-                                            >{category.label}
-                                            {filterStore.filteredItems
-                                                .map(
-                                                    (p) =>
-                                                        portfolioMap[p.id]
-                                                            ?.category,
-                                                )
-                                                .includes(
-                                                    category.value as PortfolioCompaniesCategoryOptions,
-                                                )
-                                                ? `(${filterStore.filteredItems.filter((p) => portfolioMap[p.id]?.category === category.value).length})`
-                                                : ""}</label
-                                        >
-                                    </div>
-                                {/each}
-                            </div>
-                        {/if}
-
-                        <button
-                            class="mt-4 flex flex-row items-center gap-4 text-left text-xl font-bold"
-                            onclick={() => {
-                                expandFund = !expandFund;
-                                expandCategory = false;
-                            }}
-                            ><span class="w-24">Fund</span><span
-                                class="text-sm font-normal text-zinc-700"
-                                >{fundToLabel(
-                                    filterStore.dimensions.fund.selected,
-                                )}</span
-                            ><ChevronDown
-                                class="ml-auto transition-all duration-200 {expandFund
-                                    ? 'rotate-180'
-                                    : ''}"
-                            /></button
-                        >
-                        {#if expandFund}
-                            <div transition:slide class="overflow-y-scroll max-h-72">
-                                {#each funds as fund, index (fund.value)}
-                                    {#if index > 0 && fund.managerName && (index === 1 || fund.managerName !== funds[index - 1].managerName)}
-                                        <div
-                                            class="mt-3 mb-1 px-1 text-xs font-semibold text-zinc-600"
-                                        >
-                                            {fund.managerName}
-                                        </div>
-                                    {/if}
-                                    <div
-                                        class="flex flex-row items-center gap-2 p-1"
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="fund"
-                                            value={fund.value}
-                                            class="h-3 w-3 cursor-pointer appearance-none rounded-full border border-zinc-900 checked:bg-zinc-900 focus:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
-                                            id={`fund-${fund.value}`}
-                                            disabled={!filterStore
-                                                .getAvailableOptions("fund")
-                                                .includes(fund.value) &&
-                                                fund.value !== "Any"}
-                                            onchange={() =>
-                                                selectFilter(
-                                                    "fund",
-                                                    fund.value,
-                                                )}
-                                            checked={filterStore.dimensions.fund
-                                                .selected === fund.value}
-                                        />
-                                        <label for={`fund-${fund.value}`}
-                                            >{fund.label}
-                                            {portfolios
-                                                .map((p) => p.funds)
-                                                .filter((f) =>
-                                                    f.includes(fund.value),
-                                                ).length
-                                                ? `(${portfolios.map((p) => p.funds).filter((f) => f.includes(fund.value)).length})`
-                                                : ""}
-                                        </label>
-                                    </div>
-                                {/each}
-                            </div>
-                        {/if}
-
-                        {#if (expandCategory || expandFund) && !(filterStore.dimensions.fund.selected === "Any" && filterStore.dimensions.category.selected === "Any")}
-                            <button
-                                transition:slide
-                                class="mt-6 flex flex-row justify-center gap-2 border-2 border-zinc-900 p-2 transition-all duration-200 hover:bg-zinc-900 hover:text-white"
-                                onclick={resetFilters}>Reset Filters</button
-                            >
-                        {/if}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Portfolio results -->
-            <main
-                bind:this={portfolioGrid}
-                class="mb-8 grid h-max min-w-0 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 lg:grid-cols-3 xl:grid-cols-4"
-            >
-                {#each portfolios as portfolio (portfolio.id)}
-                    <button
-                        class="group block min-w-0 cursor-pointer bg-zinc-100 p-4"
-                        class:hidden={!filterStore.filteredItems.some(
-                            (r) => r.id === portfolio.id,
-                        )}
-                        aria-label="View {portfolio.name} portfolio"
-                        onclick={() => {
-                            dialogStartup = portfolio;
-                            startupModal?.showModal();
-                        }}
-                        id={portfolio.id}
-                    >
-                        <!-- TODO: Find a better method to constrain SVG size -->
-                        <div
-                            class="grid aspect-square w-full place-content-center p-4 text-(--accent) transition-all duration-150"
-                            style:--accent={adjustLightColor(
-                                portfolioMap[portfolio.id].accent,
-                            )}
-                        >
-                            {#if portfolio.logo.endsWith(".svg")}
-                                <svg
-                                    class="h-full w-full"
-                                    width="14rem"
-                                    height="14rem"
-                                    use:inlineSvg={getFileUrl(
-                                        portfolioMap[portfolio.id],
-                                        !portfolioMap[portfolio.id]
-                                            .use_unoptimised_logo
-                                            ? portfolioMap[portfolio.id].logo
-                                            : portfolioMap[portfolio.id]
-                                                  .unoptimised_logo,
-                                    )}
-                                />
-                            {:else if portfolio.logo}
-                                <img
-                                    class={"h-full w-full object-contain" +
-                                        (portfolio.invert_foreground
-                                            ? " contrast-75 hue-rotate-180 invert"
-                                            : "")}
-                                    src={getFileUrl(
-                                        portfolioMap[portfolio.id],
-                                        !portfolioMap[portfolio.id]
-                                            .use_unoptimised_logo
-                                            ? portfolioMap[portfolio.id].logo
-                                            : portfolioMap[portfolio.id]
-                                                  .unoptimised_logo,
-                                    )}
-                                    alt={`${portfolioMap[portfolio.id].name}'s logo'`}
-                                />
-                            {:else}
-                                <div
-                                    class="grid h-full w-full place-content-center"
-                                >
-                                    <span>{portfolio.name}</span>
-                                </div>
-                            {/if}
-                        </div>
-                    </button>
-                {/each}
-            </main>
         </div>
+
+        <!-- Portfolio results -->
+        <main
+            bind:this={portfolioGrid}
+            class="mb-8 grid h-max min-w-0 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 lg:grid-cols-3 xl:grid-cols-4"
+        >
+            {#each portfolios as portfolio (portfolio.id)}
+                <button
+                    class="group block min-w-0 cursor-pointer bg-zinc-100 p-4"
+                    class:hidden={!filterStore.filteredItems.some(
+                        (r) => r.id === portfolio.id,
+                    )}
+                    aria-label="View {portfolio.name} portfolio"
+                    onclick={() => {
+                        dialogStartup = portfolio;
+                        startupModal?.showModal();
+                    }}
+                    id={portfolio.id}
+                >
+                    <!-- TODO: Find a better method to constrain SVG size -->
+                    <div
+                        class="grid aspect-square w-full place-content-center p-4 text-(--accent) transition-all duration-150"
+                        style:--accent={adjustLightColor(
+                            portfolioMap[portfolio.id].accent,
+                        )}
+                    >
+                        {#if portfolio.logo.endsWith(".svg")}
+                            <svg
+                                class="h-full w-full"
+                                width="14rem"
+                                height="14rem"
+                                use:inlineSvg={getFileUrl(
+                                    portfolioMap[portfolio.id],
+                                    !portfolioMap[portfolio.id]
+                                        .use_unoptimised_logo
+                                        ? portfolioMap[portfolio.id].logo
+                                        : portfolioMap[portfolio.id]
+                                              .unoptimised_logo,
+                                )}
+                            />
+                        {:else if portfolio.logo}
+                            <img
+                                class={"h-full w-full object-contain" +
+                                    (portfolio.invert_foreground
+                                        ? " contrast-75 hue-rotate-180 invert"
+                                        : "")}
+                                src={getFileUrl(
+                                    portfolioMap[portfolio.id],
+                                    !portfolioMap[portfolio.id]
+                                        .use_unoptimised_logo
+                                        ? portfolioMap[portfolio.id].logo
+                                        : portfolioMap[portfolio.id]
+                                              .unoptimised_logo,
+                                )}
+                                alt={`${portfolioMap[portfolio.id].name}'s logo'`}
+                            />
+                        {:else}
+                            <div
+                                class="grid h-full w-full place-content-center"
+                            >
+                                <span>{portfolio.name}</span>
+                            </div>
+                        {/if}
+                    </div>
+                </button>
+            {/each}
+        </main>
     </div>
-    <PortfolioDialog
-        portfolio={dialogStartup}
-        logos={portfolios.map((p) => ({
-            logoURL: getFileUrl(
-                p,
-                !p.use_unoptimised_logo ? p.logo : p.unoptimised_logo,
-            ),
-            portfolio: p,
-        }))}
-        bind:dialogElement={startupModal}
-        onclose={() => {}}
-    />
+</div>
+<PortfolioDialog
+    portfolio={dialogStartup}
+    logos={portfolios.map((p) => ({
+        logoURL: getFileUrl(
+            p,
+            !p.use_unoptimised_logo ? p.logo : p.unoptimised_logo,
+        ),
+        portfolio: p,
+    }))}
+    bind:dialogElement={startupModal}
+    onclose={() => {}}
+/>
 
 <style>
     input:disabled + label {

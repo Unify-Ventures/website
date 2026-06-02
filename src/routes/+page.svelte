@@ -461,7 +461,7 @@
                                 </div>
                             </a>
                             <div
-                                class="flex flex-col gap-1 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:-translate-x-32 2xl:translate-y-10 2xl:scale-50 2xl:opacity-0 -z-10"
+                                class="-z-10 flex flex-col gap-1 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 2xl:-translate-x-32 2xl:translate-y-10 2xl:scale-50 2xl:opacity-0"
                             >
                                 <h3 class="text-3xl font-medium text-nowrap">
                                     {member.name}

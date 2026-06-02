@@ -114,8 +114,9 @@
                     class="mt-6 flex w-full flex-row justify-center gap-2 border-2 border-zinc-900 bg-zinc-900 p-2 text-white transition-all duration-200 hover:bg-transparent hover:text-black"
                     href={portfolio.homepage}
                     target="_blank"
-                    rel="noopener noreferrer">Visit homepage <ExternalLink /> </a
-                >
+                    rel="noopener noreferrer"
+                    >Visit homepage <ExternalLink />
+                </a>
                 <!-- eslint-enable svelte/no-navigation-without-resolve -->
             {:else}
                 <h2>No startup selected</h2>
