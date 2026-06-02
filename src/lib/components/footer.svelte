@@ -14,7 +14,7 @@
         </a>
         <span class="flex gap-2"> <Phone /> +61 409 121 113 </span>
     </div>
-    <p class="text-justify">
+    <p>
         Unify Ventures Pty Ltd (Unify) is a corporate authorised representative
         (CAR) of Quay Wholesale Fund Services Pty Ltd (QUAY) AFSL 528 526, CAR
         Number 1299709. Unify has taken all reasonable care in producing all the
